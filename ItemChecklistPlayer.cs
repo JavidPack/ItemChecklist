@@ -11,7 +11,7 @@ namespace ItemChecklist
 {
 	class ItemChecklistPlayer : ModPlayer
 	{
-	//	internal static ItemChecklistPlayer localInstance;
+		//	internal static ItemChecklistPlayer localInstance;
 
 		// This is a list of items...Holds clean versions of unloaded mystery and loaded real items. 
 		internal List<Item> foundItems;
@@ -59,7 +59,7 @@ namespace ItemChecklist
 					findableItems[i] = true;
 				}
 			}
-		//	localInstance = this;
+			//	localInstance = this;
 		}
 
 		public override void PreUpdate()

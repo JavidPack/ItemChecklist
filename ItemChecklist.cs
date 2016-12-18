@@ -14,6 +14,7 @@ namespace ItemChecklist
 		static internal ItemChecklist instance;
 		internal static ModHotKey ToggleChecklistHotKey;
 		internal static UserInterface ItemChecklistInterface;
+		//internal bool UIInitialized;
 		internal ItemChecklistUI ItemChecklistUI;
 
 		public ItemChecklist()
@@ -28,6 +29,7 @@ namespace ItemChecklist
 		{
 			instance = this;
 			ToggleChecklistHotKey = RegisterHotKey("Toggle Item Checklist", "I");
+			//UIInitialized = false;
 			//if (!Main.dedServ)
 			//{
 			//	ItemChecklistUI = new ItemChecklistUI();
@@ -37,7 +39,18 @@ namespace ItemChecklist
 			//}
 		}
 
-		public override void PostSetupContent()
+		//public override void PostSetupContent()
+		//{
+		//	if (!Main.dedServ)
+		//	{
+		//		ItemChecklistUI = new ItemChecklistUI();
+		//		ItemChecklistUI.Activate();
+		//		ItemChecklistInterface = new UserInterface();
+		//		ItemChecklistInterface.SetState(ItemChecklistUI);
+		//	}
+		//}
+
+		public override void AddRecipes()
 		{
 			if (!Main.dedServ)
 			{
@@ -52,6 +65,14 @@ namespace ItemChecklist
 		int lastSeenScreenHeight;
 		public override void ModifyInterfaceLayers(List<MethodSequenceListItem> layers)
 		{
+			//if (!UIInitialized)
+			//{
+			//	ItemChecklistUI = new ItemChecklistUI();
+			//	ItemChecklistUI.Activate();
+			//	ItemChecklistInterface = new UserInterface();
+			//	ItemChecklistInterface.SetState(ItemChecklistUI);
+			//}
+
 			int MouseTextIndex = layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
 			if (MouseTextIndex != -1)
 			{
