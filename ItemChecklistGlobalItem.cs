@@ -35,7 +35,10 @@ namespace ItemChecklist
 				itemChecklistPlayer.foundItem[item.type] = true;
 				//ItemChecklist.instance.ItemChecklistUI.UpdateCheckboxes();
 				ItemChecklist.instance.ItemChecklistUI.UpdateNeeded();
-				Main.NewText($"Congrats: You found your first {item.name}.       Total Progress: {itemChecklistPlayer.totalItemsFound}/{itemChecklistPlayer.totalItemsToFind}");
+				if (ItemChecklistUI.announce)
+				{
+					Main.NewText($"Congrats: You found your first {item.name}.       Total Progress: {itemChecklistPlayer.totalItemsFound}/{itemChecklistPlayer.totalItemsToFind}");
+				}
 			}
 		}
 	}

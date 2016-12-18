@@ -72,6 +72,7 @@
     <Compile Include="UICheckbox.cs" />
     <Compile Include="UIGrid.cs" />
     <Compile Include="UIHoverImageButton.cs" />
+    <Compile Include="UIToggleHoverImageButton.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="build.txt" />

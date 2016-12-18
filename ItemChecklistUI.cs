@@ -16,14 +16,16 @@ namespace ItemChecklist.UI
 	class ItemChecklistUI : UIState
 	{
 		public UIHoverImageButton toggleButton;
+		public UIToggleHoverImageButton muteButton;
 		public UIPanel checklistPanel;
 		//public UIList checklistList;
 		public UIGrid checklistList;
-	//	private FieldInfo uilistinnerlist;
+		//	private FieldInfo uilistinnerlist;
 
 		float spacing = 8f;
 		public static bool visible = false;
 		public static bool showCompleted = true;
+		public static bool announce = true;
 		public static string hoverText = "";
 
 		ItemSlot[] itemSlots;
@@ -32,7 +34,8 @@ namespace ItemChecklist.UI
 		{
 			// Is initialize called? (Yes it is called on reload) I want to reset nicely with new character or new loaded mods: visible = false;
 
-		//	uilistinnerlist = typeof(UIList).GetField("_innerList", BindingFlags.Instance | BindingFlags.NonPublic);
+			//	uilistinnerlist = typeof(UIList).GetField("_innerList", BindingFlags.Instance | BindingFlags.NonPublic);
+			announce = true;
 
 			checklistPanel = new UIPanel();
 			checklistPanel.SetPadding(10);
@@ -48,6 +51,12 @@ namespace ItemChecklist.UI
 			//toggleButton.Left.Pixels = spacing;
 			//toggleButton.Top.Pixels = spacing;
 			checklistPanel.Append(toggleButton);
+
+			muteButton = new UIToggleHoverImageButton(Main.itemTexture[ItemID.Megaphone], ItemChecklist.instance.GetTexture("closeButton"), "Toggle Messages", announce);
+			muteButton.OnClick += ToggleMuteButtonClicked;
+			muteButton.Left.Pixels = spacing * 2 + 28;
+			muteButton.Top.Pixels = 4;
+			checklistPanel.Append(muteButton);
 
 			checklistList = new UIGrid(5);
 			checklistList.Top.Pixels = 32f + spacing;
@@ -84,6 +93,13 @@ namespace ItemChecklist.UI
 			Main.PlaySound(10, -1, -1, 1);
 			showCompleted = !showCompleted;
 			UpdateNeeded();
+		}
+
+		private void ToggleMuteButtonClicked(UIMouseEvent evt, UIElement listeningElement)
+		{
+			Main.PlaySound(10, -1, -1, 1);
+			announce = !announce;
+			muteButton.SetEnabled(announce);
 		}
 
 		private bool updateneeded;
@@ -131,13 +147,13 @@ namespace ItemChecklist.UI
 
 						checklistList._items.Add(box);
 						checklistList._innerList.Append(box);
-	//					uilistinner.Append(box);
+						//					uilistinner.Append(box);
 					}
 				}
 			}
 			checklistList.UpdateOrder();
 			checklistList._innerList.Recalculate();
-//			uilistinner.Recalculate();
+			//			uilistinner.Recalculate();
 		}
 
 		protected override void DrawSelf(SpriteBatch spriteBatch)
