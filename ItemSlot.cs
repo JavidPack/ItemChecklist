@@ -15,8 +15,8 @@ namespace ItemChecklist
 		//	private float _visibilityActive = 1f;
 		//		private float _visibilityInactive = 0.4f;
 		private float scale = 0.6f;
-		private int id;
-		private Item item;
+		internal int id;
+		internal Item item;
 
 		public ItemSlot(int id)
 		{
@@ -32,6 +32,27 @@ namespace ItemChecklist
 		public override int CompareTo(object obj)
 		{
 			ItemSlot other = obj as ItemSlot;
+			int result;
+			switch (ItemChecklistUI.sortMode)
+			{
+				case SortModes.ID:
+					return id.CompareTo(other.id);
+				case SortModes.AZ:
+					return item.name.CompareTo(other.item.name);
+				case SortModes.Value:
+					result = item.value.CompareTo(other.item.value);
+					if (result == 0)
+						result = item.name.CompareTo(other.item.name);
+					return result;
+				case SortModes.Rare:
+					result = item.rare.CompareTo(other.item.rare);
+					if (result == 0)
+						result = item.name.CompareTo(other.item.name);
+					return result;
+				case SortModes.TerrariaSort:
+					return ItemChecklistUI.vanillaIDsInSortOrder[id].CompareTo(ItemChecklistUI.vanillaIDsInSortOrder[other.id]);
+			}
+
 			return id.CompareTo(other.id);
 		}
 

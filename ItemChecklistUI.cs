@@ -4,6 +4,9 @@ using Terraria;
 using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
 using Terraria.ID;
+using System;
+using System.Reflection;
+using System.Linq;
 
 namespace ItemChecklist.UI
 {
@@ -11,22 +14,25 @@ namespace ItemChecklist.UI
 	{
 		public UIHoverImageButton toggleButton;
 		public UIToggleHoverImageButton muteButton;
+		public UIHoverImageButton sortButton;
 		public UIPanel checklistPanel;
-		public UIGrid checklistList;
+		public UIGrid checklistGrid;
+		public static SortModes sortMode = SortModes.TerrariaSort;
 
 		float spacing = 8f;
 		public static bool visible = false;
-		public static bool showCompleted = true;
+		public static int showCompleted = 0; // 0: both, 1: unfound, 2: found
 		public static bool announce = true;
 		public static string hoverText = "";
 
 		ItemSlot[] itemSlots;
+		internal static int[] vanillaIDsInSortOrder;
 
 		public override void OnInitialize()
 		{
 			// Is initialize called? (Yes it is called on reload) I want to reset nicely with new character or new loaded mods: visible = false;
 
-			announce = true;
+			announce = true; // overwritten by modplayer
 
 			checklistPanel = new UIPanel();
 			checklistPanel.SetPadding(10);
@@ -37,7 +43,7 @@ namespace ItemChecklist.UI
 			checklistPanel.Height.Set(-100, 1f);
 			checklistPanel.BackgroundColor = new Color(73, 94, 171);
 
-			toggleButton = new UIHoverImageButton(Main.itemTexture[ItemID.Book], "Toggle Found");
+			toggleButton = new UIHoverImageButton(Main.itemTexture[ItemID.Book], "Cycle Found Filter");
 			toggleButton.OnClick += ToggleButtonClicked;
 			checklistPanel.Append(toggleButton);
 
@@ -47,12 +53,18 @@ namespace ItemChecklist.UI
 			muteButton.Top.Pixels = 4;
 			checklistPanel.Append(muteButton);
 
-			checklistList = new UIGrid(5);
-			checklistList.Top.Pixels = 32f + spacing;
-			checklistList.Width.Set(-25f, 1f);
-			checklistList.Height.Set(-32f, 1f);
-			checklistList.ListPadding = 12f;
-			checklistPanel.Append(checklistList);
+			sortButton = new UIHoverImageButton(Main.itemTexture[ItemID.ToxicFlask], "Cycle Sort Method: ID");
+			sortButton.OnClick += ToggleSortButtonClicked;
+			sortButton.Left.Pixels = spacing * 4 + 28 * 2;
+			sortButton.Top.Pixels = 4;
+			checklistPanel.Append(sortButton);
+
+			checklistGrid = new UIGrid(5);
+			checklistGrid.Top.Pixels = 32f + spacing;
+			checklistGrid.Width.Set(-25f, 1f);
+			checklistGrid.Height.Set(-32f, 1f);
+			checklistGrid.ListPadding = 12f;
+			checklistPanel.Append(checklistGrid);
 
 			FixedUIScrollbar checklistListScrollbar = new FixedUIScrollbar();
 			checklistListScrollbar.SetView(100f, 1000f);
@@ -60,7 +72,7 @@ namespace ItemChecklist.UI
 			checklistListScrollbar.Height.Set(-32f - spacing, 1f);
 			checklistListScrollbar.HAlign = 1f;
 			checklistPanel.Append(checklistListScrollbar);
-			checklistList.SetScrollbar(checklistListScrollbar);
+			checklistGrid.SetScrollbar(checklistListScrollbar);
 
 			// Checklistlist populated when the panel is shown: UpdateCheckboxes()
 
@@ -68,17 +80,39 @@ namespace ItemChecklist.UI
 
 			// load time impact, do this on first show?
 			itemSlots = new ItemSlot[Main.itemName.Length];
+			Item[] itemSlotItems = new Item[Main.itemName.Length];
 			for (int i = 0; i < Main.itemName.Length; i++)
 			{
 				itemSlots[i] = new ItemSlot(i);
+				itemSlotItems[i] = itemSlots[i].item;
 			}
+
+			FieldInfo inventoryGlowHue = typeof(Terraria.UI.ItemSlot).GetField("inventoryGlowHue", BindingFlags.Static | BindingFlags.NonPublic);
+			FieldInfo inventoryGlowTime = typeof(Terraria.UI.ItemSlot).GetField("inventoryGlowTime", BindingFlags.Static | BindingFlags.NonPublic);
+
+			MethodInfo SortMethod = typeof(ItemSorting).GetMethod("Sort", BindingFlags.Static | BindingFlags.NonPublic);
+			object[] parametersArray = new object[] { itemSlotItems, new int[0] };
+
+			inventoryGlowHue.SetValue(null, new float[Main.itemName.Length]);
+			inventoryGlowTime.SetValue(null, new int[Main.itemName.Length]);
+			SortMethod.Invoke(null, parametersArray);
+			inventoryGlowHue.SetValue(null, new float[58]);
+			inventoryGlowTime.SetValue(null, new int[58]);
+
+			int[] vanillaIDsInSortOrderTemp = itemSlotItems.Select((x) => x.type).ToArray();
+			vanillaIDsInSortOrder = new int[Main.itemName.Length];
+			for (int i = 0; i < Main.itemName.Length; i++)
+			{
+				vanillaIDsInSortOrder[i] = Array.FindIndex(vanillaIDsInSortOrderTemp, x => x == i);
+			}
+
 			updateneeded = true;
 		}
 
 		private void ToggleButtonClicked(UIMouseEvent evt, UIElement listeningElement)
 		{
 			Main.PlaySound(10, -1, -1, 1);
-			showCompleted = !showCompleted;
+			showCompleted = ++showCompleted % 3;
 			UpdateNeeded();
 		}
 
@@ -89,10 +123,30 @@ namespace ItemChecklist.UI
 			muteButton.SetEnabled(announce);
 		}
 
+		private void ToggleSortButtonClicked(UIMouseEvent evt, UIElement listeningElement)
+		{
+			Main.PlaySound(10, -1, -1, 1);
+			sortMode = sortMode.Next();
+			sortButton.hoverText = "Cycle Sort Method: " + sortMode.ToFriendlyString();
+			UpdateNeeded();
+		}
+
+		internal void RefreshPreferences()
+		{
+			sortButton.hoverText = "Cycle Sort Method: " + sortMode.ToFriendlyString();
+			muteButton.SetEnabled(announce);
+			UpdateNeeded();
+		}
+
 		private bool updateneeded;
-		internal void UpdateNeeded()
+		private int lastfoundID = -1;
+		internal void UpdateNeeded(int lastfoundID = -1)
 		{
 			updateneeded = true;
+			if (lastfoundID > 0)
+			{
+				this.lastfoundID = lastfoundID;
+			}
 		}
 
 		// todo, items on load.
@@ -100,27 +154,38 @@ namespace ItemChecklist.UI
 		{
 			if (!updateneeded) { return; }
 			updateneeded = false;
-			checklistList.Clear();
+			checklistGrid.Clear();
 
 			var itemChecklistPlayer = Main.LocalPlayer.GetModPlayer<ItemChecklistPlayer>(ItemChecklist.instance);
 
-			UIElement element = new UIElement();
 			for (int i = 0; i < itemChecklistPlayer.findableItems.Length; i++)
 			{
 				if (itemChecklistPlayer.findableItems[i])
 				{
-					if (showCompleted || !itemChecklistPlayer.foundItem[i])
+					// filters here
+					if ((showCompleted != 1 && itemChecklistPlayer.foundItem[i]) || (showCompleted != 2 && !itemChecklistPlayer.foundItem[i]))
 					{
 
 						ItemSlot box = itemSlots[i];
 
-						checklistList._items.Add(box);
-						checklistList._innerList.Append(box);
+						checklistGrid._items.Add(box);
+						checklistGrid._innerList.Append(box);
 					}
 				}
 			}
-			checklistList.UpdateOrder();
-			checklistList._innerList.Recalculate();
+			checklistGrid.UpdateOrder();
+			checklistGrid._innerList.Recalculate();
+
+			if (lastfoundID > 0)
+			{
+				checklistGrid.Recalculate();
+				checklistGrid.Goto(delegate (UIElement element)
+				{
+					ItemSlot itemSlot = element as ItemSlot;
+					return itemSlot != null && itemSlot.id == lastfoundID;
+				}, true);
+				lastfoundID = -1;
+			}
 		}
 
 		protected override void DrawSelf(SpriteBatch spriteBatch)
@@ -133,6 +198,15 @@ namespace ItemChecklist.UI
 				Main.player[Main.myPlayer].mouseInterface = true;
 			}
 		}
+	}
+
+	public enum SortModes
+	{
+		ID,
+		Value,
+		AZ,
+		Rare,
+		TerrariaSort,
 	}
 
 	public class FixedUIScrollbar : UIScrollbar
@@ -151,6 +225,36 @@ namespace ItemChecklist.UI
 			UserInterface.ActiveInstance = ItemChecklist.ItemChecklistInterface;
 			base.MouseDown(evt);
 			UserInterface.ActiveInstance = temp;
+		}
+	}
+
+	public static class Extensions
+	{
+		public static T Next<T>(this T src) where T : struct
+		{
+			if (!typeof(T).IsEnum) throw new ArgumentException(String.Format("Argumnent {0} is not an Enum", typeof(T).FullName));
+
+			T[] Arr = (T[])Enum.GetValues(src.GetType());
+			int j = Array.IndexOf<T>(Arr, src) + 1;
+			return (Arr.Length == j) ? Arr[0] : Arr[j];
+		}
+
+		public static string ToFriendlyString(this SortModes sortmode)
+		{
+			switch (sortmode)
+			{
+				case SortModes.AZ:
+					return "Alphabetically";
+				case SortModes.ID:
+					return "ID";
+				case SortModes.Value:
+					return "Value";
+				case SortModes.Rare:
+					return "Rarity";
+				case SortModes.TerrariaSort:
+					return "Terraria Sort";
+			}
+			return "Unknown Sort";
 		}
 	}
 }

@@ -26,6 +26,11 @@ namespace ItemChecklist
 		internal int totalItemsToFind;
 		internal int totalItemsFound;  // eh, property? dunno.
 
+		// Because of save, these values inherit the last used setting while loading
+		internal SortModes sortModePreference = SortModes.TerrariaSort;
+		internal bool announcePreference;
+		internal int showCompletedPreference;
+
 		public override void ProcessTriggers(TriggersSet triggersSet)
 		{
 			if (ItemChecklist.ToggleChecklistHotKey.JustPressed)
@@ -42,34 +47,47 @@ namespace ItemChecklist
 		{
 			var itemChecklistPlayer = Main.LocalPlayer.GetModPlayer<ItemChecklistPlayer>(mod);
 			ItemChecklistUI.visible = false;
+			ItemChecklistUI.announce = announcePreference;
+			ItemChecklistUI.sortMode = sortModePreference;
+			ItemChecklistUI.showCompleted = showCompletedPreference;
+			ItemChecklist.instance.ItemChecklistUI.RefreshPreferences();
 			ItemChecklist.instance.ItemChecklistUI.UpdateNeeded();
 		}
 
 		// Do I need to use Initialize? I think so because of cloning.
 		public override void Initialize()
 		{
-			foundItems = new List<Item>();
-			foundItem = new bool[Main.itemName.Length];
-			findableItems = new bool[Main.itemName.Length];
-			for (int i = 0; i < Main.itemName.Length; i++)
+			if (!Main.dedServ)
 			{
-				if (i > 0 && !ItemID.Sets.Deprecated[i] && i != ItemID.Count) // TODO, is this guaranteed?
+				foundItems = new List<Item>();
+				foundItem = new bool[Main.itemName.Length];
+				findableItems = new bool[Main.itemName.Length];
+				for (int i = 0; i < Main.itemName.Length; i++)
 				{
-					totalItemsToFind++;
-					findableItems[i] = true;
+					if (i > 0 && !ItemID.Sets.Deprecated[i] && i != ItemID.Count && ItemChecklistUI.vanillaIDsInSortOrder[i] != -1) // TODO, is this guaranteed?
+					{
+						totalItemsToFind++;
+						findableItems[i] = true;
+					}
 				}
+
+				announcePreference = true;
+				sortModePreference = SortModes.TerrariaSort;
+				showCompletedPreference = 0;
 			}
-			//	localInstance = this;
 		}
 
 		public override void PreUpdate()
 		{
-			var itemChecklistPlayer = Main.LocalPlayer.GetModPlayer<ItemChecklistPlayer>(mod);
-			for (int i = 0; i < 59; i++)
+			if (!Main.dedServ)
 			{
-				if (!player.inventory[i].IsAir && !itemChecklistPlayer.foundItem[player.inventory[i].type] && itemChecklistPlayer.findableItems[player.inventory[i].type])
+				var itemChecklistPlayer = Main.LocalPlayer.GetModPlayer<ItemChecklistPlayer>(mod);
+				for (int i = 0; i < 59; i++)
 				{
-					((ItemChecklistGlobalItem)mod.GetGlobalItem("ItemChecklistGlobalItem")).ItemReceived(player.inventory[i]);
+					if (!player.inventory[i].IsAir && !itemChecklistPlayer.foundItem[player.inventory[i].type] && itemChecklistPlayer.findableItems[player.inventory[i].type])
+					{
+						((ItemChecklistGlobalItem)mod.GetGlobalItem("ItemChecklistGlobalItem")).ItemReceived(player.inventory[i]);
+					}
 				}
 			}
 		}
@@ -80,12 +98,18 @@ namespace ItemChecklist
 			return new TagCompound
 			{
 				["FoundItems"] = foundItems.Select(ItemIO.Save).ToList(),
+				["SortMode"] = (int)ItemChecklistUI.sortMode,
+				["Announce"] = ItemChecklistUI.announce,
+				["ShowCompleted"] = ItemChecklistUI.showCompleted,
 			};
 		}
 
 		public override void Load(TagCompound tag)
 		{
 			foundItems = tag.GetList<TagCompound>("FoundItems").Select(ItemIO.Load).ToList();
+			sortModePreference = (SortModes)tag.GetInt("SortMode");
+			announcePreference = tag.GetBool("Announce");
+			showCompletedPreference = tag.GetInt("ShowCompleted");
 
 			foreach (var item in foundItems)
 			{

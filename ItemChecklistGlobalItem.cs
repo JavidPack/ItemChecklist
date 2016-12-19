@@ -30,10 +30,10 @@ namespace ItemChecklist
 				itemChecklistPlayer.foundItems.Add(newItem);
 				itemChecklistPlayer.totalItemsFound++;
 				itemChecklistPlayer.foundItem[item.type] = true;
-				ItemChecklist.instance.ItemChecklistUI.UpdateNeeded();
+				ItemChecklist.instance.ItemChecklistUI.UpdateNeeded(item.type);
 				if (ItemChecklistUI.announce)
 				{
-					Main.NewText($"Congrats: You found your first {item.name}.       Total Progress: {itemChecklistPlayer.totalItemsFound}/{itemChecklistPlayer.totalItemsToFind}");
+					Main.NewText($"You obtained your first {item.name}.     {itemChecklistPlayer.totalItemsFound}/{itemChecklistPlayer.totalItemsToFind}   {(100f*itemChecklistPlayer.totalItemsFound/itemChecklistPlayer.totalItemsToFind).ToString("0.00")}%");
 				}
 			}
 		}

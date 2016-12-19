@@ -66,13 +66,17 @@ namespace ItemChecklist
 			return this._innerListHeight;
 		}
 
-		public void Goto(UIGrid.ElementSearchMethod searchMethod)
+		public void Goto(UIGrid.ElementSearchMethod searchMethod, bool center = false)
 		{
 			for (int i = 0; i < this._items.Count; i++)
 			{
 				if (searchMethod(this._items[i]))
 				{
 					this._scrollbar.ViewPosition = this._items[i].Top.Pixels;
+					if (center)
+					{
+						this._scrollbar.ViewPosition = this._items[i].Top.Pixels - GetInnerDimensions().Height/2 + _items[i].GetOuterDimensions().Height/2;
+					}
 					return;
 				}
 			}
@@ -124,7 +128,7 @@ namespace ItemChecklist
 				this._items[i].Top.Set(top, 0f);
 				this._items[i].Left.Set(left, 0f);
 				this._items[i].Recalculate();
-				if(i%cols == cols - 1)
+				if (i % cols == cols - 1)
 				{
 					top += this._items[i].GetOuterDimensions().Height + this.ListPadding;
 					left = 0;
@@ -134,6 +138,10 @@ namespace ItemChecklist
 					left += this._items[i].GetOuterDimensions().Width + this.ListPadding;
 				}
 				//num += this._items[i].GetOuterDimensions().Height + this.ListPadding;
+			}
+			if (_items.Count > 0)
+			{
+				top += ListPadding + _items[0].GetOuterDimensions().Height;
 			}
 			this._innerListHeight = top;
 		}
