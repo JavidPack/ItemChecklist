@@ -87,27 +87,6 @@ namespace ItemChecklist
 			{
 				ItemChecklistUI.hoverText = item.name + (item.modItem != null ? " [" + item.modItem.mod.Name + "]" : "");
 			}
-			//if (IsMouseHovering)
-			//{
-			//	string hoverText = item.name + " " + item.type;
-			//	float x = Main.fontMouseText.MeasureString(hoverText).X;
-			//	Vector2 vector = new Vector2((float)Main.mouseX, (float)Main.mouseY) + new Vector2(16f, 0f);
-			//	if (vector.Y > (float)(Main.screenHeight - 30))
-			//	{
-			//		vector.Y = (float)(Main.screenHeight - 30);
-			//	}
-			//	if (vector.X > (float)(Parent.GetDimensions().Width + Parent.GetDimensions().X - x - 16))
-			//	{
-			//		vector.X = (float)(Parent.GetDimensions().Width + Parent.GetDimensions().X - x - 16);
-			//	}
-			//	Utils.DrawBorderStringFourWay(spriteBatch, Main.fontMouseText, hoverText, vector.X, vector.Y, new Color((int)Main.mouseTextColor, (int)Main.mouseTextColor, (int)Main.mouseTextColor, (int)Main.mouseTextColor), Color.Black, Vector2.Zero, 1f);
-			//}
 		}
-
-		//public override void MouseOver(UIMouseEvent evt)
-		//{
-		//	base.MouseOver(evt);
-		//	Main.PlaySound(12, -1, -1, 1, 1f, 0f);
-		//}
 	}
 }

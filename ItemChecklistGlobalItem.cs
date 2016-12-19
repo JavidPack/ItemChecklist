@@ -1,9 +1,6 @@
 ﻿using ItemChecklist.UI;
-using System.Linq;
 using Terraria;
-using Terraria.GameInput;
 using Terraria.ModLoader;
-using Terraria.ModLoader.IO;
 
 namespace ItemChecklist
 {
@@ -33,7 +30,6 @@ namespace ItemChecklist
 				itemChecklistPlayer.foundItems.Add(newItem);
 				itemChecklistPlayer.totalItemsFound++;
 				itemChecklistPlayer.foundItem[item.type] = true;
-				//ItemChecklist.instance.ItemChecklistUI.UpdateCheckboxes();
 				ItemChecklist.instance.ItemChecklistUI.UpdateNeeded();
 				if (ItemChecklistUI.announce)
 				{
