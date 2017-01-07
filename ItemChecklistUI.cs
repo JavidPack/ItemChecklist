@@ -7,14 +7,17 @@ using Terraria.ID;
 using System;
 using System.Reflection;
 using System.Linq;
+using Terraria.ModLoader;
+using System.Collections.Generic;
 
 namespace ItemChecklist.UI
 {
 	class ItemChecklistUI : UIState
 	{
-		public UIHoverImageButton toggleButton;
+		public UIHoverImageButton foundFilterButton;
 		public UIToggleHoverImageButton muteButton;
 		public UIHoverImageButton sortButton;
+		public UIHoverImageButton modFilterButton;
 		public UIPanel checklistPanel;
 		public UIGrid checklistGrid;
 		public static SortModes sortMode = SortModes.TerrariaSort;
@@ -27,6 +30,11 @@ namespace ItemChecklist.UI
 
 		ItemSlot[] itemSlots;
 		internal static int[] vanillaIDsInSortOrder;
+
+		internal List<string> modnames;
+		internal int currentMod = 0;
+
+		public string[] foundFilterStrings = { "All", "Unfound", "Found" };
 
 		public override void OnInitialize()
 		{
@@ -43,9 +51,9 @@ namespace ItemChecklist.UI
 			checklistPanel.Height.Set(-100, 1f);
 			checklistPanel.BackgroundColor = new Color(73, 94, 171);
 
-			toggleButton = new UIHoverImageButton(Main.itemTexture[ItemID.Book], "Cycle Found Filter");
-			toggleButton.OnClick += ToggleButtonClicked;
-			checklistPanel.Append(toggleButton);
+			foundFilterButton = new UIHoverImageButton(Main.itemTexture[ItemID.Book], "Cycle Found Filter: ??");
+			foundFilterButton.OnClick += ToggleFoundFilterButtonClicked;
+			checklistPanel.Append(foundFilterButton);
 
 			muteButton = new UIToggleHoverImageButton(Main.itemTexture[ItemID.Megaphone], ItemChecklist.instance.GetTexture("closeButton"), "Toggle Messages", announce);
 			muteButton.OnClick += ToggleMuteButtonClicked;
@@ -53,11 +61,17 @@ namespace ItemChecklist.UI
 			muteButton.Top.Pixels = 4;
 			checklistPanel.Append(muteButton);
 
-			sortButton = new UIHoverImageButton(Main.itemTexture[ItemID.ToxicFlask], "Cycle Sort Method: ID");
+			sortButton = new UIHoverImageButton(Main.itemTexture[ItemID.ToxicFlask], "Cycle Sort Method: ??");
 			sortButton.OnClick += ToggleSortButtonClicked;
 			sortButton.Left.Pixels = spacing * 4 + 28 * 2;
 			sortButton.Top.Pixels = 4;
 			checklistPanel.Append(sortButton);
+
+			modFilterButton = new UIHoverImageButton(ItemChecklist.instance.GetTexture("filterMod"), "Cycle Mod Filter: ??");
+			modFilterButton.OnClick += ToggleModFilterButtonClicked;
+			modFilterButton.Left.Pixels = spacing * 6 + 28 * 3;
+			modFilterButton.Top.Pixels = 4;
+			checklistPanel.Append(modFilterButton);
 
 			checklistGrid = new UIGrid(5);
 			checklistGrid.Top.Pixels = 32f + spacing;
@@ -106,34 +120,48 @@ namespace ItemChecklist.UI
 				vanillaIDsInSortOrder[i] = Array.FindIndex(vanillaIDsInSortOrderTemp, x => x == i);
 			}
 
+			modnames = new List<string>() { "All", "Vanilla"};
+			modnames.AddRange(ModLoader.GetLoadedMods()/*.Where(x => x != "ModLoader")*/);
+
 			updateneeded = true;
 		}
 
-		private void ToggleButtonClicked(UIMouseEvent evt, UIElement listeningElement)
+		private void ToggleFoundFilterButtonClicked(UIMouseEvent evt, UIElement listeningElement)
 		{
-			Main.PlaySound(10, -1, -1, 1);
+			Main.PlaySound(SoundID.MenuTick);
 			showCompleted = ++showCompleted % 3;
+			foundFilterButton.hoverText = "Cycle Found Filter: " + foundFilterStrings[showCompleted];
 			UpdateNeeded();
 		}
 
 		private void ToggleMuteButtonClicked(UIMouseEvent evt, UIElement listeningElement)
 		{
-			Main.PlaySound(10, -1, -1, 1);
 			announce = !announce;
+			Main.PlaySound(announce ? SoundID.MenuOpen : SoundID.MenuClose);
 			muteButton.SetEnabled(announce);
 		}
 
 		private void ToggleSortButtonClicked(UIMouseEvent evt, UIElement listeningElement)
 		{
-			Main.PlaySound(10, -1, -1, 1);
+			Main.PlaySound(SoundID.MenuTick);
 			sortMode = sortMode.Next();
 			sortButton.hoverText = "Cycle Sort Method: " + sortMode.ToFriendlyString();
 			UpdateNeeded();
 		}
 
+		private void ToggleModFilterButtonClicked(UIMouseEvent evt, UIElement listeningElement)
+		{
+			Main.PlaySound(SoundID.MenuTick);
+			currentMod = (currentMod + 1) % modnames.Count;
+			modFilterButton.hoverText = "Cycle Mod Filter: " + modnames[currentMod];
+			UpdateNeeded();
+		}
+
 		internal void RefreshPreferences()
 		{
+			foundFilterButton.hoverText = "Cycle Found Filter: " + foundFilterStrings[showCompleted];
 			sortButton.hoverText = "Cycle Sort Method: " + sortMode.ToFriendlyString();
+			modFilterButton.hoverText = "Cycle Mod Filter: " + modnames[currentMod];
 			muteButton.SetEnabled(announce);
 			UpdateNeeded();
 		}
@@ -165,11 +193,13 @@ namespace ItemChecklist.UI
 					// filters here
 					if ((showCompleted != 1 && itemChecklistPlayer.foundItem[i]) || (showCompleted != 2 && !itemChecklistPlayer.foundItem[i]))
 					{
+						if (PassModFilter(itemSlots[i]))
+						{
+							ItemSlot box = itemSlots[i];
 
-						ItemSlot box = itemSlots[i];
-
-						checklistGrid._items.Add(box);
-						checklistGrid._innerList.Append(box);
+							checklistGrid._items.Add(box);
+							checklistGrid._innerList.Append(box);
+						}
 					}
 				}
 			}
@@ -186,6 +216,23 @@ namespace ItemChecklist.UI
 				}, true);
 				lastfoundID = -1;
 			}
+		}
+
+		private bool PassModFilter(ItemSlot itemSlot)
+		{
+			if(currentMod == 0)
+			{
+				return true;
+			}
+			else if (currentMod == 1 && itemSlot.item.modItem == null)
+			{
+				return true;
+			}
+			else if (itemSlot.item.modItem != null && itemSlot.item.modItem.mod.Name == modnames[currentMod])
+			{
+				return true;
+			}
+			return false;
 		}
 
 		protected override void DrawSelf(SpriteBatch spriteBatch)
