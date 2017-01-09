@@ -12,6 +12,7 @@ namespace ItemChecklist
 	{
 		static internal ItemChecklist instance;
 		internal static ModHotKey ToggleChecklistHotKey;
+		internal static ModHotKey TestResizeHotKey;
 		internal static UserInterface ItemChecklistInterface;
 		internal ItemChecklistUI ItemChecklistUI;
 
@@ -27,6 +28,7 @@ namespace ItemChecklist
 		{
 			instance = this;
 			ToggleChecklistHotKey = RegisterHotKey("Toggle Item Checklist", "I");
+			TestResizeHotKey = RegisterHotKey("Random Item Checklist", "O");
 		}
 
 		public override void AddRecipes()

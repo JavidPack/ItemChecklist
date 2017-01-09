@@ -41,6 +41,13 @@ namespace ItemChecklist
 				}
 				ItemChecklistUI.visible = !ItemChecklistUI.visible;
 			}
+			if (ItemChecklist.TestResizeHotKey.JustPressed)
+			{
+				ItemChecklist.instance.ItemChecklistUI.checklistGrid.cols = Main.rand.Next(1,8);
+				ItemChecklist.instance.ItemChecklistUI.Recalculate();
+				//ItemChecklist.instance.ItemChecklistUI.checklistPanel.Recalculate();
+				//ItemChecklist.instance.ItemChecklistUI.checklistGrid.Recalculate();
+			}
 		}
 
 		public override void OnEnterWorld(Player player)

@@ -49,7 +49,7 @@ namespace ItemChecklist
 			}
 		}
 
-		int cols = 1;
+		internal int cols = 1;
 
 		public UIGrid(int columns = 1)
 		{

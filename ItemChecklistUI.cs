@@ -120,7 +120,7 @@ namespace ItemChecklist.UI
 				vanillaIDsInSortOrder[i] = Array.FindIndex(vanillaIDsInSortOrderTemp, x => x == i);
 			}
 
-			modnames = new List<string>() { "All", "Vanilla"};
+			modnames = new List<string>() { "All", "Vanilla" };
 			modnames.AddRange(ModLoader.GetLoadedMods()/*.Where(x => x != "ModLoader")*/);
 
 			updateneeded = true;
@@ -218,9 +218,18 @@ namespace ItemChecklist.UI
 			}
 		}
 
+		public override void RecalculateChildren()
+		{
+			if (checklistGrid != null)
+			{
+				checklistPanel.Width.Pixels = checklistGrid.cols * 43f + 40f;
+			}
+			base.RecalculateChildren();
+		}
+
 		private bool PassModFilter(ItemSlot itemSlot)
 		{
-			if(currentMod == 0)
+			if (currentMod == 0)
 			{
 				return true;
 			}
