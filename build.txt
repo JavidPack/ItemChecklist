@@ -8,4 +8,4 @@ includeSource = true
 languageVersion = 6
 includePDB = true
 notworkingside = Client
-buildIgnore = .vs\*, Properties\*, *.csproj, *.user, obj\*, bin\*, *.config, lib\*, .gitignore, .git\*,
+buildIgnore = .vs\*, Properties\*, *.csproj, *.user, obj\*, bin\*, *.config, lib\*, .gitignore, .git\*, .travis.yml
