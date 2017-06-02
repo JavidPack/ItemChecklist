@@ -1,5 +1,5 @@
 ﻿author = jopojelly
-version = 0.2.0.2
+version = 0.2.1
 displayName = Item Checklist
 homepage = https://forums.terraria.org/index.php?threads/item-checklist-in-game-100-item-collection-checklist.52786/
 hideCode = false

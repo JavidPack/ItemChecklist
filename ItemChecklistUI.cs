@@ -40,7 +40,7 @@ namespace ItemChecklist.UI
 		{
 			// Is initialize called? (Yes it is called on reload) I want to reset nicely with new character or new loaded mods: visible = false;
 
-			announce = true; // overwritten by modplayer
+			announce = false; // overwritten by modplayer
 
 			checklistPanel = new UIPanel();
 			checklistPanel.SetPadding(10);

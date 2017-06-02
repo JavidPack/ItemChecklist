@@ -33,8 +33,9 @@ namespace ItemChecklist
 				ItemChecklist.instance.ItemChecklistUI.UpdateNeeded(item.type);
 				if (ItemChecklistUI.announce)
 				{
-					Main.NewText($"You obtained your first {item.name}.     {itemChecklistPlayer.totalItemsFound}/{itemChecklistPlayer.totalItemsToFind}   {(100f*itemChecklistPlayer.totalItemsFound/itemChecklistPlayer.totalItemsToFind).ToString("0.00")}%");
+					Main.NewText($"You found your first {item.name}.     {itemChecklistPlayer.totalItemsFound}/{itemChecklistPlayer.totalItemsToFind}   {(100f*itemChecklistPlayer.totalItemsFound/itemChecklistPlayer.totalItemsToFind).ToString("0.00")}%");
 				}
+				ItemChecklist.instance.NewItem(item.type);
 			}
 		}
 	}

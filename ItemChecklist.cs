@@ -5,6 +5,7 @@ using Terraria.UI;
 using Terraria.DataStructures;
 using ItemChecklist.UI;
 using Microsoft.Xna.Framework;
+using System;
 
 namespace ItemChecklist
 {
@@ -14,6 +15,7 @@ namespace ItemChecklist
 		internal static ModHotKey ToggleChecklistHotKey;
 		internal static UserInterface ItemChecklistInterface;
 		internal ItemChecklistUI ItemChecklistUI;
+		internal event Action<int> OnNewItem;
 
 		public ItemChecklist()
 		{
@@ -38,6 +40,42 @@ namespace ItemChecklist
 				ItemChecklistInterface = new UserInterface();
 				ItemChecklistInterface.SetState(ItemChecklistUI);
 			}
+		}
+
+		public override object Call(params object[] args)
+		{
+			try
+			{
+				string message = args[0] as string;
+				if (message == "RequestFoundItems")
+				{
+					if (Main.gameMenu)
+					{
+						return "NotInGame";
+					}
+					return Main.LocalPlayer.GetModPlayer<ItemChecklistPlayer>(this).foundItem;
+				}
+				else if (message == "RegisterForNewItem")
+				{
+					Action<int> callback = args[1] as Action<int>;
+					OnNewItem += callback;
+					return "RegisterSuccess";
+				}
+				else
+				{
+					ErrorLogger.Log("ItemChecklist Call Error: Unknown Message: " + message);
+				}
+			}
+			catch (Exception e)
+			{
+				ErrorLogger.Log("ItemChecklist Call Error: " + e.StackTrace + e.Message);
+			}
+			return "Failure";
+		}
+
+		internal void NewItem(int type)
+		{
+			OnNewItem?.Invoke(type);
 		}
 
 		int lastSeenScreenWidth;
