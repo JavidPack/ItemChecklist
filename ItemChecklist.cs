@@ -80,12 +80,12 @@ namespace ItemChecklist
 
 		int lastSeenScreenWidth;
 		int lastSeenScreenHeight;
-		public override void ModifyInterfaceLayers(List<MethodSequenceListItem> layers)
+		public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
 		{
 			int MouseTextIndex = layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
 			if (MouseTextIndex != -1)
 			{
-				layers.Insert(MouseTextIndex, new MethodSequenceListItem(
+				layers.Insert(MouseTextIndex, new LegacyGameInterfaceLayer(
 					"ItemChecklist: Item Checklist",
 					delegate
 					{
@@ -119,7 +119,7 @@ namespace ItemChecklist
 						}
 						return true;
 					},
-					null)
+					InterfaceScaleType.UI)
 				);
 			}
 		}

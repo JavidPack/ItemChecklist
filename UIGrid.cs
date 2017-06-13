@@ -90,6 +90,15 @@ namespace ItemChecklist
 			this._innerList.Recalculate();
 		}
 
+		public virtual void AddRange(IEnumerable<UIElement> items)
+		{
+			this._items.AddRange(items);
+			foreach (var item in items)
+				this._innerList.Append(item);
+			this.UpdateOrder();
+			this._innerList.Recalculate();
+		}
+
 		public virtual bool Remove(UIElement item)
 		{
 			this._innerList.RemoveChild(item);

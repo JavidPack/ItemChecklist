@@ -52,7 +52,8 @@ namespace ItemChecklist.UI
 			checklistPanel.BackgroundColor = new Color(73, 94, 171);
 
 			foundFilterButton = new UIHoverImageButton(Main.itemTexture[ItemID.Book], "Cycle Found Filter: ??");
-			foundFilterButton.OnClick += ToggleFoundFilterButtonClicked;
+			foundFilterButton.OnClick += (a, b) => ToggleFoundFilterButtonClicked(a, b, true);
+			foundFilterButton.OnRightClick += (a, b) => ToggleFoundFilterButtonClicked(a, b, false);
 			checklistPanel.Append(foundFilterButton);
 
 			muteButton = new UIToggleHoverImageButton(Main.itemTexture[ItemID.Megaphone], ItemChecklist.instance.GetTexture("closeButton"), "Toggle Messages", announce);
@@ -62,13 +63,15 @@ namespace ItemChecklist.UI
 			checklistPanel.Append(muteButton);
 
 			sortButton = new UIHoverImageButton(Main.itemTexture[ItemID.ToxicFlask], "Cycle Sort Method: ??");
-			sortButton.OnClick += ToggleSortButtonClicked;
+			sortButton.OnClick += (a, b) => ToggleSortButtonClicked(a, b, true);
+			sortButton.OnRightClick += (a, b) => ToggleSortButtonClicked(a, b, false);
 			sortButton.Left.Pixels = spacing * 4 + 28 * 2;
 			sortButton.Top.Pixels = 4;
 			checklistPanel.Append(sortButton);
 
 			modFilterButton = new UIHoverImageButton(ItemChecklist.instance.GetTexture("filterMod"), "Cycle Mod Filter: ??");
-			modFilterButton.OnClick += ToggleModFilterButtonClicked;
+			modFilterButton.OnClick += (a, b) => ToggleModFilterButtonClicked(a, b, true);
+			modFilterButton.OnRightClick += (a, b) => ToggleModFilterButtonClicked(a, b, false);
 			modFilterButton.Left.Pixels = spacing * 6 + 28 * 3;
 			modFilterButton.Top.Pixels = 4;
 			checklistPanel.Append(modFilterButton);
@@ -93,9 +96,9 @@ namespace ItemChecklist.UI
 			Append(checklistPanel);
 
 			// load time impact, do this on first show?
-			itemSlots = new ItemSlot[Main.itemName.Length];
-			Item[] itemSlotItems = new Item[Main.itemName.Length];
-			for (int i = 0; i < Main.itemName.Length; i++)
+			itemSlots = new ItemSlot[ItemLoader.ItemCount];
+			Item[] itemSlotItems = new Item[ItemLoader.ItemCount];
+			for (int i = 0; i < ItemLoader.ItemCount; i++)
 			{
 				itemSlots[i] = new ItemSlot(i);
 				itemSlotItems[i] = itemSlots[i].item;
@@ -107,15 +110,15 @@ namespace ItemChecklist.UI
 			MethodInfo SortMethod = typeof(ItemSorting).GetMethod("Sort", BindingFlags.Static | BindingFlags.NonPublic);
 			object[] parametersArray = new object[] { itemSlotItems, new int[0] };
 
-			inventoryGlowHue.SetValue(null, new float[Main.itemName.Length]);
-			inventoryGlowTime.SetValue(null, new int[Main.itemName.Length]);
+			inventoryGlowHue.SetValue(null, new float[ItemLoader.ItemCount]);
+			inventoryGlowTime.SetValue(null, new int[ItemLoader.ItemCount]);
 			SortMethod.Invoke(null, parametersArray);
 			inventoryGlowHue.SetValue(null, new float[58]);
 			inventoryGlowTime.SetValue(null, new int[58]);
 
 			int[] vanillaIDsInSortOrderTemp = itemSlotItems.Select((x) => x.type).ToArray();
-			vanillaIDsInSortOrder = new int[Main.itemName.Length];
-			for (int i = 0; i < Main.itemName.Length; i++)
+			vanillaIDsInSortOrder = new int[ItemLoader.ItemCount];
+			for (int i = 0; i < ItemLoader.ItemCount; i++)
 			{
 				vanillaIDsInSortOrder[i] = Array.FindIndex(vanillaIDsInSortOrderTemp, x => x == i);
 			}
@@ -126,10 +129,10 @@ namespace ItemChecklist.UI
 			updateneeded = true;
 		}
 
-		private void ToggleFoundFilterButtonClicked(UIMouseEvent evt, UIElement listeningElement)
+		private void ToggleFoundFilterButtonClicked(UIMouseEvent evt, UIElement listeningElement, bool left)
 		{
 			Main.PlaySound(SoundID.MenuTick);
-			showCompleted = ++showCompleted % 3;
+			showCompleted = (3 + showCompleted + (left ? 1 : -1)) % 3;
 			foundFilterButton.hoverText = "Cycle Found Filter: " + foundFilterStrings[showCompleted];
 			UpdateNeeded();
 		}
@@ -141,18 +144,18 @@ namespace ItemChecklist.UI
 			muteButton.SetEnabled(announce);
 		}
 
-		private void ToggleSortButtonClicked(UIMouseEvent evt, UIElement listeningElement)
+		private void ToggleSortButtonClicked(UIMouseEvent evt, UIElement listeningElement, bool left)
 		{
 			Main.PlaySound(SoundID.MenuTick);
-			sortMode = sortMode.Next();
+			sortMode = left ? sortMode.NextEnum() : sortMode.PreviousEnum();
 			sortButton.hoverText = "Cycle Sort Method: " + sortMode.ToFriendlyString();
 			UpdateNeeded();
 		}
 
-		private void ToggleModFilterButtonClicked(UIMouseEvent evt, UIElement listeningElement)
+		private void ToggleModFilterButtonClicked(UIMouseEvent evt, UIElement listeningElement, bool left)
 		{
 			Main.PlaySound(SoundID.MenuTick);
-			currentMod = (currentMod + 1) % modnames.Count;
+			currentMod = (modnames.Count + currentMod + (left ? 1 : -1)) % modnames.Count;
 			modFilterButton.hoverText = "Cycle Mod Filter: " + modnames[currentMod];
 			UpdateNeeded();
 		}
@@ -185,7 +188,7 @@ namespace ItemChecklist.UI
 			checklistGrid.Clear();
 
 			var itemChecklistPlayer = Main.LocalPlayer.GetModPlayer<ItemChecklistPlayer>(ItemChecklist.instance);
-
+			var temp = new List<ItemSlot>();
 			for (int i = 0; i < itemChecklistPlayer.findableItems.Length; i++)
 			{
 				if (itemChecklistPlayer.findableItems[i])
@@ -196,24 +199,24 @@ namespace ItemChecklist.UI
 						if (PassModFilter(itemSlots[i]))
 						{
 							ItemSlot box = itemSlots[i];
-
-							checklistGrid._items.Add(box);
-							checklistGrid._innerList.Append(box);
+							temp.Add(box);
 						}
 					}
 				}
 			}
-			checklistGrid.UpdateOrder();
-			checklistGrid._innerList.Recalculate();
+			checklistGrid.AddRange(temp);
 
 			if (lastfoundID > 0)
 			{
 				checklistGrid.Recalculate();
-				checklistGrid.Goto(delegate (UIElement element)
+				if (showCompleted != 1) // Don't Goto when unfound is the display mode.
 				{
-					ItemSlot itemSlot = element as ItemSlot;
-					return itemSlot != null && itemSlot.id == lastfoundID;
-				}, true);
+					checklistGrid.Goto(delegate (UIElement element)
+					{
+						ItemSlot itemSlot = element as ItemSlot;
+						return itemSlot != null && itemSlot.id == lastfoundID;
+					}, true);
+				}
 				lastfoundID = -1;
 			}
 		}
@@ -277,15 +280,6 @@ namespace ItemChecklist.UI
 
 	public static class Extensions
 	{
-		public static T Next<T>(this T src) where T : struct
-		{
-			if (!typeof(T).IsEnum) throw new ArgumentException(String.Format("Argumnent {0} is not an Enum", typeof(T).FullName));
-
-			T[] Arr = (T[])Enum.GetValues(src.GetType());
-			int j = Array.IndexOf<T>(Arr, src) + 1;
-			return (Arr.Length == j) ? Arr[0] : Arr[j];
-		}
-
 		public static string ToFriendlyString(this SortModes sortmode)
 		{
 			switch (sortmode)

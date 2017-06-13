@@ -38,16 +38,16 @@ namespace ItemChecklist
 				case SortModes.ID:
 					return id.CompareTo(other.id);
 				case SortModes.AZ:
-					return item.name.CompareTo(other.item.name);
+					return item.Name.CompareTo(other.item.Name);
 				case SortModes.Value:
 					result = item.value.CompareTo(other.item.value);
 					if (result == 0)
-						result = item.name.CompareTo(other.item.name);
+						result = item.Name.CompareTo(other.item.Name);
 					return result;
 				case SortModes.Rare:
 					result = item.rare.CompareTo(other.item.rare);
 					if (result == 0)
-						result = item.name.CompareTo(other.item.name);
+						result = item.Name.CompareTo(other.item.Name);
 					return result;
 				case SortModes.TerrariaSort:
 					return ItemChecklistUI.vanillaIDsInSortOrder[id].CompareTo(ItemChecklistUI.vanillaIDsInSortOrder[other.id]);
@@ -106,7 +106,7 @@ namespace ItemChecklist
 
 			if (IsMouseHovering)
 			{
-				ItemChecklistUI.hoverText = item.name + (item.modItem != null ? " [" + item.modItem.mod.Name + "]" : "");
+				ItemChecklistUI.hoverText = item.Name + (item.modItem != null ? " [" + item.modItem.mod.Name + "]" : "");
 			}
 		}
 	}

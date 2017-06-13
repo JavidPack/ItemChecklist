@@ -60,9 +60,9 @@ namespace ItemChecklist
 			if (!Main.dedServ)
 			{
 				foundItems = new List<Item>();
-				foundItem = new bool[Main.itemName.Length];
-				findableItems = new bool[Main.itemName.Length];
-				for (int i = 0; i < Main.itemName.Length; i++)
+				foundItem = new bool[ItemLoader.ItemCount];
+				findableItems = new bool[ItemLoader.ItemCount];
+				for (int i = 0; i < ItemLoader.ItemCount; i++)
 				{
 					if (i > 0 && !ItemID.Sets.Deprecated[i] && i != ItemID.Count && ItemChecklistUI.vanillaIDsInSortOrder[i] != -1) // TODO, is this guaranteed?
 					{
@@ -71,7 +71,7 @@ namespace ItemChecklist
 					}
 				}
 
-				announcePreference = true;
+				announcePreference = false;
 				sortModePreference = SortModes.TerrariaSort;
 				showCompletedPreference = 0;
 			}
@@ -113,7 +113,7 @@ namespace ItemChecklist
 
 			foreach (var item in foundItems)
 			{
-				if (item.name != "Unloaded Item")
+				if (item.Name != "Unloaded Item")
 				{
 					foundItem[item.type] = true;
 					totalItemsFound++;
