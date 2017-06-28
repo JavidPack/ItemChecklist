@@ -64,7 +64,7 @@ namespace ItemChecklist
 				findableItems = new bool[ItemLoader.ItemCount];
 				for (int i = 0; i < ItemLoader.ItemCount; i++)
 				{
-					if (i > 0 && !ItemID.Sets.Deprecated[i] && i != ItemID.Count && ItemChecklistUI.vanillaIDsInSortOrder[i] != -1) // TODO, is this guaranteed?
+					if (i > 0 && !ItemID.Sets.Deprecated[i] && i != ItemID.Count && ItemChecklistUI.vanillaIDsInSortOrder != null && ItemChecklistUI.vanillaIDsInSortOrder[i] != -1) // TODO, is this guaranteed?
 					{
 						totalItemsToFind++;
 						findableItems[i] = true;
