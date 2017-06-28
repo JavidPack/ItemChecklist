@@ -31,6 +31,11 @@ namespace ItemChecklist
 			ToggleChecklistHotKey = RegisterHotKey("Toggle Item Checklist", "I");
 		}
 
+		public override void Unload()
+		{
+			ItemChecklistUI.vanillaIDsInSortOrder = null;
+		}
+
 		public override void AddRecipes()
 		{
 			if (!Main.dedServ)
