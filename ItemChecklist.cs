@@ -47,6 +47,8 @@ namespace ItemChecklist
 			}
 		}
 
+		// As of 0.2.1: All this
+		// RequestFoundItems must be done in game since foundItem is a reference to an array that is initialized in LoadPlayer.
 		public override object Call(params object[] args)
 		{
 			try
