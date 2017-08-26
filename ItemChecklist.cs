@@ -34,6 +34,9 @@ namespace ItemChecklist
 		public override void Unload()
 		{
 			ItemChecklistUI.vanillaIDsInSortOrder = null;
+			instance = null;
+			ToggleChecklistHotKey = null;
+			ItemChecklistInterface = null;
 		}
 
 		public override void AddRecipes()
