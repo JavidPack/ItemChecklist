@@ -18,6 +18,7 @@ namespace ItemChecklist.UI
 		public UIToggleHoverImageButton muteButton;
 		public UIHoverImageButton sortButton;
 		public UIHoverImageButton modFilterButton;
+		public UIToggleHoverImageButton collectChestItemsButton;
 		public UIPanel checklistPanel;
 		public UIGrid checklistGrid;
 		public static SortModes sortMode = SortModes.TerrariaSort;
@@ -26,6 +27,7 @@ namespace ItemChecklist.UI
 		public static bool visible = false;
 		public static int showCompleted = 0; // 0: both, 1: unfound, 2: found
 		public static bool announce = true;
+		public static bool collectChestItems = true;
 		public static string hoverText = "";
 
 		ItemSlot[] itemSlots;
@@ -41,6 +43,7 @@ namespace ItemChecklist.UI
 			// Is initialize called? (Yes it is called on reload) I want to reset nicely with new character or new loaded mods: visible = false;
 
 			announce = false; // overwritten by modplayer
+			collectChestItems = false;
 
 			checklistPanel = new UIPanel();
 			checklistPanel.SetPadding(10);
@@ -75,6 +78,12 @@ namespace ItemChecklist.UI
 			modFilterButton.Left.Pixels = spacing * 6 + 28 * 3;
 			modFilterButton.Top.Pixels = 4;
 			checklistPanel.Append(modFilterButton);
+
+			collectChestItemsButton = new UIToggleHoverImageButton(Main.cursorTextures[8], ItemChecklist.instance.GetTexture("closeButton"), "Toggle Collect Chest Items", collectChestItems);
+			collectChestItemsButton.OnClick += ToggleFindChestItemsButtonClicked;
+			collectChestItemsButton.Left.Pixels = spacing * 8 + 28 * 4;
+			collectChestItemsButton.Top.Pixels = 4;
+			checklistPanel.Append(collectChestItemsButton);
 
 			checklistGrid = new UIGrid(5);
 			checklistGrid.Top.Pixels = 32f + spacing;
@@ -160,12 +169,20 @@ namespace ItemChecklist.UI
 			UpdateNeeded();
 		}
 
+		private void ToggleFindChestItemsButtonClicked(UIMouseEvent evt, UIElement listeningElement)
+		{
+			collectChestItems = !collectChestItems;
+			Main.PlaySound(collectChestItems ? SoundID.MenuOpen : SoundID.MenuClose);
+			collectChestItemsButton.SetEnabled(collectChestItems);
+		}
+
 		internal void RefreshPreferences()
 		{
 			foundFilterButton.hoverText = "Cycle Found Filter: " + foundFilterStrings[showCompleted];
 			sortButton.hoverText = "Cycle Sort Method: " + sortMode.ToFriendlyString();
 			modFilterButton.hoverText = "Cycle Mod Filter: " + modnames[currentMod];
 			muteButton.SetEnabled(announce);
+			collectChestItemsButton.SetEnabled(collectChestItems);
 			UpdateNeeded();
 		}
 

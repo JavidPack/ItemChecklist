@@ -9,6 +9,12 @@ using System;
 
 namespace ItemChecklist
 {
+	// TODO: is ItemChecklistPlayer.foundItems a waste of memory? investigate and trim it down if needed.
+	// TODO: World Checklist? MP shared checklist?
+	// Has this item ever been seen on this world? - easy. Maintain separate bool array, on change, notify server, relay to clients. 
+	// send bool array as byte array?
+	// query magic storage?
+	// WHY? I want to know everything we can craft yet
 	public class ItemChecklist : Mod
 	{
 		static internal ItemChecklist instance;
@@ -29,6 +35,7 @@ namespace ItemChecklist
 		{
 			instance = this;
 			ToggleChecklistHotKey = RegisterHotKey("Toggle Item Checklist", "I");
+			MagicStorageIntegration.Load();
 		}
 
 		public override void Unload()
@@ -37,6 +44,7 @@ namespace ItemChecklist
 			instance = null;
 			ToggleChecklistHotKey = null;
 			ItemChecklistInterface = null;
+			MagicStorageIntegration.Unload();
 		}
 
 		public override void AddRecipes()

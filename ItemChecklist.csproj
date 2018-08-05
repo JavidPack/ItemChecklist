@@ -39,6 +39,9 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MagicStorage_v0.4.3.1">
+      <HintPath>lib\MagicStorage_v0.4.3.1.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Xna.Framework">
       <HintPath>..\..\solutiondlls\Microsoft.Xna.Framework.dll</HintPath>
     </Reference>
@@ -69,6 +72,7 @@
     <Compile Include="ItemChecklistPlayer.cs" />
     <Compile Include="ItemChecklistUI.cs" />
     <Compile Include="ItemSlot.cs" />
+    <Compile Include="MagicStorageIntegration.cs" />
     <Compile Include="UICheckbox.cs" />
     <Compile Include="UIGrid.cs" />
     <Compile Include="UIHoverImageButton.cs" />
@@ -89,7 +93,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>"C:\Program Files (x86)\Steam\steamapps\common\Terraria\Terraria.exe" -build "$(ProjectDir)\" -eac "$(TargetPath)"</PostBuildEvent>
+    <PostBuildEvent>"C:\Program Files (x86)\Steam\steamapps\common\Terraria\tModLoaderServer.exe" -build "$(ProjectDir)\" -eac "$(TargetPath)"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

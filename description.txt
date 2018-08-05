@@ -1,3 +1,13 @@
 ﻿Item Checklist lets you view a checklist for picking up or crafting 100% of the items in the game
 
 Toggle the checklist with the hotkey assigned to it in the settings. 
+
+The checklist has several buttons at the top. 
+
+Cycle Found Filter: Filters the list to show All, only Found, or only missing items. 
+Cycle Sort Method: Sorts the list by ID, Value, Alphabetical, Rarity, or the chest auto-sorting algorithm.
+Cycle Mod Filter: Lets you filter by all items, only vanilla items, or individual mods.
+Toggle Messages: Toggles the announcement chat text that happens when you pick up a new item.
+Toggle Collect Chest Items: You can toggle the behavior of counting items seen in chests as "collected".
+
+If you use Magic Storage and have the Toggle Collect Chest Items enabled, you will also collect all items in storage if you access it.

@@ -1,7 +1,10 @@
 ﻿using ItemChecklist.UI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -29,6 +32,7 @@ namespace ItemChecklist
 		// Because of save, these values inherit the last used setting while loading
 		internal SortModes sortModePreference = SortModes.TerrariaSort;
 		internal bool announcePreference;
+		internal bool findChestItemsPreference = true;
 		internal int showCompletedPreference;
 
 		public override void ProcessTriggers(TriggersSet triggersSet)
@@ -48,6 +52,7 @@ namespace ItemChecklist
 			var itemChecklistPlayer = Main.LocalPlayer.GetModPlayer<ItemChecklistPlayer>(mod);
 			ItemChecklistUI.visible = false;
 			ItemChecklistUI.announce = announcePreference;
+			ItemChecklistUI.collectChestItems = findChestItemsPreference;
 			ItemChecklistUI.sortMode = sortModePreference;
 			ItemChecklistUI.showCompleted = showCompletedPreference;
 			ItemChecklist.instance.ItemChecklistUI.RefreshPreferences();
@@ -72,23 +77,55 @@ namespace ItemChecklist
 				}
 
 				announcePreference = false;
+				findChestItemsPreference = true;
 				sortModePreference = SortModes.TerrariaSort;
 				showCompletedPreference = 0;
 			}
 		}
 
+		public override void UpdateAutopause()
+		{
+			ChestCheck();
+		}
+
 		public override void PreUpdate()
 		{
-			if (!Main.dedServ)
+			ChestCheck();
+		}
+
+		private void ChestCheck()
+		{
+			if (!Main.dedServ && player.whoAmI == Main.myPlayer)
 			{
-				var itemChecklistPlayer = Main.LocalPlayer.GetModPlayer<ItemChecklistPlayer>(mod);
 				for (int i = 0; i < 59; i++)
 				{
-					if (!player.inventory[i].IsAir && !itemChecklistPlayer.foundItem[player.inventory[i].type] && itemChecklistPlayer.findableItems[player.inventory[i].type])
+					if (!player.inventory[i].IsAir && !foundItem[player.inventory[i].type] && findableItems[player.inventory[i].type])
 					{
-						((ItemChecklistGlobalItem)mod.GetGlobalItem("ItemChecklistGlobalItem")).ItemReceived(player.inventory[i]);
+						mod.GetGlobalItem<ItemChecklistGlobalItem>().ItemReceived(player.inventory[i]); // TODO: Analyze performance impact? do every 60 frames only?
 					}
 				}
+				if (player.chest != -1 && (player.chest != player.lastChest || Main.autoPause && Main.gamePaused) && ItemChecklistUI.collectChestItems)
+				{
+					//Main.NewText(player.chest + " " + player.lastChest);
+					Item[] items;
+					if (player.chest == -2) 
+						items = player.bank.item;
+					else if (player.chest == -3)
+						items = player.bank2.item;
+					else if (player.chest == -4)
+						items = player.bank3.item;
+					else
+						items = Main.chest[player.chest].item;
+					for (int i = 0; i < 40; i++)
+					{
+						if (!items[i].IsAir && !foundItem[items[i].type] && findableItems[items[i].type])
+						{
+							mod.GetGlobalItem<ItemChecklistGlobalItem>().ItemReceived(items[i]);
+						}
+					}
+				}
+				if (ItemChecklistUI.collectChestItems && MagicStorageIntegration.Enabled)
+					MagicStorageIntegration.FindItemsInStorage();
 			}
 		}
 
@@ -99,7 +136,8 @@ namespace ItemChecklist
 			{
 				["FoundItems"] = foundItems.Select(ItemIO.Save).ToList(),
 				["SortMode"] = (int)ItemChecklistUI.sortMode,
-				["Announce"] = ItemChecklistUI.announce,
+				["Announce"] = ItemChecklistUI.announce, // Not saving default, saving last used....good thing?
+				["CollectChestItems"] = ItemChecklistUI.collectChestItems,
 				["ShowCompleted"] = ItemChecklistUI.showCompleted,
 			};
 		}
@@ -109,6 +147,8 @@ namespace ItemChecklist
 			foundItems = tag.GetList<TagCompound>("FoundItems").Select(ItemIO.Load).ToList();
 			sortModePreference = (SortModes)tag.GetInt("SortMode");
 			announcePreference = tag.GetBool("Announce");
+			if (tag.ContainsKey("CollectChestItems")) // Missing tags get defaultvalue, which would be false, which isn't what we want.
+				findChestItemsPreference = tag.GetBool("CollectChestItems");
 			showCompletedPreference = tag.GetInt("ShowCompleted");
 
 			foreach (var item in foundItems)
