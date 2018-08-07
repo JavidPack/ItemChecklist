@@ -2,12 +2,21 @@
 
 Toggle the checklist with the hotkey assigned to it in the settings. 
 
-The checklist has several buttons at the top. 
+The checklist has several buttons at the top followed by some search filters and then the category chooser panel. 
 
 Cycle Found Filter: Filters the list to show All, only Found, or only missing items. 
-Cycle Sort Method: Sorts the list by ID, Value, Alphabetical, Rarity, or the chest auto-sorting algorithm.
 Cycle Mod Filter: Lets you filter by all items, only vanilla items, or individual mods.
 Toggle Messages: Toggles the announcement chat text that happens when you pick up a new item.
 Toggle Collect Chest Items: You can toggle the behavior of counting items seen in chests as "collected".
+Show Sort Value Text: Toggles showing additional text on the items in the checklist related to the currently selected sort.
+
+Filter by Name: Filters the checklist by item name.
+Filter by tooltip: Filters the list by item tooltip. Try searching for "minions".
+
+Categories, Sub-Categories, Sorts, and Filters: The 1st line contains various categories. Sub-Categories will show up on the 2nd line if available. Sorts are also on the 2nd line, click on one to sort the checklist. Finally, Filters end the 2nd line. Use the scrollwheel to scroll these panels.
+
+Cycle Sort Method: Sorts the list by ID, Value, Alphabetical, Rarity, or the chest auto-sorting algorithm.
 
 If you use Magic Storage and have the Toggle Collect Chest Items enabled, you will also collect all items in storage if you access it.
+
+If you have Recipe Browser, try out its Query Hovered Item on the Checklist items to quickly bring the item into Recipe Browser.

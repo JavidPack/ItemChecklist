@@ -1,8 +1,6 @@
-﻿using ItemChecklist.UI;
-using Microsoft.Xna.Framework.Graphics;
-using Terraria.GameContent.UI.Elements;
+﻿using Microsoft.Xna.Framework.Graphics;
 
-namespace ItemChecklist
+namespace ItemChecklist.UIElements
 {
 	internal class UIHoverImageButton : UIImageButton
 	{

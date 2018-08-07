@@ -1,11 +1,9 @@
-﻿using Terraria;
-using Terraria.ModLoader;
-using System.Collections.Generic;
-using Terraria.UI;
-using Terraria.DataStructures;
-using ItemChecklist.UI;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using System;
+using System.Collections.Generic;
+using Terraria;
+using Terraria.ModLoader;
+using Terraria.UI;
 
 namespace ItemChecklist
 {
@@ -13,7 +11,6 @@ namespace ItemChecklist
 	// TODO: World Checklist? MP shared checklist?
 	// Has this item ever been seen on this world? - easy. Maintain separate bool array, on change, notify server, relay to clients. 
 	// send bool array as byte array?
-	// query magic storage?
 	// WHY? I want to know everything we can craft yet
 	public class ItemChecklist : Mod
 	{
@@ -25,17 +22,27 @@ namespace ItemChecklist
 
 		public ItemChecklist()
 		{
-			Properties = new ModProperties()
-			{
-				Autoload = true,
-			};
 		}
 
 		public override void Load()
 		{
+			// Latest uses ItemID.Sets.IsAMaterial, added 0.10.1.5
+			if (ModLoader.version < new Version(0, 10, 1, 5))
+			{
+				throw new Exception("\nThis mod uses functionality only present in the latest tModLoader. Please update tModLoader to use this mod\n\n");
+			}
+
 			instance = this;
 			ToggleChecklistHotKey = RegisterHotKey("Toggle Item Checklist", "I");
 			MagicStorageIntegration.Load();
+
+			if (!Main.dedServ)
+			{
+				UIElements.UICheckbox.checkboxTexture = GetTexture("UIElements/checkBox");
+				UIElements.UICheckbox.checkmarkTexture = GetTexture("UIElements/checkMark");
+				UIElements.UIHorizontalGrid.moreLeftTexture = GetTexture("UIElements/MoreLeft");
+				UIElements.UIHorizontalGrid.moreRightTexture = GetTexture("UIElements/MoreRight");
+			}
 		}
 
 		public override void Unload()
@@ -45,6 +52,11 @@ namespace ItemChecklist
 			ToggleChecklistHotKey = null;
 			ItemChecklistInterface = null;
 			MagicStorageIntegration.Unload();
+
+			UIElements.UICheckbox.checkboxTexture = null;
+			UIElements.UICheckbox.checkmarkTexture = null;
+			UIElements.UIHorizontalGrid.moreLeftTexture = null;
+			UIElements.UIHorizontalGrid.moreRightTexture = null;
 		}
 
 		public override void AddRecipes()
@@ -52,7 +64,7 @@ namespace ItemChecklist
 			if (!Main.dedServ)
 			{
 				ItemChecklistUI = new ItemChecklistUI();
-				ItemChecklistUI.Activate();
+				//ItemChecklistUI.Activate();
 				ItemChecklistInterface = new UserInterface();
 				ItemChecklistInterface.SetState(ItemChecklistUI);
 			}
@@ -96,6 +108,11 @@ namespace ItemChecklist
 			OnNewItem?.Invoke(type);
 		}
 
+		public override void UpdateUI(GameTime gameTime)
+		{
+			ItemChecklistInterface?.Update(gameTime); 
+		}
+
 		int lastSeenScreenWidth;
 		int lastSeenScreenHeight;
 		public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
@@ -115,8 +132,7 @@ namespace ItemChecklist
 								lastSeenScreenWidth = Main.screenWidth;
 								lastSeenScreenHeight = Main.screenHeight;
 							}
-
-							ItemChecklistInterface.Update(Main._drawInterfaceGameTime);
+							
 							ItemChecklistUI.Draw(Main.spriteBatch);
 
 							if (ItemChecklistUI.hoverText != "")

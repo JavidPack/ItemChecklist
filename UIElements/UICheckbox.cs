@@ -1,16 +1,16 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Terraria.ModLoader;
-using Terraria.GameContent.UI.Elements;
-using Terraria.UI;
 using System;
+using Terraria.GameContent.UI.Elements;
+using Terraria.ModLoader;
+using Terraria.UI;
 
-namespace ItemChecklist.UI
+namespace ItemChecklist.UIElements
 {
 	class UICheckbox : UIText
 	{
-		static Texture2D checkboxTexture = ((ItemChecklist)ModLoader.GetMod("ItemChecklist")).GetTexture("checkBox");
-		static Texture2D checkmarkTexture = ((ItemChecklist)ModLoader.GetMod("ItemChecklist")).GetTexture("checkMark");
+		public static Texture2D checkboxTexture;
+		public static Texture2D checkmarkTexture;
 		public event EventHandler SelectedChanged;
 		float order = 0;
 

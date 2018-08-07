@@ -1,60 +1,60 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using Terraria.UI;
+using ReLogic.Graphics;
 using Terraria;
-using ItemChecklist.UI;
+using Terraria.UI; 
 
-namespace ItemChecklist
+namespace ItemChecklist.UIElements
 {
-	internal class ItemSlot : UIElement
+	internal class UIItemSlot : UIElement
 	{
 		public static Texture2D backgroundTexture = Main.inventoryBack9Texture;
 
 		private Texture2D _texture;
 		//	private float _visibilityActive = 1f;
 		//		private float _visibilityInactive = 0.4f;
-		private float scale = 0.6f;
+		private float scale = 0.75f;
 		internal int id;
 		internal Item item;
+		public string badge;
 
-		public ItemSlot(int id)
+		public UIItemSlot(int id)
 		{
 			this._texture = Main.itemTexture[id];
 			this.id = id;
 			this.item = new Item();
-			item.SetDefaults(id);
+			item.SetDefaults(id, true);
 
 			this.Width.Set(backgroundTexture.Width * scale, 0f);
 			this.Height.Set(backgroundTexture.Height * scale, 0f);
 		}
 
-		public override int CompareTo(object obj)
-		{
-			ItemSlot other = obj as ItemSlot;
-			int result;
-			switch (ItemChecklistUI.sortMode)
-			{
-				case SortModes.ID:
-					return id.CompareTo(other.id);
-				case SortModes.AZ:
-					return item.Name.CompareTo(other.item.Name);
-				case SortModes.Value:
-					result = item.value.CompareTo(other.item.value);
-					if (result == 0)
-						result = item.Name.CompareTo(other.item.Name);
-					return result;
-				case SortModes.Rare:
-					result = item.rare.CompareTo(other.item.rare);
-					if (result == 0)
-						result = item.Name.CompareTo(other.item.Name);
-					return result;
-				case SortModes.TerrariaSort:
-					return ItemChecklistUI.vanillaIDsInSortOrder[id].CompareTo(ItemChecklistUI.vanillaIDsInSortOrder[other.id]);
-			}
+		//public override int CompareTo(object obj)
+		//{
+		//	UIItemSlot other = obj as UIItemSlot;
+		//	int result;
+		//	switch (ItemChecklistUI.sortMode)
+		//	{
+		//		case SortModes.ID:
+		//			return id.CompareTo(other.id);
+		//		case SortModes.AZ:
+		//			return item.Name.CompareTo(other.item.Name);
+		//		case SortModes.Value:
+		//			result = item.value.CompareTo(other.item.value);
+		//			if (result == 0)
+		//				result = item.Name.CompareTo(other.item.Name);
+		//			return result;
+		//		case SortModes.Rare:
+		//			result = item.rare.CompareTo(other.item.rare);
+		//			if (result == 0)
+		//				result = item.Name.CompareTo(other.item.Name);
+		//			return result;
+		//		case SortModes.TerrariaSort:
+		//			return ItemChecklistUI.vanillaIDsInSortOrder[id].CompareTo(ItemChecklistUI.vanillaIDsInSortOrder[other.id]);
+		//	}
 
-			return id.CompareTo(other.id);
-		}
+		//	return id.CompareTo(other.id);
+		//}
 
 		protected override void DrawSelf(SpriteBatch spriteBatch)
 		{
@@ -98,15 +98,16 @@ namespace ItemChecklist
 			{
 				spriteBatch.Draw(_texture, drawPosition, new Rectangle?(rectangle2), colorColor, 0f, Vector2.Zero, num, SpriteEffects.None, 0f);
 			}
-			//if (this.item.stack > 1)
-			//{
-			//	spriteBatch.DrawString(Main.fontItemStack, this.item.stack.ToString(), new Vector2(dimensions.Position().X + 10f * scale, dimensions.Position().Y + 26f * scale), Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
-			//}
-
+			if (ItemChecklistUI.showBadge && !string.IsNullOrEmpty(badge))
+			{
+				spriteBatch.DrawString(Main.fontItemStack, badge, new Vector2(dimensions.Position().X + 10f * scale, dimensions.Position().Y + 26f * scale), Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+			}
 
 			if (IsMouseHovering)
 			{
 				ItemChecklistUI.hoverText = item.Name + (item.modItem != null ? " [" + item.modItem.mod.Name + "]" : "");
+
+				Main.HoverItem = item.Clone();
 			}
 		}
 	}

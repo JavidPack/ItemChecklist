@@ -65,18 +65,28 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="Terraria, Version=1.3.5.1, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Terraria\Terraria.exe</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ItemChecklist.cs" />
     <Compile Include="ItemChecklistGlobalItem.cs" />
     <Compile Include="ItemChecklistPlayer.cs" />
     <Compile Include="ItemChecklistUI.cs" />
-    <Compile Include="ItemSlot.cs" />
     <Compile Include="MagicStorageIntegration.cs" />
-    <Compile Include="UICheckbox.cs" />
-    <Compile Include="UIGrid.cs" />
-    <Compile Include="UIHoverImageButton.cs" />
-    <Compile Include="UIToggleHoverImageButton.cs" />
+    <Compile Include="SharedUI.cs" />
+    <Compile Include="UIElements\NewUITextBox.cs" />
+    <Compile Include="UIElements\UICheckbox.cs" />
+    <Compile Include="UIElements\UIGrid.cs" />
+    <Compile Include="UIElements\UIHorizontalGrid.cs" />
+    <Compile Include="UIElements\UIHorizontalScrollbar.cs" />
+    <Compile Include="UIElements\UIHoverImageButton.cs" />
+    <Compile Include="UIElements\UIItemSlot.cs" />
+    <Compile Include="UIElements\UISilentImageButton.cs" />
+    <Compile Include="UIElements\UIToggleHoverImageButton.cs" />
+    <Compile Include="Utilities.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="build.txt" />
@@ -84,12 +94,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\Modding\tModLoader\src\tModLoader\Terraria.csproj">
-      <Project>{3996d5fa-6e59-4fe4-9f2b-40eeef9645d5}</Project>
-      <Name>Terraria</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

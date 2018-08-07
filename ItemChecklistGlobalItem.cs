@@ -1,5 +1,4 @@
-﻿using ItemChecklist.UI;
-using Terraria;
+﻿using Terraria;
 using Terraria.ModLoader;
 
 namespace ItemChecklist

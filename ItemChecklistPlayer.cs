@@ -1,10 +1,7 @@
-﻿using ItemChecklist.UI;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Terraria;
-using Terraria.DataStructures;
 using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -30,7 +27,7 @@ namespace ItemChecklist
 		internal int totalItemsFound;  // eh, property? dunno.
 
 		// Because of save, these values inherit the last used setting while loading
-		internal SortModes sortModePreference = SortModes.TerrariaSort;
+		//internal SortModes sortModePreference = SortModes.TerrariaSort;
 		internal bool announcePreference;
 		internal bool findChestItemsPreference = true;
 		internal int showCompletedPreference;
@@ -44,6 +41,14 @@ namespace ItemChecklist
 					ItemChecklist.instance.ItemChecklistUI.UpdateNeeded();
 				}
 				ItemChecklistUI.visible = !ItemChecklistUI.visible;
+				// Debug assistance, allows for reinitializing RecipeBrowserUI
+				//if (!ItemChecklistUI.visible)
+				//{
+				//	ItemChecklistUI.instance.RemoveAllChildren();
+				//	var isInitializedFieldInfo = typeof(Terraria.UI.UIElement).GetField("_isInitialized", BindingFlags.Instance | BindingFlags.NonPublic);
+				//	isInitializedFieldInfo.SetValue(ItemChecklistUI.instance, false);
+				//	ItemChecklistUI.instance.Activate();
+				//}
 			}
 		}
 
@@ -53,7 +58,7 @@ namespace ItemChecklist
 			ItemChecklistUI.visible = false;
 			ItemChecklistUI.announce = announcePreference;
 			ItemChecklistUI.collectChestItems = findChestItemsPreference;
-			ItemChecklistUI.sortMode = sortModePreference;
+			//ItemChecklistUI.sortMode = sortModePreference;
 			ItemChecklistUI.showCompleted = showCompletedPreference;
 			ItemChecklist.instance.ItemChecklistUI.RefreshPreferences();
 			ItemChecklist.instance.ItemChecklistUI.UpdateNeeded();
@@ -78,7 +83,7 @@ namespace ItemChecklist
 
 				announcePreference = false;
 				findChestItemsPreference = true;
-				sortModePreference = SortModes.TerrariaSort;
+				//sortModePreference = SortModes.TerrariaSort;
 				showCompletedPreference = 0;
 			}
 		}
@@ -135,7 +140,7 @@ namespace ItemChecklist
 			return new TagCompound
 			{
 				["FoundItems"] = foundItems.Select(ItemIO.Save).ToList(),
-				["SortMode"] = (int)ItemChecklistUI.sortMode,
+				//["SortMode"] = (int)ItemChecklistUI.sortMode,
 				["Announce"] = ItemChecklistUI.announce, // Not saving default, saving last used....good thing?
 				["CollectChestItems"] = ItemChecklistUI.collectChestItems,
 				["ShowCompleted"] = ItemChecklistUI.showCompleted,
@@ -145,7 +150,7 @@ namespace ItemChecklist
 		public override void Load(TagCompound tag)
 		{
 			foundItems = tag.GetList<TagCompound>("FoundItems").Select(ItemIO.Load).ToList();
-			sortModePreference = (SortModes)tag.GetInt("SortMode");
+			//sortModePreference = (SortModes)tag.GetInt("SortMode");
 			announcePreference = tag.GetBool("Announce");
 			if (tag.ContainsKey("CollectChestItems")) // Missing tags get defaultvalue, which would be false, which isn't what we want.
 				findChestItemsPreference = tag.GetBool("CollectChestItems");
