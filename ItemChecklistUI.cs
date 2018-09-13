@@ -32,7 +32,11 @@ namespace ItemChecklist
 		//public static SortModes sortMode = SortModes.TerrariaSort;
 
 		float spacing = 8f;
-		public static bool visible = false;
+		public static bool Visible
+		{
+			get { return ItemChecklist.ItemChecklistInterface.CurrentState == ItemChecklist.instance.ItemChecklistUI; }
+			set { ItemChecklist.ItemChecklistInterface.SetState(value ? ItemChecklist.instance.ItemChecklistUI : null); }
+		}
 		public static int showCompleted = 0; // 0: both, 1: unfound, 2: found
 		public static bool announce = true;
 		public static bool collectChestItems = true;

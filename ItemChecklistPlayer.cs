@@ -36,11 +36,11 @@ namespace ItemChecklist
 		{
 			if (ItemChecklist.ToggleChecklistHotKey.JustPressed)
 			{
-				if (!ItemChecklistUI.visible)
+				if (!ItemChecklistUI.Visible)
 				{
 					ItemChecklist.instance.ItemChecklistUI.UpdateNeeded();
 				}
-				ItemChecklistUI.visible = !ItemChecklistUI.visible;
+				ItemChecklistUI.Visible = !ItemChecklistUI.Visible;
 				// Debug assistance, allows for reinitializing RecipeBrowserUI
 				//if (!ItemChecklistUI.visible)
 				//{
@@ -55,7 +55,7 @@ namespace ItemChecklist
 		public override void OnEnterWorld(Player player)
 		{
 			var itemChecklistPlayer = Main.LocalPlayer.GetModPlayer<ItemChecklistPlayer>(mod);
-			ItemChecklistUI.visible = false;
+			ItemChecklistUI.Visible = false;
 			ItemChecklistUI.announce = announcePreference;
 			ItemChecklistUI.collectChestItems = findChestItemsPreference;
 			//ItemChecklistUI.sortMode = sortModePreference;

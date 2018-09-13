@@ -113,8 +113,6 @@ namespace ItemChecklist
 			ItemChecklistInterface?.Update(gameTime); 
 		}
 
-		int lastSeenScreenWidth;
-		int lastSeenScreenHeight;
 		public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
 		{
 			int MouseTextIndex = layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
@@ -124,16 +122,9 @@ namespace ItemChecklist
 					"ItemChecklist: Item Checklist",
 					delegate
 					{
-						if (ItemChecklistUI.visible)
+						if (ItemChecklistUI.Visible)
 						{
-							if (lastSeenScreenWidth != Main.screenWidth || lastSeenScreenHeight != Main.screenHeight)
-							{
-								ItemChecklistInterface.Recalculate();
-								lastSeenScreenWidth = Main.screenWidth;
-								lastSeenScreenHeight = Main.screenHeight;
-							}
-							
-							ItemChecklistUI.Draw(Main.spriteBatch);
+							ItemChecklistInterface?.Draw(Main.spriteBatch, new GameTime());
 
 							if (ItemChecklistUI.hoverText != "")
 							{
