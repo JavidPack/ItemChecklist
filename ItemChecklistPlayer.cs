@@ -129,8 +129,13 @@ namespace ItemChecklist
 						}
 					}
 				}
-				if (ItemChecklistUI.collectChestItems && MagicStorageIntegration.Enabled)
-					MagicStorageIntegration.FindItemsInStorage();
+				if (ItemChecklistUI.collectChestItems)
+				{
+					if (MagicStorageIntegration.Enabled)
+						MagicStorageIntegration.FindItemsInStorage();
+					if (MagicStorageExtraIntegration.Enabled)
+						MagicStorageExtraIntegration.FindItemsInStorage();
+				}
 			}
 		}
 

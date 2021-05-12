@@ -35,6 +35,7 @@ namespace ItemChecklist
 			instance = this;
 			ToggleChecklistHotKey = RegisterHotKey("Toggle Item Checklist", "I");
 			MagicStorageIntegration.Load();
+			MagicStorageExtraIntegration.Load();
 
 			if (!Main.dedServ)
 			{
@@ -52,6 +53,7 @@ namespace ItemChecklist
 			ToggleChecklistHotKey = null;
 			ItemChecklistInterface = null;
 			MagicStorageIntegration.Unload();
+			MagicStorageExtraIntegration.Unload();
 
 			UIElements.UICheckbox.checkboxTexture = null;
 			UIElements.UICheckbox.checkmarkTexture = null;
