@@ -54,7 +54,7 @@ namespace ItemChecklist
 
 		public override void OnEnterWorld(Player player)
 		{
-			var itemChecklistPlayer = Main.LocalPlayer.GetModPlayer<ItemChecklistPlayer>(mod);
+			var itemChecklistPlayer = Main.LocalPlayer.GetModPlayer<ItemChecklistPlayer>();
 			ItemChecklistUI.Visible = false;
 			ItemChecklistUI.announce = announcePreference;
 			ItemChecklistUI.collectChestItems = findChestItemsPreference;

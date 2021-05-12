@@ -206,7 +206,7 @@ namespace ItemChecklist
 			}
 
 			modnames = new List<string>() { "All", "Vanilla" };
-			modnames.AddRange(ModLoader.GetLoadedMods()/*.Where(x => x != "ModLoader")*/);
+			modnames.AddRange(ModLoader.Mods.Select(m => m.Name)/*.Where(x => x != "ModLoader")*/);
 
 			updateNeeded = true;
 		}
@@ -311,7 +311,7 @@ namespace ItemChecklist
 				buttonsHaveDummyTextures = false;
 			}
 
-			var itemChecklistPlayer = Main.LocalPlayer.GetModPlayer<ItemChecklistPlayer>(ItemChecklist.instance);
+			var itemChecklistPlayer = Main.LocalPlayer.GetModPlayer<ItemChecklistPlayer>();
 			var temp = new List<UIItemSlot>();
 			for (int i = 0; i < itemChecklistPlayer.findableItems.Length; i++)
 			{

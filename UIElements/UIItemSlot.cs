@@ -90,8 +90,8 @@ namespace ItemChecklist.UIElements
 			drawPosition.Y += (float)backgroundTexture.Height * scale / 2f - (float)rectangle2.Height * num / 2f;
 
 			item.GetColor(Color.White);
-			Color alphaColor = Main.LocalPlayer.GetModPlayer<ItemChecklistPlayer>(ItemChecklist.instance).foundItem[id] ? this.item.GetAlpha(Color.White) : Color.Black;
-			Color colorColor = Main.LocalPlayer.GetModPlayer<ItemChecklistPlayer>(ItemChecklist.instance).foundItem[id] ? this.item.GetColor(Color.White) : Color.Black;
+			Color alphaColor = Main.LocalPlayer.GetModPlayer<ItemChecklistPlayer>().foundItem[id] ? this.item.GetAlpha(Color.White) : Color.Black;
+			Color colorColor = Main.LocalPlayer.GetModPlayer<ItemChecklistPlayer>().foundItem[id] ? this.item.GetColor(Color.White) : Color.Black;
 			//spriteBatch.Draw(_texture, drawPosition, new Rectangle?(rectangle2), this.item.GetAlpha(Color.White), 0f, Vector2.Zero, num, SpriteEffects.None, 0f);
 			spriteBatch.Draw(_texture, drawPosition, new Rectangle?(rectangle2), alphaColor, 0f, Vector2.Zero, num, SpriteEffects.None, 0f);
 			if (this.item.color != Color.Transparent)

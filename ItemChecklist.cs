@@ -83,7 +83,7 @@ namespace ItemChecklist
 					{
 						return "NotInGame";
 					}
-					return Main.LocalPlayer.GetModPlayer<ItemChecklistPlayer>(this).foundItem;
+					return Main.LocalPlayer.GetModPlayer<ItemChecklistPlayer>().foundItem;
 				}
 				else if (message == "RegisterForNewItem")
 				{
@@ -93,12 +93,12 @@ namespace ItemChecklist
 				}
 				else
 				{
-					ErrorLogger.Log("ItemChecklist Call Error: Unknown Message: " + message);
+					Logger.Error("ItemChecklist Call Error: Unknown Message: " + message);
 				}
 			}
 			catch (Exception e)
 			{
-				ErrorLogger.Log("ItemChecklist Call Error: " + e.StackTrace + e.Message);
+				Logger.Error("ItemChecklist Call Error: " + e.StackTrace + e.Message);
 			}
 			return "Failure";
 		}
