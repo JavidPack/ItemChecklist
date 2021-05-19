@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using MagicStorageExtra;
 using MagicStorageExtra.Components;
@@ -109,8 +110,9 @@ namespace ItemChecklist
 			if (heart == null)
 				return;
 			IEnumerable<Item> items = heart.GetStoredItems();
+			Item[] stations = storagePlayer.GetCraftingAccess()?.stations ?? new Item[0];
 			// Will 1000 items crash the chat?
-			foreach (Item item in items)
+			foreach (Item item in items.Concat(stations))
 				ItemChecklist.instance.GetGlobalItem<ItemChecklistGlobalItem>().ItemReceived(item);
 		}
 	}

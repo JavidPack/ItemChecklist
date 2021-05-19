@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Linq;
+using System.Runtime.CompilerServices;
 using MagicStorage;
 using MagicStorage.Components;
 using Terraria;
@@ -112,8 +113,9 @@ namespace ItemChecklist
 				return;
 			}
 			var items = heart.GetStoredItems();
+			Item[] stations = storagePlayer.GetCraftingAccess()?.stations ?? new Item[0];
 			// Will 1000 items crash the chat?
-			foreach (var item in items)
+			foreach (var item in items.Concat(stations))
 			{
 				ItemChecklist.instance.GetGlobalItem<ItemChecklistGlobalItem>().ItemReceived(item);
 			}
