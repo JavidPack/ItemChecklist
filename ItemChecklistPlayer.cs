@@ -133,8 +133,8 @@ namespace ItemChecklist
 				{
 					if (MagicStorageIntegration.Enabled)
 						MagicStorageIntegration.FindItemsInStorage();
-					if (MagicStorageExtraIntegration.Enabled)
-						MagicStorageExtraIntegration.FindItemsInStorage();
+					if (MagicStorageIntegration.EnabledExtra)
+						MagicStorageIntegration.FindItemsInStorageExtra();
 				}
 			}
 		}

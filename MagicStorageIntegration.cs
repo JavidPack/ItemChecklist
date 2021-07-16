@@ -19,9 +19,11 @@ namespace ItemChecklist
 		// Here we store a reference to the MagicStorage Mod instance. We can use it for many things. 
 		// You can call all the Mod methods on it just like we do with our own Mod instance: MagicStorage.ItemType("ShadowDiamond")
 		static Mod MagicStorage;
+		static Mod MagicStorageExtra;
 
 		// Here we define a bool property to quickly check if MagicStorage is loaded. 
 		public static bool Enabled => MagicStorage != null;
+		public static bool EnabledExtra => MagicStorageExtra != null;
 		// Below is an alternate approach to the Enabled property seen above. 
 		// To make sure an up-to-date version of the referenced mod is being used, usually we write "MagicStorage@0.4.3.1" in build.txt.
 		// This, however, would throw an error if the 0.4.1 were loaded. 
@@ -49,6 +51,7 @@ namespace ItemChecklist
 		public static void Load()
 		{
 			MagicStorage = ModLoader.GetMod("MagicStorage");
+			MagicStorageExtra = ModLoader.GetMod("MagicStorageExtra");
 			if (Enabled)
 				//MagicStorageIntegrationMembers.tile = null; // Will also crash. Here even though Enabled will be false, the Type of tile will still need to be resolved when this method runs.
 				//members = new MagicStorageIntegrationMembers(); // Even thought the Type StorageAccess is hidden behind MagicStorageIntegrationMembers, this line will also cause MagicStorageIntegrationMembers and consequently StorageAccess to need to be resolved.
@@ -71,6 +74,7 @@ namespace ItemChecklist
 			if (Enabled) // Here we properly unload, making sure to check Enabled before setting MagicStorage to null.
 				Unload_Inner(); // Once again we must separate out this logic.
 			MagicStorage = null; // Make sure to null out any references to allow Garbage Collection to work.
+			MagicStorageExtra = null;
 		}
 
 		[MethodImpl(MethodImplOptions.NoInlining)]
@@ -103,11 +107,39 @@ namespace ItemChecklist
 			if (!Main.playerInventory || storageAccess.X < 0 || storageAccess.Y < 0)
 				return;
 			ModTile modTile = TileLoader.GetTile(Main.tile[storageAccess.X, storageAccess.Y].type);
-			if (modTile == null || !(modTile is StorageAccess))
+			if (!(modTile is StorageAccess access))
 			{
 				return;
 			}
-			TEStorageHeart heart = ((StorageAccess)modTile).GetHeart(storageAccess.X, storageAccess.Y);
+			TEStorageHeart heart = access.GetHeart(storageAccess.X, storageAccess.Y);
+			if (heart == null)
+			{
+				return;
+			}
+			var items = heart.GetStoredItems();
+			Item[] stations = storagePlayer.GetCraftingAccess()?.stations ?? new Item[0];
+			// Will 1000 items crash the chat?
+			foreach (var item in items.Concat(stations))
+			{
+				ItemChecklist.instance.GetGlobalItem<ItemChecklistGlobalItem>().ItemReceived(item);
+			}
+		}
+
+		internal static void FindItemsInStorageExtra()
+		{
+			var storagePlayer = Main.LocalPlayer.GetModPlayer<MagicStorageExtra.StoragePlayer>();
+			Point16 storageAccess = storagePlayer.ViewingStorage();
+			if (storageAccess == previousStorageAccess)
+				return;
+			previousStorageAccess = storageAccess;
+			if (!Main.playerInventory || storageAccess.X < 0 || storageAccess.Y < 0)
+				return;
+			ModTile modTile = TileLoader.GetTile(Main.tile[storageAccess.X, storageAccess.Y].type);
+			if (!(modTile is MagicStorageExtra.Components.StorageAccess access))
+			{
+				return;
+			}
+			MagicStorageExtra.Components.TEStorageHeart heart = access.GetHeart(storageAccess.X, storageAccess.Y);
 			if (heart == null)
 			{
 				return;
