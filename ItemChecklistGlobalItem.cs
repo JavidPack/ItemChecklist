@@ -6,9 +6,11 @@ namespace ItemChecklist
 	class ItemChecklistGlobalItem : GlobalItem
 	{
 		// OnPIckup only called on LocalPlayer: I think
-		public override void OnCraft(Item item, Recipe recipe)
+		public override void OnCreate(Item item, ItemCreationContext context)
 		{
-			ItemReceived(item);
+			if (context is RecipeCreationContext rContext) {
+				ItemReceived(item);
+			}
 		}
 
 		// OnPIckup only called on LocalPlayer: i == Main.myPlayer
@@ -21,7 +23,7 @@ namespace ItemChecklist
 		// TODO, unloaded items, check against??
 		internal void ItemReceived(Item item)
 		{
-			var itemChecklistPlayer = Main.LocalPlayer.GetModPlayer<ItemChecklistPlayer>(mod);
+			var itemChecklistPlayer = Main.LocalPlayer.GetModPlayer<ItemChecklistPlayer>();
 			if (!itemChecklistPlayer.foundItem[item.type] && itemChecklistPlayer.findableItems[item.type])
 			{
 				Item newItem = new Item();

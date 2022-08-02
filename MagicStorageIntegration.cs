@@ -101,7 +101,7 @@ namespace ItemChecklist
 			previousStorageAccess = storageAccess;
 			if (!Main.playerInventory || storageAccess.X < 0 || storageAccess.Y < 0)
 				return;
-			ModTile modTile = TileLoader.GetTile(Main.tile[storageAccess.X, storageAccess.Y].type);
+			ModTile modTile = TileLoader.GetTile(Main.tile[storageAccess.X, storageAccess.Y].TileType);
 			if (modTile == null || !(modTile is StorageAccess))
 			{
 				return;
@@ -115,7 +115,10 @@ namespace ItemChecklist
 			// Will 1000 items crash the chat?
 			foreach (var item in items)
 			{
-				ItemChecklist.instance.GetGlobalItem<ItemChecklistGlobalItem>().ItemReceived(item);
+				foreach (ItemChecklistGlobalItem globalItem in ItemChecklist.instance.GetContent<ItemChecklistGlobalItem>())
+				{
+					globalItem.ItemReceived(item);
+				}
 			}
 		}
 	}

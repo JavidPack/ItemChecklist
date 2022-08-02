@@ -1,6 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using Terraria;
+using Terraria.Audio;
+using Terraria.ID;
 using Terraria.UI;
 
 namespace ItemChecklist.UIElements
@@ -32,8 +35,8 @@ namespace ItemChecklist.UIElements
 		{
 			this.Height.Set(20f, 0f);
 			this.MaxHeight.Set(20f, 0f);
-			this._texture = ItemChecklist.instance.GetTexture("UIElements/ScrollbarHorizontal"); //TextureManager.Load("Images/UI/Scrollbar");
-			this._innerTexture = ItemChecklist.instance.GetTexture("UIElements/ScrollbarInnerHorizontal"); //TextureManager.Load("Images/UI/ScrollbarInner");
+			this._texture = ItemChecklist.instance.Assets.Request<Texture2D>("UIElements/ScrollbarHorizontal", AssetRequestMode.ImmediateLoad).Value; //TextureManager.Load("Images/UI/Scrollbar");
+			this._innerTexture = ItemChecklist.instance.Assets.Request<Texture2D>("UIElements/ScrollbarInnerHorizontal", AssetRequestMode.ImmediateLoad).Value; //TextureManager.Load("Images/UI/ScrollbarInner");
 			this.PaddingLeft = 5f;
 			this.PaddingRight = 5f;
 		}
@@ -88,7 +91,7 @@ namespace ItemChecklist.UIElements
 			this._isHoveringOverHandle = handleRectangle.Contains(new Point((int)mousePosition.X, (int)mousePosition.Y));
 			if (!isHoveringOverHandle && this._isHoveringOverHandle && Main.hasFocus)
 			{
-				Main.PlaySound(12, -1, -1, 1, 1f, 0f);
+				SoundEngine.PlaySound(SoundID.MenuTick);
 			}
 			this.DrawBar(spriteBatch, this._texture, dimensions.ToRectangle(), Color.White);
 			this.DrawBar(spriteBatch, this._innerTexture, handleRectangle, Color.White * ((this._isDragging || this._isHoveringOverHandle) ? 1f : 0.85f));

@@ -6,11 +6,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using ReLogic.Content;
 using Terraria;
+using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.UI;
+
+using UIItemSlot = ItemChecklist.UIElements.UIItemSlot;
 
 namespace ItemChecklist
 {
@@ -24,6 +29,7 @@ namespace ItemChecklist
 		public UIToggleHoverImageButton collectChestItemsButton;
 		public UIToggleHoverImageButton showBadgeButton;
 		private bool buttonsHaveDummyTextures;
+		public UIDragableElement mainPanel;
 		public UIPanel checklistPanel;
 		internal NewUITextBox itemNameFilter;
 		internal NewUITextBox itemDescriptionFilter;
@@ -64,23 +70,41 @@ namespace ItemChecklist
 			collectChestItems = false;
 			showBadge = false;
 
-			checklistPanel = new UIPanel();
-			checklistPanel.SetPadding(10);
-			checklistPanel.Left.Pixels = 0;
-			checklistPanel.HAlign = 1f;
-			checklistPanel.Top.Set(85f, 0f);
-			checklistPanel.Left.Set(-40f, 0f);
-			checklistPanel.Width.Set(250f, 0f);
-			checklistPanel.Height.Set(-125, 1f);
-			checklistPanel.BackgroundColor = new Color(73, 94, 171);
+			mainPanel = new UIDragableElement();
+			//mainPanel.SetPadding(0);
+			//mainPanel.PaddingTop = 4;
+			mainPanel.Left.Set(400f, 0f);
+			mainPanel.Top.Set(400f, 0f);
+			mainPanel.Width.Set(475f, 0f); // + 30
+			mainPanel.MinWidth.Set(415f, 0f);
+			mainPanel.MaxWidth.Set(884f, 0f);
+			mainPanel.Height.Set(350, 0f);
+			mainPanel.MinHeight.Set(263, 0f);
+			mainPanel.MaxHeight.Set(1000, 0f);
+			//mainPanel.BackgroundColor = Color.LightBlue;
+
+			var config = ModContent.GetInstance<ItemChecklistClientConfig>();
+			mainPanel.Left.Set(config.ItemChecklistPosition.X, 0f);
+			mainPanel.Top.Set(config.ItemChecklistPosition.Y, 0f);
+			mainPanel.Width.Set(config.ItemChecklistSize.X, 0f);
+			mainPanel.Height.Set(config.ItemChecklistSize.Y, 0f);
 
 			int top = 0;
 			int left = 0;
+			
+			checklistPanel = new UIPanel();
+			checklistPanel.SetPadding(10);
+			checklistPanel.BackgroundColor = new Color(73, 94, 171);;
+			checklistPanel.Top.Set(0, 0f);
+			checklistPanel.Height.Set(0, 1f);
+			checklistPanel.Width.Set(0, 1f);
+			mainPanel.Append(checklistPanel);
+			mainPanel.AddDragTarget(checklistPanel);
 
 			// Because OnInitialize Happens during load and because we need it to happen for OnEnterWorld, use dummy sprite.
 			buttonsHaveDummyTextures = true;
 
-			foundFilterButton = new UIHoverImageButton(Main.magicPixel, "Cycle Found Filter: ??");
+			foundFilterButton = new UIHoverImageButton(TextureAssets.MagicPixel.Value, "Cycle Found Filter: ??");
 			foundFilterButton.OnClick += (a, b) => ToggleFoundFilterButtonClicked(a, b, true);
 			foundFilterButton.OnRightClick += (a, b) => ToggleFoundFilterButtonClicked(a, b, false);
 			foundFilterButton.Top.Pixels = top;
@@ -94,7 +118,7 @@ namespace ItemChecklist
 			//sortButton.Top.Pixels = top;
 			//checklistPanel.Append(sortButton);
 
-			modFilterButton = new UIHoverImageButton(Main.magicPixel, "Cycle Mod Filter: ??");
+			modFilterButton = new UIHoverImageButton(TextureAssets.MagicPixel.Value, "Cycle Mod Filter: ??");
 			modFilterButton.OnClick += (a, b) => ToggleModFilterButtonClicked(a, b, true);
 			modFilterButton.OnRightClick += (a, b) => ToggleModFilterButtonClicked(a, b, false);
 			modFilterButton.Left.Pixels = left;
@@ -102,21 +126,21 @@ namespace ItemChecklist
 			checklistPanel.Append(modFilterButton);
 			left += (int)spacing * 2 + 28;
 
-			muteButton = new UIToggleHoverImageButton(Main.magicPixel, ItemChecklist.instance.GetTexture("UIElements/closeButton"), "Toggle Messages", announce);
+			muteButton = new UIToggleHoverImageButton(TextureAssets.MagicPixel.Value, ItemChecklist.instance.Assets.Request<Texture2D>("UIElements/closeButton", AssetRequestMode.ImmediateLoad).Value, "Toggle Messages", announce);
 			muteButton.OnClick += ToggleMuteButtonClicked;
 			muteButton.Left.Pixels = left;
 			muteButton.Top.Pixels = top;
 			checklistPanel.Append(muteButton);
 			left += (int)spacing * 2 + 28;
 
-			collectChestItemsButton = new UIToggleHoverImageButton(Main.magicPixel, ItemChecklist.instance.GetTexture("UIElements/closeButton"), "Toggle Collect Chest Items", collectChestItems);
+			collectChestItemsButton = new UIToggleHoverImageButton(TextureAssets.MagicPixel.Value, ItemChecklist.instance.Assets.Request<Texture2D>("UIElements/closeButton", AssetRequestMode.ImmediateLoad).Value, "Toggle Collect Chest Items", collectChestItems);
 			collectChestItemsButton.OnClick += ToggleFindChestItemsButtonClicked;
 			collectChestItemsButton.Left.Pixels = left;
 			collectChestItemsButton.Top.Pixels = top;
 			checklistPanel.Append(collectChestItemsButton);
 			left += (int)spacing * 2 + 28;
 
-			showBadgeButton = new UIToggleHoverImageButton(Main.magicPixel, ItemChecklist.instance.GetTexture("UIElements/closeButton"), "Show Sort Value Text", showBadge);
+			showBadgeButton = new UIToggleHoverImageButton(TextureAssets.MagicPixel.Value, ItemChecklist.instance.Assets.Request<Texture2D>("UIElements/closeButton", AssetRequestMode.ImmediateLoad).Value, "Show Sort Value Text", showBadge);
 			showBadgeButton.OnClick += ToggleShowBadgeButtonClicked;
 			showBadgeButton.Left.Pixels = left;
 			showBadgeButton.Top.Pixels = top;
@@ -157,7 +181,7 @@ namespace ItemChecklist
 
 			top += 68;
 
-			checklistGrid = new UIGrid(5);
+			checklistGrid = new UIGrid();
 			checklistGrid.alternateSort = ItemGridSort;
 			checklistGrid.Top.Pixels = top;
 			checklistGrid.Width.Set(-25f, 1f);
@@ -175,15 +199,19 @@ namespace ItemChecklist
 
 			// Checklistlist populated when the panel is shown: UpdateCheckboxes()
 
-			Append(checklistPanel);
+			Append(mainPanel);
 
 			// load time impact, do this on first show?
 			itemSlots = new UIItemSlot[ItemLoader.ItemCount];
 			Item[] itemSlotItems = new Item[ItemLoader.ItemCount];
 			for (int i = 0; i < ItemLoader.ItemCount; i++)
 			{
-				itemSlots[i] = new UIItemSlot(i);
-				itemSlotItems[i] = itemSlots[i].item;
+				Item item = new Item();
+				item.SetDefaults(i, false); // 300 ms vs 30 ms
+				if (item.type == 0)
+					continue;
+				itemSlots[i] = new UIItemSlot(item, i);
+				itemSlotItems[i] = item;
 			}
 
 			FieldInfo inventoryGlowHue = typeof(Terraria.UI.ItemSlot).GetField("inventoryGlowHue", BindingFlags.Static | BindingFlags.NonPublic);
@@ -194,11 +222,11 @@ namespace ItemChecklist
 
 			inventoryGlowHue.SetValue(null, new float[ItemLoader.ItemCount]);
 			inventoryGlowTime.SetValue(null, new int[ItemLoader.ItemCount]);
-			SortMethod.Invoke(null, parametersArray);
+			//SortMethod.Invoke(null, parametersArray);
 			inventoryGlowHue.SetValue(null, new float[58]);
 			inventoryGlowTime.SetValue(null, new int[58]);
 
-			int[] vanillaIDsInSortOrderTemp = itemSlotItems.Select((x) => x.type).ToArray();
+			int[] vanillaIDsInSortOrderTemp = itemSlotItems.Where(x => x != null).Select((x) => x.type).ToArray();
 			vanillaIDsInSortOrder = new int[ItemLoader.ItemCount];
 			for (int i = 0; i < ItemLoader.ItemCount; i++)
 			{
@@ -206,7 +234,7 @@ namespace ItemChecklist
 			}
 
 			modnames = new List<string>() { "All", "Vanilla" };
-			modnames.AddRange(ModLoader.GetLoadedMods()/*.Where(x => x != "ModLoader")*/);
+			modnames.AddRange(ModLoader.Mods.Where(mod => mod.GetContent<ModItem>().Any()).Select(x => x.Name)/*.Where(x => x != "ModLoader")*/);
 
 			updateNeeded = true;
 		}
@@ -222,7 +250,7 @@ namespace ItemChecklist
 
 		private void ToggleFoundFilterButtonClicked(UIMouseEvent evt, UIElement listeningElement, bool left)
 		{
-			Main.PlaySound(SoundID.MenuTick);
+			SoundEngine.PlaySound(SoundID.MenuTick);
 			showCompleted = (3 + showCompleted + (left ? 1 : -1)) % 3;
 			foundFilterButton.hoverText = "Cycle Found Filter: " + foundFilterStrings[showCompleted];
 			UpdateNeeded();
@@ -231,7 +259,7 @@ namespace ItemChecklist
 		private void ToggleMuteButtonClicked(UIMouseEvent evt, UIElement listeningElement)
 		{
 			announce = !announce;
-			Main.PlaySound(announce ? SoundID.MenuOpen : SoundID.MenuClose);
+			SoundEngine.PlaySound(announce ? SoundID.MenuOpen : SoundID.MenuClose);
 			muteButton.SetEnabled(announce);
 		}
 
@@ -245,7 +273,7 @@ namespace ItemChecklist
 
 		private void ToggleModFilterButtonClicked(UIMouseEvent evt, UIElement listeningElement, bool left)
 		{
-			Main.PlaySound(SoundID.MenuTick);
+			SoundEngine.PlaySound(SoundID.MenuTick);
 			currentMod = (modnames.Count + currentMod + (left ? 1 : -1)) % modnames.Count;
 			modFilterButton.hoverText = "Cycle Mod Filter: " + modnames[currentMod];
 			UpdateNeeded();
@@ -254,14 +282,14 @@ namespace ItemChecklist
 		private void ToggleShowBadgeButtonClicked(UIMouseEvent evt, UIElement listeningElement)
 		{
 			showBadge = !showBadge;
-			Main.PlaySound(showBadge ? SoundID.MenuOpen : SoundID.MenuClose);
+			SoundEngine.PlaySound(showBadge ? SoundID.MenuOpen : SoundID.MenuClose);
 			showBadgeButton.SetEnabled(showBadge);
 		}
 
 		private void ToggleFindChestItemsButtonClicked(UIMouseEvent evt, UIElement listeningElement)
 		{
 			collectChestItems = !collectChestItems;
-			Main.PlaySound(collectChestItems ? SoundID.MenuOpen : SoundID.MenuClose);
+			SoundEngine.PlaySound(collectChestItems ? SoundID.MenuOpen : SoundID.MenuClose);
 			collectChestItemsButton.SetEnabled(collectChestItems);
 		}
 
@@ -295,12 +323,12 @@ namespace ItemChecklist
 
 			if (buttonsHaveDummyTextures)
 			{
-				Texture2D foundFilterTexture = Utilities.ResizeImage(ItemChecklist.instance.GetTexture("Images/filterFound"), 32, 32);
-				Texture2D muteButtonTexture = Utilities.ResizeImage(Main.itemTexture[ItemID.Megaphone], 32, 32);
+				Texture2D foundFilterTexture = Utilities.ResizeImage(ItemChecklist.instance.Assets.Request<Texture2D>("Images/filterFound"), 32, 32);
+				Texture2D muteButtonTexture = Utilities.ResizeImage(TextureAssets.Item[ItemID.Megaphone].Value, 32, 32);
 				//Texture2D sortButtonTexture = Utilities.ResizeImage(Main.itemTexture[ItemID.ToxicFlask], 32, 32);
-				Texture2D modFilterButtonTexture = Utilities.ResizeImage(ItemChecklist.instance.GetTexture("Images/filterMod"), 32, 32);
-				Texture2D collectChestItemsButtonTexture = Utilities.ResizeImage(Main.cursorTextures[8], 32, 32);
-				Texture2D showBadgeButtonTexture = Utilities.ResizeImage(Main.itemTexture[ItemID.Book], 32, 32); // Main.extraTexture[58]
+				Texture2D modFilterButtonTexture = Utilities.ResizeImage(ItemChecklist.instance.Assets.Request<Texture2D>("Images/filterMod"), 32, 32);
+				Texture2D collectChestItemsButtonTexture = Utilities.ResizeImage(TextureAssets.Cursors[8].Value, 32, 32);
+				Texture2D showBadgeButtonTexture = Utilities.ResizeImage(TextureAssets.Item[ItemID.Book].Value, 32, 32); // Main.extraTexture[58]
 
 				foundFilterButton.SetImage(foundFilterTexture);
 				muteButton.SetImage(muteButtonTexture);
@@ -311,12 +339,14 @@ namespace ItemChecklist
 				buttonsHaveDummyTextures = false;
 			}
 
-			var itemChecklistPlayer = Main.LocalPlayer.GetModPlayer<ItemChecklistPlayer>(ItemChecklist.instance);
+			var itemChecklistPlayer = Main.LocalPlayer.GetModPlayer<ItemChecklistPlayer>();
 			var temp = new List<UIItemSlot>();
 			for (int i = 0; i < itemChecklistPlayer.findableItems.Length; i++)
 			{
 				if (itemChecklistPlayer.findableItems[i])
 				{
+					if (itemSlots[i] == null) continue;
+
 					// filters here
 					if ((showCompleted != 1 && itemChecklistPlayer.foundItem[i]) || (showCompleted != 2 && !itemChecklistPlayer.foundItem[i]))
 					{
@@ -369,7 +399,7 @@ namespace ItemChecklist
 					checklistGrid.Goto(delegate (UIElement element)
 					{
 						UIItemSlot itemSlot = element as UIItemSlot;
-						return itemSlot != null && itemSlot.id == lastfoundID;
+						return itemSlot != null && itemSlot.itemType == lastfoundID;
 					}, true);
 				}
 				lastfoundID = -1;
@@ -382,11 +412,11 @@ namespace ItemChecklist
 			{
 				return true;
 			}
-			else if (currentMod == 1 && itemSlot.item.modItem == null)
+			else if (currentMod == 1 && itemSlot.item.ModItem == null)
 			{
 				return true;
 			}
-			else if (itemSlot.item.modItem != null && itemSlot.item.modItem.mod.Name == modnames[currentMod])
+			else if (itemSlot.item.ModItem != null && itemSlot.item.ModItem.Mod.Name == modnames[currentMod])
 			{
 				return true;
 			}
@@ -400,6 +430,8 @@ namespace ItemChecklist
 				bool found = false;
 				foreach (var itemSlot in itemSlots)
 				{
+					if (itemSlot == null) continue;
+
 					if (itemSlot.item.Name.IndexOf(itemNameFilter.currentString, StringComparison.OrdinalIgnoreCase) != -1)
 					{
 						found = true;
@@ -423,7 +455,7 @@ namespace ItemChecklist
 		{
 			ItemChecklistUI.hoverText = "";
 			Vector2 MousePosition = new Vector2((float)Main.mouseX, (float)Main.mouseY);
-			if (checklistPanel.ContainsPoint(MousePosition))
+			if (mainPanel.ContainsPoint(MousePosition))
 			{
 				Main.player[Main.myPlayer].mouseInterface = true;
 			}

@@ -1,12 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
 
-namespace ItemChecklist.UIElements
+namespace ItemChecklist
 {
 	public class UIGrid : UIElement
 	{
@@ -41,6 +42,9 @@ namespace ItemChecklist.UIElements
 		private float _innerListHeight;
 		public float ListPadding = 5f;
 
+		public static Asset<Texture2D> moreUpTexture;
+		public static Asset<Texture2D> moreDownTexture;
+
 		public int Count
 		{
 			get
@@ -49,11 +53,9 @@ namespace ItemChecklist.UIElements
 			}
 		}
 
-		int cols = 1;
-
-		public UIGrid(int columns = 1)
+		// todo, vertical/horizontal orientation, left to right, etc?
+		public UIGrid()
 		{
-			cols = columns;
 			this._innerList.OverflowHidden = false;
 			this._innerList.Width.Set(0f, 1f);
 			this._innerList.Height.Set(0f, 1f);
@@ -66,16 +68,23 @@ namespace ItemChecklist.UIElements
 			return this._innerListHeight;
 		}
 
-		public void Goto(UIGrid.ElementSearchMethod searchMethod, bool center = false)
+		public void Goto(UIGrid.ElementSearchMethod searchMethod, bool center = false, bool fuzzy = false)
 		{
+			var innerDimensionHeight = GetInnerDimensions().Height;
 			for (int i = 0; i < this._items.Count; i++)
 			{
-				if (searchMethod(this._items[i]))
+				var item = this._items[i];
+				if (searchMethod(item))
 				{
-					this._scrollbar.ViewPosition = this._items[i].Top.Pixels;
+					if (fuzzy)
+					{
+						if (item.Top.Pixels > _scrollbar.ViewPosition && item.Top.Pixels + item.GetOuterDimensions().Height < _scrollbar.ViewPosition + innerDimensionHeight)
+							return;
+					}
+					this._scrollbar.ViewPosition = item.Top.Pixels;
 					if (center)
 					{
-						this._scrollbar.ViewPosition = this._items[i].Top.Pixels - GetInnerDimensions().Height/2 + _items[i].GetOuterDimensions().Height/2;
+						this._scrollbar.ViewPosition = item.Top.Pixels - innerDimensionHeight / 2 + item.GetOuterDimensions().Height / 2;
 					}
 					return;
 				}
@@ -129,30 +138,28 @@ namespace ItemChecklist.UIElements
 
 		public override void RecalculateChildren()
 		{
+			float availableWidth = GetInnerDimensions().Width;
 			base.RecalculateChildren();
 			float top = 0f;
 			float left = 0f;
+			float maxRowHeight = 0f;
 			for (int i = 0; i < this._items.Count; i++)
 			{
-				this._items[i].Top.Set(top, 0f);
-				this._items[i].Left.Set(left, 0f);
-				this._items[i].Recalculate();
-				if (i % cols == cols - 1)
+				var item = this._items[i];
+				var outerDimensions = item.GetOuterDimensions();
+				if (left + outerDimensions.Width > availableWidth && left > 0)
 				{
-					top += this._items[i].GetOuterDimensions().Height + this.ListPadding;
+					top += maxRowHeight + this.ListPadding;
 					left = 0;
+					maxRowHeight = 0;
 				}
-				else
-				{
-					left += this._items[i].GetOuterDimensions().Width + this.ListPadding;
-				}
-				//num += this._items[i].GetOuterDimensions().Height + this.ListPadding;
+				maxRowHeight = Math.Max(maxRowHeight, outerDimensions.Height);
+				item.Left.Set(left, 0f);
+				left += outerDimensions.Width + this.ListPadding;
+				item.Top.Set(top, 0f);
+				item.Recalculate();
 			}
-			if (_items.Count > 0)
-			{
-				top += ListPadding + _items[0].GetOuterDimensions().Height;
-			}
-			this._innerListHeight = top;
+			this._innerListHeight = top + maxRowHeight;
 		}
 
 		private void UpdateScrollbar()
@@ -170,6 +177,7 @@ namespace ItemChecklist.UIElements
 			this.UpdateScrollbar();
 		}
 
+		//internal delegate int ElementSort(UIElement item1, UIElement item2);
 		internal Comparison<UIElement> alternateSort;
 		public void UpdateOrder()
 		{
@@ -206,7 +214,25 @@ namespace ItemChecklist.UIElements
 			{
 				this._innerList.Top.Set(-this._scrollbar.GetValue(), 0f);
 			}
+			if (IsMouseHovering)
+				Terraria.GameInput.PlayerInput.LockVanillaMouseScroll("RecipeBrowser/UIHorizontalGrid");
 			this.Recalculate();
+		}
+
+		public bool drawArrows;
+		protected override void DrawChildren(SpriteBatch spriteBatch) {
+			base.DrawChildren(spriteBatch);
+			if (drawArrows) {
+				var inner = GetInnerDimensions().ToRectangle();
+				if (this._scrollbar.ViewPosition != 0) {
+					int centeredX = inner.X + inner.Width / 2 - moreUpTexture.Width() / 2;
+					spriteBatch.Draw(moreUpTexture.Value, new Vector2(centeredX, inner.Y), Color.White * .5f);
+				}
+				if (this._scrollbar.ViewPosition < _innerListHeight - inner.Height) {
+					int centeredX = inner.X + inner.Width / 2 - moreUpTexture.Width() / 2;
+					spriteBatch.Draw(moreDownTexture.Value, new Vector2(centeredX, inner.Bottom - moreDownTexture.Height()), Color.White * .5f);
+				}
+			}
 		}
 	}
 }
