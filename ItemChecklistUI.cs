@@ -324,11 +324,11 @@ namespace ItemChecklist
 			if (buttonsHaveDummyTextures)
 			{
 				Texture2D foundFilterTexture = Utilities.ResizeImage(ItemChecklist.instance.Assets.Request<Texture2D>("Images/filterFound"), 32, 32);
-				Texture2D muteButtonTexture = Utilities.ResizeImage(TextureAssets.Item[ItemID.Megaphone].Value, 32, 32);
+				Texture2D muteButtonTexture = Utilities.ResizeImage(TextureAssets.Item[ItemID.Megaphone], 32, 32);
 				//Texture2D sortButtonTexture = Utilities.ResizeImage(Main.itemTexture[ItemID.ToxicFlask], 32, 32);
 				Texture2D modFilterButtonTexture = Utilities.ResizeImage(ItemChecklist.instance.Assets.Request<Texture2D>("Images/filterMod"), 32, 32);
-				Texture2D collectChestItemsButtonTexture = Utilities.ResizeImage(TextureAssets.Cursors[8].Value, 32, 32);
-				Texture2D showBadgeButtonTexture = Utilities.ResizeImage(TextureAssets.Item[ItemID.Book].Value, 32, 32); // Main.extraTexture[58]
+				Texture2D collectChestItemsButtonTexture = Utilities.ResizeImage(TextureAssets.Cursors[8], 32, 32);
+				Texture2D showBadgeButtonTexture = Utilities.ResizeImage(TextureAssets.Item[ItemID.Book], 32, 32); // Main.extraTexture[58]
 
 				foundFilterButton.SetImage(foundFilterTexture);
 				muteButton.SetImage(muteButtonTexture);
