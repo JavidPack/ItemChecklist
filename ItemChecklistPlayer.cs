@@ -144,7 +144,7 @@ namespace ItemChecklist
 		public override void SaveData(TagCompound tag)
 		{
 			// sanitize? should be possible to add item already seen.
-			tag["FoundItems"] = foundItems.Select(ItemIO.Save).ToList();
+			tag["FoundItems"] = foundItems.Where(item => item.Name != "Unloaded Item").Select(ItemIO.Save).ToList();
 			//tag["SortMode"] = (int)ItemChecklistUI.sortMode;
 			tag["Announce"] = ItemChecklistUI.announce; // Not saving default, saving last used....good thing?
 			tag["CollectChestItems"] = ItemChecklistUI.collectChestItems;
