@@ -1,114 +1,227 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
+using ReLogic.Content;
 using Terraria;
-using Terraria.UI; 
+using Terraria.GameContent;
+using Terraria.GameContent.UI.Elements;
+using Terraria.ID;
+using Terraria.ModLoader;
+using Terraria.UI;
+using Terraria.UI.Chat;
 
 namespace ItemChecklist.UIElements
 {
 	internal class UIItemSlot : UIElement
 	{
-		public static Texture2D backgroundTexture = Main.inventoryBack9Texture;
-
-		private Texture2D _texture;
-		//	private float _visibilityActive = 1f;
-		//		private float _visibilityInactive = 0.4f;
-		private float scale = 0.75f;
-		internal int id;
-		internal Item item;
+		public static Asset<Texture2D> defaultBackgroundTexture = TextureAssets.InventoryBack9;
+		public Asset<Texture2D> backgroundTexture = defaultBackgroundTexture;
+		internal float scale = .75f;
+		public int itemType;
+		public Item item;
+		public int id;
+		public bool hideSlot = false;
+		internal static Item hoveredItem;
 		public string badge;
 
-		public UIItemSlot(int id)
+		public UIItemSlot(Item item, int id, float scale = .75f)
 		{
-			this._texture = Main.itemTexture[id];
+			this.scale = scale;
+			this.item = item;
 			this.id = id;
-			this.item = new Item();
-			item.SetDefaults(id, true);
-
-			this.Width.Set(backgroundTexture.Width * scale, 0f);
-			this.Height.Set(backgroundTexture.Height * scale, 0f);
+			this.itemType = item.type;
+			this.Width.Set(defaultBackgroundTexture.Width() * scale, 0f);
+			this.Height.Set(defaultBackgroundTexture.Height() * scale, 0f);
 		}
 
-		//public override int CompareTo(object obj)
-		//{
-		//	UIItemSlot other = obj as UIItemSlot;
-		//	int result;
-		//	switch (ItemChecklistUI.sortMode)
-		//	{
-		//		case SortModes.ID:
-		//			return id.CompareTo(other.id);
-		//		case SortModes.AZ:
-		//			return item.Name.CompareTo(other.item.Name);
-		//		case SortModes.Value:
-		//			result = item.value.CompareTo(other.item.value);
-		//			if (result == 0)
-		//				result = item.Name.CompareTo(other.item.Name);
-		//			return result;
-		//		case SortModes.Rare:
-		//			result = item.rare.CompareTo(other.item.rare);
-		//			if (result == 0)
-		//				result = item.Name.CompareTo(other.item.Name);
-		//			return result;
-		//		case SortModes.TerrariaSort:
-		//			return ItemChecklistUI.vanillaIDsInSortOrder[id].CompareTo(ItemChecklistUI.vanillaIDsInSortOrder[other.id]);
-		//	}
-
-		//	return id.CompareTo(other.id);
-		//}
+		internal int frameCounter = 0;
+		internal int frameTimer = 0;
+		private const int frameDelay = 7;
 
 		protected override void DrawSelf(SpriteBatch spriteBatch)
 		{
-			CalculatedStyle dimensions = base.GetDimensions();
-			//spriteBatch.Draw(this._texture, dimensions.Position(), Color.White * (base.IsMouseHovering ? this._visibilityActive : this._visibilityInactive));
-
-			spriteBatch.Draw(backgroundTexture, dimensions.Position(), null, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
-			//Texture2D texture2D = Main.itemTexture[this.item.type];
-			Rectangle rectangle2;
-			if (Main.itemAnimations[id] != null)
+			if (item != null)
 			{
-				rectangle2 = Main.itemAnimations[id].GetFrame(_texture);
-			}
-			else
-			{
-				rectangle2 = _texture.Frame(1, 1, 0, 0);
-			}
-			float num = 1f;
-			float num2 = (float)backgroundTexture.Width * scale;
-			if ((float)rectangle2.Width > num2 || (float)rectangle2.Height > num2)
-			{
-				if (rectangle2.Width > rectangle2.Height)
+				CalculatedStyle dimensions = base.GetInnerDimensions();
+				Rectangle rectangle = dimensions.ToRectangle();
+				if (!hideSlot)
 				{
-					num = num2 / (float)rectangle2.Width;
+					spriteBatch.Draw(backgroundTexture.Value, dimensions.Position(), null, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+					DrawAdditionalOverlays(spriteBatch, dimensions.Position(), scale);
+				}
+				if (!item.IsAir)
+				{
+					Main.instance.LoadItem(this.item.type);
+					Texture2D itemTexture = TextureAssets.Item[this.item.type].Value;
+					Rectangle rectangle2 = Main.itemAnimations[item.type]?.GetFrame(itemTexture) ?? itemTexture.Frame();
+					Color newColor = Color.White;
+					float pulseScale = 1f;
+					ItemSlot.GetItemLight(ref newColor, ref pulseScale, item, false);
+					int height = rectangle2.Height;
+					int width = rectangle2.Width;
+					float drawScale = 1f;
+					float availableWidth = (float)defaultBackgroundTexture.Width() * scale;
+					if (width > availableWidth || height > availableWidth)
+					{
+						if (width > height)
+						{
+							drawScale = availableWidth / width;
+						}
+						else
+						{
+							drawScale = availableWidth / height;
+						}
+					}
+					drawScale *= scale;
+					Vector2 vector = backgroundTexture.Size() * scale;
+					Vector2 position2 = dimensions.Position() + vector / 2f - rectangle2.Size() * drawScale / 2f;
+					Vector2 origin = rectangle2.Size() * (pulseScale / 2f - 0.5f);
+					//Vector2 drawPosition = dimensions.Position();
+					//drawPosition.X += defaultBackgroundTexture.Width * scale / 2f - (float)width * drawScale / 2f;
+					//drawPosition.Y += defaultBackgroundTexture.Height * scale / 2f - (float)height * drawScale / 2f;
+
+					Color alphaColor = Main.LocalPlayer.GetModPlayer<ItemChecklistPlayer>().foundItem[id] ? item.GetAlpha(newColor) : Color.Black;
+					Color colorColor = Main.LocalPlayer.GetModPlayer<ItemChecklistPlayer>().foundItem[id] ? item.GetColor(Color.White) : Color.Black;
+
+					if (ItemLoader.PreDrawInInventory(item, spriteBatch, position2, rectangle2, alphaColor,
+						colorColor, origin, drawScale * pulseScale))
+					{
+						spriteBatch.Draw(itemTexture, position2, new Rectangle?(rectangle2), alphaColor, 0f, origin, drawScale * pulseScale, SpriteEffects.None, 0f);
+						if (item.color != Color.Transparent)
+						{
+							spriteBatch.Draw(itemTexture, position2, new Rectangle?(rectangle2), colorColor, 0f, origin, drawScale * pulseScale, SpriteEffects.None, 0f);
+						}
+					}
+					ItemLoader.PostDrawInInventory(item, spriteBatch, position2, rectangle2, alphaColor,
+						colorColor, origin, drawScale * pulseScale);
+					if (ItemID.Sets.TrapSigned[item.type])
+					{
+						spriteBatch.Draw(TextureAssets.Wire.Value, dimensions.Position() + new Vector2(40f, 40f) * scale, new Rectangle?(new Rectangle(4, 58, 8, 8)), Color.White, 0f, new Vector2(4f), 1f, SpriteEffects.None, 0f);
+					}
+					DrawAdditionalBadges(spriteBatch, dimensions.Position(), scale);
+					if (item.stack > 1)
+					{
+						ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.ItemStack.Value, item.stack.ToString(), dimensions.Position() + new Vector2(10f, 26f) * scale, Color.White, 0f, Vector2.Zero, new Vector2(scale), -1f, scale);
+					}
+
+					//this.item.GetColor(Color.White);
+					//spriteBatch.Draw(itemTexture, drawPosition, rectangle2, this.item.GetAlpha(Color.White), 0f, Vector2.Zero, drawScale, SpriteEffects.None, 0f);
+					//if (this.item.color != default(Color))
+					//{
+					//	spriteBatch.Draw(itemTexture, drawPosition, new Rectangle?(rectangle2), this.item.GetColor(Color.White), 0f, Vector2.Zero, drawScale, SpriteEffects.None, 0f);
+					//}
+					//if (this.item.stack > 1)
+					//{
+					//	spriteBatch.DrawString(Main.fontItemStack, this.item.stack.ToString(), new Vector2(drawPosition.X + 10f * scale, drawPosition.Y + 26f * scale), Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+					//}
+
+					if (ItemChecklistUI.showBadge && !string.IsNullOrEmpty(badge))
+					{
+						spriteBatch.DrawString(FontAssets.ItemStack.Value, badge, new Vector2(dimensions.Position().X + 10f * scale, dimensions.Position().Y + 26f * scale), Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+					}
+
+					if (IsMouseHovering)
+					{
+						// TODO, should only need 2 of these 3 I think
+						Main.HoverItem = item.Clone();
+						Main.hoverItemName = Main.HoverItem.Name + (Main.HoverItem.ModItem != null && ModContent.GetInstance<ItemChecklistClientConfig>().ShowItemModSource ? " [" + Main.HoverItem.ModItem.Mod.DisplayName + "]" : "");
+
+						//	Main.hoverItemName = this.item.name;
+						//	Main.toolTip = item.Clone();
+						Main.HoverItem.SetNameOverride(Main.HoverItem.Name + (Main.HoverItem.ModItem != null && ModContent.GetInstance<ItemChecklistClientConfig>().ShowItemModSource ? " [" + Main.HoverItem.ModItem.Mod.DisplayName + "]" : ""));
+
+						hoveredItem = Main.HoverItem;
+					}
+				}
+			}
+		}
+
+		internal virtual void DrawAdditionalOverlays(SpriteBatch spriteBatch, Vector2 vector2, float scale)
+		{
+		}
+
+		internal virtual void DrawAdditionalBadges(SpriteBatch spriteBatch, Vector2 vector2, float scale)
+		{
+		}
+	}
+
+	internal class UIItemNoSlot : UIElement
+	{
+		internal float scale = .75f;
+		public int itemType;
+		public Item item;
+		public UIItemNoSlot(Item item, float scale = .75f)
+		{
+			this.scale = scale;
+			this.item = item;
+			this.itemType = item.type;
+			this.Width.Set(32f * scale * 0.65f, 0f);
+			this.Height.Set(32f * scale * 0.65f, 0f);
+		}
+
+		public override void Draw(SpriteBatch spriteBatch)
+		{
+			base.Draw(spriteBatch);
+
+			Vector2 position = GetInnerDimensions().Position();
+			float num = 1f;
+			float num2 = 1f;
+			if (Main.netMode != NetmodeID.Server && !Main.dedServ)
+			{
+				Texture2D texture2D = TextureAssets.Item[item.type].Value;
+				Rectangle rectangle;
+				if (Main.itemAnimations[item.type] != null)
+				{
+					rectangle = Main.itemAnimations[item.type].GetFrame(texture2D);
 				}
 				else
 				{
-					num = num2 / (float)rectangle2.Height;
+					rectangle = texture2D.Frame(1, 1, 0, 0);
+				}
+				if (rectangle.Height > 32)
+				{
+					num2 = 32f / (float)rectangle.Height;
 				}
 			}
-			Vector2 drawPosition = dimensions.Position();
-			drawPosition.X += (float)backgroundTexture.Width * scale / 2f - (float)rectangle2.Width * num / 2f;
-			drawPosition.Y += (float)backgroundTexture.Height * scale / 2f - (float)rectangle2.Height * num / 2f;
-
-			item.GetColor(Color.White);
-			Color alphaColor = Main.LocalPlayer.GetModPlayer<ItemChecklistPlayer>(ItemChecklist.instance).foundItem[id] ? this.item.GetAlpha(Color.White) : Color.Black;
-			Color colorColor = Main.LocalPlayer.GetModPlayer<ItemChecklistPlayer>(ItemChecklist.instance).foundItem[id] ? this.item.GetColor(Color.White) : Color.Black;
-			//spriteBatch.Draw(_texture, drawPosition, new Rectangle?(rectangle2), this.item.GetAlpha(Color.White), 0f, Vector2.Zero, num, SpriteEffects.None, 0f);
-			spriteBatch.Draw(_texture, drawPosition, new Rectangle?(rectangle2), alphaColor, 0f, Vector2.Zero, num, SpriteEffects.None, 0f);
-			if (this.item.color != Color.Transparent)
+			num2 *= scale;
+			num *= num2;
+			if (num > 0.75f)
 			{
-				spriteBatch.Draw(_texture, drawPosition, new Rectangle?(rectangle2), colorColor, 0f, Vector2.Zero, num, SpriteEffects.None, 0f);
+				num = 0.75f;
 			}
-			if (ItemChecklistUI.showBadge && !string.IsNullOrEmpty(badge))
 			{
-				spriteBatch.DrawString(Main.fontItemStack, badge, new Vector2(dimensions.Position().X + 10f * scale, dimensions.Position().Y + 26f * scale), Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+				float inventoryScale = Main.inventoryScale;
+				Main.inventoryScale = scale * num;
+				ItemSlot.Draw(spriteBatch, ref item, 14, position - new Vector2(10f) * scale * num, Color.White);
+				Main.inventoryScale = inventoryScale;
 			}
 
 			if (IsMouseHovering)
 			{
-				ItemChecklistUI.hoverText = item.Name + (item.modItem != null ? " [" + item.modItem.mod.Name + "]" : "");
+				//Main.HoverItem = item.Clone();
+				//Main.instance.MouseText(item.Name, item.rare, 0, -1, -1, -1, -1);
 
-				Main.HoverItem = item.Clone();
+				Main.hoverItemName = item.Name;
 			}
 		}
 	}
+
+	//internal class UIHoverText : UIText
+	//{
+	//	string hover;
+	//	public UIHoverText(string hover, string text, float textScale = 1f, bool large = false) : base(text, textScale, large)
+	//	{
+	//		this.hover = hover;
+	//	}
+
+	//	protected override void DrawSelf(SpriteBatch spriteBatch)
+	//	{
+	//		base.DrawSelf(spriteBatch);
+
+	//		if (IsMouseHovering)
+	//		{
+	//			Main.hoverItemName = hover;
+	//		}
+	//	}
+	//}
 }

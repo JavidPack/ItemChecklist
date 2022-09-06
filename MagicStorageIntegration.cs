@@ -13,6 +13,7 @@ namespace ItemChecklist
 	// Here we show a few pitfalls that might cause a TypeInitializationException to be thrown.
 	// Remember, you have to gate all access to Types and Methods defined in the weakly referenced mod or it will crash.
 	// All calls to methods in this class by this mod besides Load and Unload are gated with a check to Enabled.
+	[JITWhenModsEnabled("MagicStorage")]
 	static class MagicStorageIntegration
 	{
 		// Here we store a reference to the MagicStorage Mod instance. We can use it for many things. 
@@ -47,7 +48,7 @@ namespace ItemChecklist
 
 		public static void Load()
 		{
-			MagicStorage = ModLoader.GetMod("MagicStorage");
+			ModLoader.TryGetMod("MagicStorage", out MagicStorage);
 			if (Enabled)
 				//MagicStorageIntegrationMembers.tile = null; // Will also crash. Here even though Enabled will be false, the Type of tile will still need to be resolved when this method runs.
 				//members = new MagicStorageIntegrationMembers(); // Even thought the Type StorageAccess is hidden behind MagicStorageIntegrationMembers, this line will also cause MagicStorageIntegrationMembers and consequently StorageAccess to need to be resolved.
@@ -101,7 +102,7 @@ namespace ItemChecklist
 			previousStorageAccess = storageAccess;
 			if (!Main.playerInventory || storageAccess.X < 0 || storageAccess.Y < 0)
 				return;
-			ModTile modTile = TileLoader.GetTile(Main.tile[storageAccess.X, storageAccess.Y].type);
+			ModTile modTile = TileLoader.GetTile(Main.tile[storageAccess.X, storageAccess.Y].TileType);
 			if (modTile == null || !(modTile is StorageAccess))
 			{
 				return;
@@ -115,7 +116,10 @@ namespace ItemChecklist
 			// Will 1000 items crash the chat?
 			foreach (var item in items)
 			{
-				ItemChecklist.instance.GetGlobalItem<ItemChecklistGlobalItem>().ItemReceived(item);
+				foreach (ItemChecklistGlobalItem globalItem in ItemChecklist.instance.GetContent<ItemChecklistGlobalItem>())
+				{
+					globalItem.ItemReceived(item);
+				}
 			}
 		}
 	}

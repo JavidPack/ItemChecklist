@@ -1,7 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ModLoader;
 using Terraria.UI;
 
@@ -15,7 +17,7 @@ namespace ItemChecklist
 	public class ItemChecklist : Mod
 	{
 		static internal ItemChecklist instance;
-		internal static ModHotKey ToggleChecklistHotKey;
+		internal static ModKeybind ToggleChecklistHotKey;
 		internal static UserInterface ItemChecklistInterface;
 		internal ItemChecklistUI ItemChecklistUI;
 		internal event Action<int> OnNewItem;
@@ -27,21 +29,21 @@ namespace ItemChecklist
 		public override void Load()
 		{
 			// Latest uses ItemID.Sets.IsAMaterial, added 0.10.1.5
-			if (ModLoader.version < new Version(0, 10, 1, 5))
+			if (BuildInfo.tMLVersion < new Version(0, 10, 1, 5))
 			{
 				throw new Exception("\nThis mod uses functionality only present in the latest tModLoader. Please update tModLoader to use this mod\n\n");
 			}
 
 			instance = this;
-			ToggleChecklistHotKey = RegisterHotKey("Toggle Item Checklist", "I");
+			ToggleChecklistHotKey = KeybindLoader.RegisterKeybind(this, "Toggle Item Checklist", "I");
 			MagicStorageIntegration.Load();
 
 			if (!Main.dedServ)
 			{
-				UIElements.UICheckbox.checkboxTexture = GetTexture("UIElements/checkBox");
-				UIElements.UICheckbox.checkmarkTexture = GetTexture("UIElements/checkMark");
-				UIElements.UIHorizontalGrid.moreLeftTexture = GetTexture("UIElements/MoreLeft");
-				UIElements.UIHorizontalGrid.moreRightTexture = GetTexture("UIElements/MoreRight");
+				UIElements.UICheckbox.checkboxTexture = ItemChecklist.instance.Assets.Request<Texture2D>("UIElements/checkBox");
+				UIElements.UICheckbox.checkmarkTexture = ItemChecklist.instance.Assets.Request<Texture2D>("UIElements/checkMark");
+				UIElements.UIHorizontalGrid.moreLeftTexture = ItemChecklist.instance.Assets.Request<Texture2D>("UIElements/MoreLeft");
+				UIElements.UIHorizontalGrid.moreRightTexture = ItemChecklist.instance.Assets.Request<Texture2D>("UIElements/MoreRight");
 			}
 		}
 
@@ -83,7 +85,7 @@ namespace ItemChecklist
 					{
 						return "NotInGame";
 					}
-					return Main.LocalPlayer.GetModPlayer<ItemChecklistPlayer>(this).foundItem;
+					return Main.LocalPlayer.GetModPlayer<ItemChecklistPlayer>().foundItem;
 				}
 				else if (message == "RegisterForNewItem")
 				{
@@ -93,12 +95,12 @@ namespace ItemChecklist
 				}
 				else
 				{
-					ErrorLogger.Log("ItemChecklist Call Error: Unknown Message: " + message);
+					Logger.Error("ItemChecklist Call Error: Unknown Message: " + message);
 				}
 			}
 			catch (Exception e)
 			{
-				ErrorLogger.Log("ItemChecklist Call Error: " + e.StackTrace + e.Message);
+				Logger.Error("ItemChecklist Call Error: " + e.StackTrace + e.Message);
 			}
 			return "Failure";
 		}
@@ -107,10 +109,13 @@ namespace ItemChecklist
 		{
 			OnNewItem?.Invoke(type);
 		}
+	}
 
+	public class ItemChecklistSystem : ModSystem
+	{
 		public override void UpdateUI(GameTime gameTime)
 		{
-			ItemChecklistInterface?.Update(gameTime); 
+			ItemChecklist.ItemChecklistInterface?.Update(gameTime); 
 		}
 
 		public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
@@ -124,11 +129,11 @@ namespace ItemChecklist
 					{
 						if (ItemChecklistUI.Visible)
 						{
-							ItemChecklistInterface?.Draw(Main.spriteBatch, new GameTime());
+							ItemChecklist.ItemChecklistInterface?.Draw(Main.spriteBatch, new GameTime());
 
 							if (ItemChecklistUI.hoverText != "")
 							{
-								float x = Main.fontMouseText.MeasureString(ItemChecklistUI.hoverText).X;
+								float x = FontAssets.MouseText.Value.MeasureString(ItemChecklistUI.hoverText).X;
 								Vector2 vector = new Vector2((float)Main.mouseX, (float)Main.mouseY) + new Vector2(16f, 16f);
 								if (vector.Y > (float)(Main.screenHeight - 30))
 								{
@@ -138,7 +143,7 @@ namespace ItemChecklist
 								{
 									vector.X = (float)(Main.screenWidth - x - 30);
 								}
-								Utils.DrawBorderStringFourWay(Main.spriteBatch, Main.fontMouseText, ItemChecklistUI.hoverText, vector.X, vector.Y, new Color((int)Main.mouseTextColor, (int)Main.mouseTextColor, (int)Main.mouseTextColor, (int)Main.mouseTextColor), Color.Black, Vector2.Zero, 1f);
+								Utils.DrawBorderStringFourWay(Main.spriteBatch, FontAssets.MouseText.Value, ItemChecklistUI.hoverText, vector.X, vector.Y, new Color((int)Main.mouseTextColor, (int)Main.mouseTextColor, (int)Main.mouseTextColor, (int)Main.mouseTextColor), Color.Black, Vector2.Zero, 1f);
 							}
 
 						}

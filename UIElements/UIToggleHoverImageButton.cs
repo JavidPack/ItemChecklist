@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.Audio;
+using Terraria.ID;
 using Terraria.UI;
 
 namespace ItemChecklist.UIElements
@@ -47,7 +49,7 @@ namespace ItemChecklist.UIElements
 		public override void MouseOver(UIMouseEvent evt)
 		{
 			base.MouseOver(evt);
-			Main.PlaySound(12, -1, -1, 1, 1f, 0f);
+			SoundEngine.PlaySound(SoundID.MenuTick);
 		}
 	}
 
@@ -80,7 +82,7 @@ namespace ItemChecklist.UIElements
 		public override void MouseOver(UIMouseEvent evt)
 		{
 			base.MouseOver(evt);
-			Main.PlaySound(12, -1, -1, 1, 1f, 0f);
+			SoundEngine.PlaySound(SoundID.MenuTick);
 		}
 
 		public void SetVisibility(float whenActive, float whenInactive)

@@ -2,8 +2,10 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using ReLogic.Graphics;
+using ReLogic.Content;
 using System;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
 
@@ -47,7 +49,7 @@ namespace ItemChecklist.UIElements
 			BorderColor = Color.White;
 			//			keyBoardInput.newKeyEvent += KeyboardInput_newKeyEvent;
 
-			Texture2D texture = ItemChecklist.instance.GetTexture("UIElements/closeButtonSmallWhite");
+			Texture2D texture = ItemChecklist.instance.Assets.Request<Texture2D>("UIElements/closeButtonSmallWhite", AssetRequestMode.ImmediateLoad).Value;
 			var closeButton = new UIHoverImageButton(texture, "");
 			closeButton.OnClick += (a, b) => SetText("");
 			closeButton.Left.Set(-20f, 1f);
@@ -260,12 +262,12 @@ namespace ItemChecklist.UIElements
 			{
 				color *= 0.5f;
 				//Utils.DrawBorderString(spriteBatch, hintText, new Vector2(space.X, space.Y), Color.Gray, 1f);
-				spriteBatch.DrawString(Main.fontMouseText, hintText, drawPos, color);
+				spriteBatch.DrawString(FontAssets.MouseText.Value, hintText, drawPos, color);
 			}
 			else
 			{
 				//Utils.DrawBorderString(spriteBatch, displayString, drawPos, Color.White, 1f);
-				spriteBatch.DrawString(Main.fontMouseText, displayString, drawPos, color);
+				spriteBatch.DrawString(FontAssets.MouseText.Value, displayString, drawPos, color);
 			}
 
 			//			CalculatedStyle innerDimensions2 = base.GetInnerDimensions();

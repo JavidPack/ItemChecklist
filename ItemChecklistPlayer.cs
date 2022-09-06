@@ -54,7 +54,7 @@ namespace ItemChecklist
 
 		public override void OnEnterWorld(Player player)
 		{
-			var itemChecklistPlayer = Main.LocalPlayer.GetModPlayer<ItemChecklistPlayer>(mod);
+			var itemChecklistPlayer = Main.LocalPlayer.GetModPlayer<ItemChecklistPlayer>();
 			ItemChecklistUI.Visible = false;
 			ItemChecklistUI.announce = announcePreference;
 			ItemChecklistUI.collectChestItems = findChestItemsPreference;
@@ -100,32 +100,39 @@ namespace ItemChecklist
 
 		private void ChestCheck()
 		{
-			if (!Main.dedServ && player.whoAmI == Main.myPlayer)
+			if (!Main.dedServ && Player.whoAmI == Main.myPlayer)
 			{
 				for (int i = 0; i < 59; i++)
 				{
-					if (!player.inventory[i].IsAir && !foundItem[player.inventory[i].type] && findableItems[player.inventory[i].type])
+					if (!Player.inventory[i].IsAir && !foundItem[Player.inventory[i].type] && findableItems[Player.inventory[i].type])
 					{
-						mod.GetGlobalItem<ItemChecklistGlobalItem>().ItemReceived(player.inventory[i]); // TODO: Analyze performance impact? do every 60 frames only?
+						// Looping because.. nervous that there might be more than one somehow?
+						foreach (ItemChecklistGlobalItem item in Mod.GetContent<ItemChecklistGlobalItem>())
+						{
+							item.ItemReceived(Player.inventory[i]); // TODO: Analyze performance impact? do every 60 frames only?
+						}
 					}
 				}
-				if (player.chest != -1 && (player.chest != player.lastChest || Main.autoPause && Main.gamePaused) && ItemChecklistUI.collectChestItems)
+				if (Player.chest != -1 && (Player.chest != Player.lastChest || Main.autoPause && Main.gamePaused) && ItemChecklistUI.collectChestItems)
 				{
 					//Main.NewText(player.chest + " " + player.lastChest);
 					Item[] items;
-					if (player.chest == -2) 
-						items = player.bank.item;
-					else if (player.chest == -3)
-						items = player.bank2.item;
-					else if (player.chest == -4)
-						items = player.bank3.item;
+					if (Player.chest == -2) 
+						items = Player.bank.item;
+					else if (Player.chest == -3)
+						items = Player.bank2.item;
+					else if (Player.chest == -4)
+						items = Player.bank3.item;
 					else
-						items = Main.chest[player.chest].item;
+						items = Main.chest[Player.chest].item;
 					for (int i = 0; i < 40; i++)
 					{
 						if (!items[i].IsAir && !foundItem[items[i].type] && findableItems[items[i].type])
 						{
-							mod.GetGlobalItem<ItemChecklistGlobalItem>().ItemReceived(items[i]);
+							foreach (ItemChecklistGlobalItem item in Mod.GetContent<ItemChecklistGlobalItem>())
+							{
+								item.ItemReceived(items[i]);
+							}
 						}
 					}
 				}
@@ -134,20 +141,17 @@ namespace ItemChecklist
 			}
 		}
 
-		public override TagCompound Save()
+		public override void SaveData(TagCompound tag)
 		{
 			// sanitize? should be possible to add item already seen.
-			return new TagCompound
-			{
-				["FoundItems"] = foundItems.Select(ItemIO.Save).ToList(),
-				//["SortMode"] = (int)ItemChecklistUI.sortMode,
-				["Announce"] = ItemChecklistUI.announce, // Not saving default, saving last used....good thing?
-				["CollectChestItems"] = ItemChecklistUI.collectChestItems,
-				["ShowCompleted"] = ItemChecklistUI.showCompleted,
-			};
+			tag["FoundItems"] = foundItems.Where(item => item.Name != "Unloaded Item").Select(ItemIO.Save).ToList();
+			//tag["SortMode"] = (int)ItemChecklistUI.sortMode;
+			tag["Announce"] = ItemChecklistUI.announce; // Not saving default, saving last used....good thing?
+			tag["CollectChestItems"] = ItemChecklistUI.collectChestItems;
+			tag["ShowCompleted"] = ItemChecklistUI.showCompleted;
 		}
 
-		public override void Load(TagCompound tag)
+		public override void LoadData(TagCompound tag)
 		{
 			foundItems = tag.GetList<TagCompound>("FoundItems").Select(ItemIO.Load).ToList();
 			//sortModePreference = (SortModes)tag.GetInt("SortMode");
