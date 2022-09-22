@@ -123,6 +123,8 @@ namespace ItemChecklist
 						items = Player.bank2.item;
 					else if (Player.chest == -4)
 						items = Player.bank3.item;
+					else if (Player.chest == -5)
+						items = Player.bank4.item;
 					else
 						items = Main.chest[Player.chest].item;
 					for (int i = 0; i < 40; i++)
