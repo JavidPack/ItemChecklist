@@ -286,7 +286,7 @@ namespace ItemChecklist
 			foreach (int type in itemTexturePreload)
 				Main.instance.LoadItem(type);
 
-			//Texture2D terrariaSort = ResizeImage(Main.inventorySortTexture[1], 24, 24);
+			Texture2D terrariaSort = ResizeImage(TextureAssets.InventorySort[0], 24, 24);
 			Texture2D rarity = ResizeImage(TextureAssets.Item[ItemID.MetalDetector], 24, 24);
 
 			// TODO: Implement Badge text as used in Item Checklist.
@@ -296,7 +296,7 @@ namespace ItemChecklist
 				new Sort("Value", "Images/sortValue", (x,y)=>x.value.CompareTo(y.value), x=>x.value.ToString()),
 				new Sort("Alphabetical", "Images/sortAZ", (x,y)=>x.Name.CompareTo(y.Name), x=>x.Name.ToString()),
 				new Sort("Rarity", rarity, (x,y)=> x.rare==y.rare ? x.value.CompareTo(y.value) : Math.Abs(x.rare).CompareTo(Math.Abs(y.rare)), x=>x.rare.ToString()),
-				//new Sort("Terraria Sort", terrariaSort, (x,y)=> -ItemChecklistUI.vanillaIDsInSortOrder[x.type].CompareTo(ItemChecklistUI.vanillaIDsInSortOrder[y.type]), x=>ItemChecklistUI.vanillaIDsInSortOrder[x.type].ToString()),
+				new Sort("Terraria Sort", terrariaSort, ByCreativeSortingId, ByCreativeSortingIdBadgeText),
 			};
 
 			Texture2D materialsIcon = Utilities.StackResizeImage(new[] { TextureAssets.Item[ItemID.SpellTome] }, 24, 24);
@@ -588,6 +588,22 @@ namespace ItemChecklist
 			}
 			SelectedSort = sorts[0];
 			SelectedCategory = categories[0];
+		}
+
+		private string ByCreativeSortingIdBadgeText(Item x) {
+			return ItemChecklistUI.vanillaIDsInSortOrder[x.type].ToString();
+		}
+
+		private int ByCreativeSortingId(Item x, Item y) {
+			return ItemChecklistUI.vanillaIDsInSortOrder[x.type].CompareTo(ItemChecklistUI.vanillaIDsInSortOrder[y.type]);
+
+			ContentSamples.CreativeHelper.ItemGroupAndOrderInGroup itemGroupAndOrderInGroup = ContentSamples.ItemCreativeSortingId[x.type];
+			ContentSamples.CreativeHelper.ItemGroupAndOrderInGroup itemGroupAndOrderInGroup2 = ContentSamples.ItemCreativeSortingId[y.type];
+			int num = itemGroupAndOrderInGroup.Group.CompareTo(itemGroupAndOrderInGroup2.Group);
+			if (num == 0)
+				num = itemGroupAndOrderInGroup.OrderInGroup.CompareTo(itemGroupAndOrderInGroup2.OrderInGroup);
+
+			return num;
 		}
 
 		// TODO: Update with new 1.4 values.

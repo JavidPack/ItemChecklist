@@ -22,18 +22,9 @@ namespace ItemChecklist
 		internal ItemChecklistUI ItemChecklistUI;
 		internal event Action<int> OnNewItem;
 
-		public ItemChecklist()
-		{
-		}
-
 		public override void Load()
 		{
 			// Latest uses ItemID.Sets.IsAMaterial, added 0.10.1.5
-			if (BuildInfo.tMLVersion < new Version(0, 10, 1, 5))
-			{
-				throw new Exception("\nThis mod uses functionality only present in the latest tModLoader. Please update tModLoader to use this mod\n\n");
-			}
-
 			instance = this;
 			ToggleChecklistHotKey = KeybindLoader.RegisterKeybind(this, "Toggle Item Checklist", "I");
 			MagicStorageIntegration.Load();
@@ -61,7 +52,7 @@ namespace ItemChecklist
 			UIElements.UIHorizontalGrid.moreRightTexture = null;
 		}
 
-		public override void AddRecipes()
+		public void SetupUI()
 		{
 			if (!Main.dedServ)
 			{
@@ -69,6 +60,7 @@ namespace ItemChecklist
 				//ItemChecklistUI.Activate();
 				ItemChecklistInterface = new UserInterface();
 				ItemChecklistInterface.SetState(ItemChecklistUI);
+				ItemChecklistUI.Visible = false;
 			}
 		}
 
@@ -113,6 +105,10 @@ namespace ItemChecklist
 
 	public class ItemChecklistSystem : ModSystem
 	{
+		public override void AddRecipes() {
+			ItemChecklist.instance.SetupUI();
+		}
+
 		public override void UpdateUI(GameTime gameTime)
 		{
 			ItemChecklist.ItemChecklistInterface?.Update(gameTime); 

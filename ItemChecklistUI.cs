@@ -16,6 +16,8 @@ using Terraria.ModLoader;
 using Terraria.UI;
 
 using UIItemSlot = ItemChecklist.UIElements.UIItemSlot;
+using Steamworks;
+using System.Runtime.CompilerServices;
 
 namespace ItemChecklist
 {
@@ -206,9 +208,8 @@ namespace ItemChecklist
 			Item[] itemSlotItems = new Item[ItemLoader.ItemCount];
 			for (int i = 0; i < ItemLoader.ItemCount; i++)
 			{
-				Item item = new Item();
-				item.SetDefaults(i, false); // 300 ms vs 30 ms
-				if (item.type == 0)
+				Item item = ContentSamples.ItemsByType[i];
+				if (item.type == ItemID.None)
 					continue;
 				itemSlots[i] = new UIItemSlot(item, i);
 				itemSlotItems[i] = item;
@@ -232,6 +233,23 @@ namespace ItemChecklist
 			{
 				vanillaIDsInSortOrder[i] = Array.FindIndex(vanillaIDsInSortOrderTemp, x => x == i);
 			}
+
+			List<Item> list = ContentSamples.ItemsByType.Values.ToList();
+			IOrderedEnumerable<IGrouping<ContentSamples.CreativeHelper.ItemGroup, ContentSamples.CreativeHelper.ItemGroupAndOrderInGroup>> orderedEnumerable = from x in list
+																								   select new ContentSamples.CreativeHelper.ItemGroupAndOrderInGroup(x) into x
+																								   group x by x.Group into @group
+																								   orderby (int)@group.Key
+																								   select @group;
+			int order = 0;
+			foreach (IGrouping<ContentSamples.CreativeHelper.ItemGroup, ContentSamples.CreativeHelper.ItemGroupAndOrderInGroup> item2 in orderedEnumerable) {
+				foreach (ContentSamples.CreativeHelper.ItemGroupAndOrderInGroup item3 in item2) {
+					//vanillaIDsInSortOrder[order] = item3.ItemType;
+					// TODO...rename?
+					vanillaIDsInSortOrder[item3.ItemType] = order;
+					order++;
+				}
+			}
+
 
 			modnames = new List<string>() { "All", "Vanilla" };
 			modnames.AddRange(ModLoader.Mods.Where(mod => mod.GetContent<ModItem>().Any()).Select(x => x.Name)/*.Where(x => x != "ModLoader")*/);
@@ -323,10 +341,13 @@ namespace ItemChecklist
 
 			if (buttonsHaveDummyTextures)
 			{
-				Texture2D foundFilterTexture = Utilities.ResizeImage(ItemChecklist.instance.Assets.Request<Texture2D>("Images/filterFound"), 32, 32);
+				Main.instance.LoadItem(ItemID.Megaphone);
+				Main.instance.LoadItem(ItemID.Book);
+
+				Texture2D foundFilterTexture = Utilities.ResizeImage(ItemChecklist.instance.Assets.Request<Texture2D>("Images/filterFound", AssetRequestMode.ImmediateLoad), 32, 32);
 				Texture2D muteButtonTexture = Utilities.ResizeImage(TextureAssets.Item[ItemID.Megaphone], 32, 32);
 				//Texture2D sortButtonTexture = Utilities.ResizeImage(Main.itemTexture[ItemID.ToxicFlask], 32, 32);
-				Texture2D modFilterButtonTexture = Utilities.ResizeImage(ItemChecklist.instance.Assets.Request<Texture2D>("Images/filterMod"), 32, 32);
+				Texture2D modFilterButtonTexture = Utilities.ResizeImage(ItemChecklist.instance.Assets.Request<Texture2D>("Images/filterMod", AssetRequestMode.ImmediateLoad), 32, 32);
 				Texture2D collectChestItemsButtonTexture = Utilities.ResizeImage(TextureAssets.Cursors[8], 32, 32);
 				Texture2D showBadgeButtonTexture = Utilities.ResizeImage(TextureAssets.Item[ItemID.Book], 32, 32); // Main.extraTexture[58]
 
@@ -449,6 +470,12 @@ namespace ItemChecklist
 		private void ValidateItemDescription()
 		{
 			updateNeeded = true;
+		}
+
+		public override void Draw(SpriteBatch spriteBatch) {
+			if (buttonsHaveDummyTextures)
+				return;
+			base.Draw(spriteBatch);
 		}
 
 		protected override void DrawSelf(SpriteBatch spriteBatch)

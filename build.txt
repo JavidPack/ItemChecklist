@@ -1,12 +1,11 @@
 ﻿author = jopojelly
-version = 0.5.2
+version = 0.6
 displayName = Item Checklist
 homepage = https://forums.terraria.org/index.php?threads/item-checklist-in-game-100-item-collection-checklist.52786/
 hideCode = false
 hideResources = false
 includeSource = true
-languageVersion = 6
 includePDB = true
 notworkingside = Client
 buildIgnore = .vs\*, Properties\*, *.csproj, *.user, obj\*, bin\*, *.config, lib\*, .gitignore, .git\*
-weakReferences = MagicStorage@0.4.3.1
+weakReferences = MagicStorage@0.5.7.4
