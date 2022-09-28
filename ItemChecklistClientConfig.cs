@@ -18,7 +18,7 @@ namespace ItemChecklist
 		[Header("Automatic Settings")]
 		// non-player specific stuff:
 
-		[DefaultValue(typeof(Vector2), "475, 350")]
+		[DefaultValue(typeof(Vector2), "475, 370")]
 		[Range(0f, 1920f)]
 		[Label("Item Checklist Size")]
 		[Tooltip("Size of the Item Checklist UI. This will automatically save, no need to adjust")]

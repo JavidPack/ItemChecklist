@@ -18,6 +18,7 @@ using Terraria.UI;
 using UIItemSlot = ItemChecklist.UIElements.UIItemSlot;
 using Steamworks;
 using System.Runtime.CompilerServices;
+using System.ComponentModel;
 
 namespace ItemChecklist
 {
@@ -37,6 +38,7 @@ namespace ItemChecklist
 		internal NewUITextBox itemDescriptionFilter;
 		internal SharedUI sharedUI;
 		public UIGrid checklistGrid;
+		public UICollectionBar collectionBar;
 		//public static SortModes sortMode = SortModes.TerrariaSort;
 
 		float spacing = 8f;
@@ -80,7 +82,7 @@ namespace ItemChecklist
 			mainPanel.Width.Set(475f, 0f); // + 30
 			mainPanel.MinWidth.Set(415f, 0f);
 			mainPanel.MaxWidth.Set(884f, 0f);
-			mainPanel.Height.Set(350, 0f);
+			mainPanel.Height.Set(370, 0f);
 			mainPanel.MinHeight.Set(263, 0f);
 			mainPanel.MaxHeight.Set(1000, 0f);
 			//mainPanel.BackgroundColor = Color.LightBlue;
@@ -187,19 +189,26 @@ namespace ItemChecklist
 			checklistGrid.alternateSort = ItemGridSort;
 			checklistGrid.Top.Pixels = top;
 			checklistGrid.Width.Set(-25f, 1f);
-			checklistGrid.Height.Set(-top, 1f);
+			checklistGrid.Height.Set(-top - 24, 1f);
 			checklistGrid.ListPadding = 2f;
 			checklistPanel.Append(checklistGrid);
 
 			FixedUIScrollbar checklistListScrollbar = new FixedUIScrollbar();
 			checklistListScrollbar.SetView(100f, 1000f);
 			checklistListScrollbar.Top.Pixels = top;
-			checklistListScrollbar.Height.Set(-top, 1f);
+			checklistListScrollbar.Height.Set(-top - 24, 1f);
 			checklistListScrollbar.HAlign = 1f;
 			checklistPanel.Append(checklistListScrollbar);
 			checklistGrid.SetScrollbar(checklistListScrollbar);
 
 			// Checklistlist populated when the panel is shown: UpdateCheckboxes()
+			collectionBar = new UICollectionBar() {
+				Width = new StyleDimension(0f, 1f),
+				Height = new StyleDimension(15f, 0f),
+				VAlign = 1f,
+			};
+
+			checklistPanel.Append(collectionBar);
 
 			Append(mainPanel);
 
@@ -338,6 +347,7 @@ namespace ItemChecklist
 			if (!updateNeeded) { return; }
 			updateNeeded = false;
 			checklistGrid.Clear();
+			collectionBar.RecalculateBars();
 
 			if (buttonsHaveDummyTextures)
 			{
