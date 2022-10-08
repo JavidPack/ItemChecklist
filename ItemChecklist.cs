@@ -92,6 +92,26 @@ namespace ItemChecklist
 					OnIsItemFindable += blackListChecker;
 					return "RegisterSuccess";
 				}
+				else if (message == "ModifyFindableFlag")
+				{
+					if (Main.gameMenu)
+					{
+						return "NotInGame";
+					}
+					int type = args[1] as int;
+					bool findable = args[2] as bool;
+					Main.LocalPlayer.GetModPlayer<ItemChecklistPlayer>().findableItems[type] = findable;
+					return "ModifySuccess";
+				}
+				else if (message == "IsFindable")
+				{
+					if (Main.gameMenu)
+					{
+						return null;
+					}
+					int type = args[1] as int;
+					return Main.LocalPlayer.GetModPlayer<ItemChecklistPlayer>().findableItems[type];
+				}
 				else
 				{
 					Logger.Error("ItemChecklist Call Error: Unknown Message: " + message);
