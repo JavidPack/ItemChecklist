@@ -21,6 +21,7 @@ namespace ItemChecklist
 		internal static UserInterface ItemChecklistInterface;
 		internal ItemChecklistUI ItemChecklistUI;
 		internal event Action<int> OnNewItem;
+		internal event Func<int, Player, bool> OnIsItemFindable;
 
 		public override void Load()
 		{
@@ -85,6 +86,12 @@ namespace ItemChecklist
 					OnNewItem += callback;
 					return "RegisterSuccess";
 				}
+				else if (message == "RegisterForIsItemFindable")
+				{
+					Func<int, Player, bool> blackListChecker = args[1] as Func<int, Player, bool>;
+					OnIsItemFindable += blackListChecker;
+					return "RegisterSuccess";
+				}
 				else
 				{
 					Logger.Error("ItemChecklist Call Error: Unknown Message: " + message);
@@ -100,6 +107,11 @@ namespace ItemChecklist
 		internal void NewItem(int type)
 		{
 			OnNewItem?.Invoke(type);
+		}
+
+		internal void IsItemFindable(int type, Player player)
+		{
+			OnIsItemFindable?.Invoke(type, player);
 		}
 	}
 
