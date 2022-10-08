@@ -62,6 +62,13 @@ namespace ItemChecklist
 			ItemChecklistUI.showCompleted = showCompletedPreference;
 			ItemChecklist.instance.ItemChecklistUI.RefreshPreferences();
 			ItemChecklist.instance.ItemChecklistUI.UpdateNeeded();
+			for (var i = 0; i < ItemLoader.ItemCount; i++)
+			{
+				if (!ItemChecklist.instance.IsItemFindable(i, player))
+				{
+					findableItems[i] = false;
+				}
+			}
 		}
 
 		// Do I need to use Initialize? I think so because of cloning.
