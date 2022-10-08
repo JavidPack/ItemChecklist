@@ -109,9 +109,13 @@ namespace ItemChecklist
 			OnNewItem?.Invoke(type);
 		}
 
-		internal void IsItemFindable(int type, Player player)
+		internal bool IsItemFindable(int type, Player player)
 		{
-			OnIsItemFindable?.Invoke(type, player);
+			if (OnIsItemFindable == null)
+			{
+				return true;
+			}
+			return OnIsItemFindable.Invoke(type, player);
 		}
 	}
 
