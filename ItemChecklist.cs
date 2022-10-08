@@ -21,12 +21,14 @@ namespace ItemChecklist
 		internal static UserInterface ItemChecklistInterface;
 		internal ItemChecklistUI ItemChecklistUI;
 		internal event Action<int> OnNewItem;
+		internal List<int> UnfindableItems;
 
 		public override void Load()
 		{
 			// Latest uses ItemID.Sets.IsAMaterial, added 0.10.1.5
 			instance = this;
 			ToggleChecklistHotKey = KeybindLoader.RegisterKeybind(this, "Toggle Item Checklist", "I");
+			UnfindableItems = new List<int>();
 			MagicStorageIntegration.Load();
 
 			if (!Main.dedServ)
@@ -44,6 +46,7 @@ namespace ItemChecklist
 			instance = null;
 			ToggleChecklistHotKey = null;
 			ItemChecklistInterface = null;
+			UnfindableItems = null;
 			MagicStorageIntegration.Unload();
 
 			UIElements.UICheckbox.checkboxTexture = null;
@@ -84,6 +87,42 @@ namespace ItemChecklist
 					Action<int> callback = args[1] as Action<int>;
 					OnNewItem += callback;
 					return "RegisterSuccess";
+				}
+				else if (message == "RegisterUnfindableItems")
+				{
+					int[] unfindableItems = args[1] as int[];
+					for (var i = 0; i < unfindableItems; i++)
+					{
+						if (unfindableItems[i] < 0 || unfindableItems[i] > ItemLoader.ItemCount)
+						{
+							throw new IndexOutOfRangeException("Attempted to register item type out of range");
+						}
+						if (!UnfindableItems.Contains(unfindableItems[i])
+						{
+							UnfindableItems.Add(unfindableItems[i]);
+						}
+					}
+					return "RegisterSuccess";
+				}
+				else if (message == "ModifyFindableFlag")
+				{
+					if (Main.gameMenu)
+					{
+						return "NotInGame";
+					}
+					int type = args[1] as int;
+					bool findable = args[2] as bool;
+					Main.LocalPlayer.GetModPlayer<ItemChecklistPlayer>().findableItems[type] = findable;
+					return "ModifySuccess";
+				}
+				else if (message == "IsFindable")
+				{
+					if (Main.gameMenu)
+					{
+						return null;
+					}
+					int type = args[1] as int;
+					return Main.LocalPlayer.GetModPlayer<ItemChecklistPlayer>().findableItems[type];
 				}
 				else
 				{
