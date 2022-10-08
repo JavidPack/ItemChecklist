@@ -21,13 +21,14 @@ namespace ItemChecklist
 		internal static UserInterface ItemChecklistInterface;
 		internal ItemChecklistUI ItemChecklistUI;
 		internal event Action<int> OnNewItem;
-		internal event Func<int, Player, bool> OnIsItemFindable;
+		internal List<int> UnfindableItems;
 
 		public override void Load()
 		{
 			// Latest uses ItemID.Sets.IsAMaterial, added 0.10.1.5
 			instance = this;
 			ToggleChecklistHotKey = KeybindLoader.RegisterKeybind(this, "Toggle Item Checklist", "I");
+			UnfindableItems = new List<int>();
 			MagicStorageIntegration.Load();
 
 			if (!Main.dedServ)
@@ -45,6 +46,7 @@ namespace ItemChecklist
 			instance = null;
 			ToggleChecklistHotKey = null;
 			ItemChecklistInterface = null;
+			UnfindableItems = null;
 			MagicStorageIntegration.Unload();
 
 			UIElements.UICheckbox.checkboxTexture = null;
@@ -86,10 +88,20 @@ namespace ItemChecklist
 					OnNewItem += callback;
 					return "RegisterSuccess";
 				}
-				else if (message == "RegisterForIsItemFindable")
+				else if (message == "RegisterUnfindableItems")
 				{
-					Func<int, Player, bool> blackListChecker = args[1] as Func<int, Player, bool>;
-					OnIsItemFindable += blackListChecker;
+					int[] unfindableItems = args[1] as int[];
+					for (var i = 0; i < unfindableItems; i++)
+					{
+						if (unfindableItems[i] < 0 || unfindableItems[i] > ItemLoader.ItemCount)
+						{
+							throw new IndexOutOfRangeException("Attempted to register item type out of range");
+						}
+						if (!UnfindableItems.Contains(unfindableItems[i])
+						{
+							UnfindableItems.Add(unfindableItems[i]);
+						}
+					}
 					return "RegisterSuccess";
 				}
 				else if (message == "ModifyFindableFlag")
@@ -127,15 +139,6 @@ namespace ItemChecklist
 		internal void NewItem(int type)
 		{
 			OnNewItem?.Invoke(type);
-		}
-
-		internal bool IsItemFindable(int type, Player player)
-		{
-			if (OnIsItemFindable == null)
-			{
-				return true;
-			}
-			return OnIsItemFindable.Invoke(type, player);
 		}
 	}
 
