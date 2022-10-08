@@ -62,13 +62,6 @@ namespace ItemChecklist
 			ItemChecklistUI.showCompleted = showCompletedPreference;
 			ItemChecklist.instance.ItemChecklistUI.RefreshPreferences();
 			ItemChecklist.instance.ItemChecklistUI.UpdateNeeded();
-			for (var i = 0; i < ItemLoader.ItemCount; i++)
-			{
-				if (!ItemChecklist.instance.IsItemFindable(i, player))
-				{
-					findableItems[i] = false;
-				}
-			}
 		}
 
 		// Do I need to use Initialize? I think so because of cloning.
@@ -81,7 +74,7 @@ namespace ItemChecklist
 				findableItems = new bool[ItemLoader.ItemCount];
 				for (int i = 0; i < ItemLoader.ItemCount; i++)
 				{
-					if (i > 0 && !ItemID.Sets.Deprecated[i] && ItemLoader.GetItem(i) is not Terraria.ModLoader.Default.UnloadedItem && ItemChecklistUI.vanillaIDsInSortOrder != null && ItemChecklistUI.vanillaIDsInSortOrder[i] != -1) // TODO, is this guaranteed?
+					if (i > 0 && !ItemID.Sets.Deprecated[i] && ItemLoader.GetItem(i) is not Terraria.ModLoader.Default.UnloadedItem && ItemChecklistUI.vanillaIDsInSortOrder != null && ItemChecklistUI.vanillaIDsInSortOrder[i] != -1 && !ItemChecklist.instance.UnfindableItems.Contains(i)) // TODO, is this guaranteed?
 					{
 						totalItemsToFind++;
 						findableItems[i] = true;
