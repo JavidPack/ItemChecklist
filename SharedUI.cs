@@ -10,8 +10,11 @@ using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
 using Terraria.GameContent.UI.States;
 using Terraria.ID;
+using Terraria.Localization;
+
 using static ItemChecklist.Utilities;
 using Terraria.ModLoader;
+using Terraria.WorldBuilding;
 
 // Copied from my Recipe Browser mod.
 namespace ItemChecklist
@@ -55,8 +58,163 @@ namespace ItemChecklist
 			}
 		}
 
+		private const string LocalizationKey = "Mods.ItemChecklist.SharedUI.";
+		private static LocalizedText cycleAmmoTypesText;
+		private static LocalizedText cycleUsedAmmoTypesText;
+		private static LocalizedText mutuallyExclusiveFilterVanityText;
+		private static LocalizedText mutuallyExclusiveFilterArmorText;
+		private static LocalizedText categoryAllText;
+		private static LocalizedText categoryMeleeText;
+		private static LocalizedText categoryYoyoText;
+		private static LocalizedText categoryMagicText;
+		private static LocalizedText categoryRangedText;
+		private static LocalizedText sortUseAmmoTypeText;
+		private static LocalizedText categoryThrowingText;
+		private static LocalizedText categorySummonText;
+		private static LocalizedText categorySentryText;
+		private static LocalizedText sortDamageText;
+		private static LocalizedText categoryToolsText;
+		private static LocalizedText categoryPickaxesText;
+		private static LocalizedText categoryAxesText;
+		private static LocalizedText categoryHammersText;
+		private static LocalizedText categoryArmorText;
+		private static LocalizedText categoryWeaponsText;
+		private static LocalizedText sortItemIdText;
+		private static LocalizedText sortValueText;
+		private static LocalizedText sortAlphabeticalText;
+		private static LocalizedText sortRarityText;
+		private static LocalizedText sortTerrariaSortText;
+		private static LocalizedText filterMaterialsText;
+		private static LocalizedText sortPickPower;
+		private static LocalizedText sortAxePower;
+		private static LocalizedText sortHammerPower;
+		private static LocalizedText categoryHead;
+		private static LocalizedText categoryBody;
+		private static LocalizedText categoryLegs;
+		private static LocalizedText sortDefense;
+		private static LocalizedText categoryTiles;
+		private static LocalizedText categoryContainersText;
+		private static LocalizedText categoryWiringText;
+		private static LocalizedText categoryStatuesText;
+		private static LocalizedText categoryDoorsText;
+		private static LocalizedText categoryChairsText;
+		private static LocalizedText categoryTablesText;
+		private static LocalizedText categoryLightSourcesText;
+		private static LocalizedText categoryTorchesText;
+		private static LocalizedText categoryWallsText;
+		private static LocalizedText categoryAccessoriesText;
+		private static LocalizedText categoryWingsText;
+		private static LocalizedText categoryAmmoText;
+		private static LocalizedText categoryPotionsText;
+		private static LocalizedText categoryHealthPotionsText;
+		private static LocalizedText categoryManaPotionsText;
+		private static LocalizedText categoryBuffPotionsText;
+		private static LocalizedText categoryExpertText;
+		private static LocalizedText categoryPetsText;
+		private static LocalizedText categoryLightPetsText;
+		private static LocalizedText categoryMountsText;
+		private static LocalizedText categoryCartsText;
+		private static LocalizedText categoryHooksText;
+		private static LocalizedText categoryDyesText;
+		private static LocalizedText categoryHairDyesText;
+		private static LocalizedText categoryBossSummonsText;
+		private static LocalizedText categoryConsumablesText;
+		private static LocalizedText categoryCapturedNPCText;
+		private static LocalizedText categoryFishingText;
+		private static LocalizedText categoryPolesText;
+		private static LocalizedText categoryBaitText;
+		private static LocalizedText categoryQuestFishText;
+		private static LocalizedText categoryExtractinatorText;
+		private static LocalizedText categoryOtherText;
+		private static LocalizedText sortPlaceTileText;
+		private static LocalizedText sortAmmoTypeText;
+		private static LocalizedText sortHealLifeText;
+		private static LocalizedText sortHealManaText;
+		private static LocalizedText sortGrappleRangeText;
+		private static LocalizedText sortProgressionOrderText;
+		private static LocalizedText sortPolePowerText;
+		private static LocalizedText sortBaitPowerText;
+        
 		public SharedUI() {
 			instance = this;
+
+			mutuallyExclusiveFilterVanityText = Language.GetOrRegister( LocalizationKey + nameof(mutuallyExclusiveFilterVanityText) );
+			mutuallyExclusiveFilterArmorText = Language.GetOrRegister( LocalizationKey + nameof(mutuallyExclusiveFilterArmorText) );
+			cycleAmmoTypesText = Language.GetOrRegister( LocalizationKey + nameof(cycleAmmoTypesText) );
+			cycleUsedAmmoTypesText = Language.GetOrRegister( LocalizationKey + nameof(cycleUsedAmmoTypesText) );
+			categoryAllText = Language.GetOrRegister( LocalizationKey + nameof(categoryAllText) );
+			categoryMeleeText = Language.GetOrRegister( LocalizationKey + nameof(categoryMeleeText) );
+			categoryYoyoText = Language.GetOrRegister( LocalizationKey + nameof(categoryYoyoText) );
+			categoryMagicText = Language.GetOrRegister( LocalizationKey + nameof(categoryMagicText) );
+			categoryRangedText = Language.GetOrRegister( LocalizationKey + nameof(categoryRangedText) );
+			sortUseAmmoTypeText = Language.GetOrRegister( LocalizationKey + nameof(sortUseAmmoTypeText) );
+			categoryThrowingText = Language.GetOrRegister( LocalizationKey + nameof(categoryThrowingText) );
+			categorySummonText = Language.GetOrRegister( LocalizationKey + nameof(categorySummonText) );
+			categorySentryText = Language.GetOrRegister( LocalizationKey + nameof(categorySentryText) );
+			sortDamageText = Language.GetOrRegister( LocalizationKey + nameof(sortDamageText) );
+			categoryToolsText = Language.GetOrRegister( LocalizationKey + nameof(categoryToolsText) );
+			categoryPickaxesText = Language.GetOrRegister( LocalizationKey + nameof(categoryPickaxesText) );
+			categoryAxesText = Language.GetOrRegister( LocalizationKey + nameof(categoryAxesText) );
+			categoryHammersText = Language.GetOrRegister( LocalizationKey + nameof(categoryHammersText) );
+			categoryArmorText = Language.GetOrRegister( LocalizationKey + nameof(categoryArmorText) );
+			categoryWeaponsText = Language.GetOrRegister( LocalizationKey + nameof(categoryWeaponsText) );
+			sortValueText = Language.GetOrRegister( LocalizationKey + nameof(sortValueText) );
+			sortAlphabeticalText = Language.GetOrRegister( LocalizationKey + nameof(sortAlphabeticalText) );
+			sortRarityText = Language.GetOrRegister( LocalizationKey + nameof(sortRarityText) );
+			sortTerrariaSortText = Language.GetOrRegister( LocalizationKey + nameof(sortTerrariaSortText) );
+			filterMaterialsText = Language.GetOrRegister( LocalizationKey + nameof(filterMaterialsText) );
+			sortPickPower = Language.GetOrRegister( LocalizationKey + nameof(sortPickPower) );
+			sortAxePower = Language.GetOrRegister( LocalizationKey + nameof(sortAxePower) );
+			sortHammerPower = Language.GetOrRegister( LocalizationKey + nameof(sortHammerPower) );
+			categoryHead = Language.GetOrRegister( LocalizationKey + nameof(categoryHead) );
+			categoryBody = Language.GetOrRegister( LocalizationKey + nameof(categoryBody) );
+			categoryLegs = Language.GetOrRegister( LocalizationKey + nameof(categoryLegs) );
+			sortDefense = Language.GetOrRegister( LocalizationKey + nameof(sortDefense) );
+			categoryTiles = Language.GetOrRegister( LocalizationKey + nameof(categoryTiles) );
+			categoryContainersText = Language.GetOrRegister( LocalizationKey + nameof(categoryContainersText) );
+			categoryWiringText = Language.GetOrRegister( LocalizationKey + nameof(categoryWiringText) );
+			categoryStatuesText = Language.GetOrRegister( LocalizationKey + nameof(categoryStatuesText) );
+			categoryDoorsText = Language.GetOrRegister( LocalizationKey + nameof(categoryDoorsText) );
+			categoryChairsText = Language.GetOrRegister( LocalizationKey + nameof(categoryChairsText) );
+			categoryTablesText = Language.GetOrRegister( LocalizationKey + nameof(categoryTablesText) );
+			categoryLightSourcesText = Language.GetOrRegister( LocalizationKey + nameof(categoryLightSourcesText) );
+			categoryTorchesText = Language.GetOrRegister( LocalizationKey + nameof(categoryTorchesText) );
+			categoryWallsText = Language.GetOrRegister( LocalizationKey + nameof(categoryWallsText) );
+			categoryAccessoriesText = Language.GetOrRegister( LocalizationKey + nameof(categoryAccessoriesText) );
+			categoryWingsText = Language.GetOrRegister( LocalizationKey + nameof(categoryWingsText) );
+			categoryAmmoText = Language.GetOrRegister( LocalizationKey + nameof(categoryAmmoText) );
+			categoryPotionsText = Language.GetOrRegister( LocalizationKey + nameof(categoryPotionsText) );
+			categoryHealthPotionsText = Language.GetOrRegister( LocalizationKey + nameof(categoryHealthPotionsText) );
+			categoryManaPotionsText = Language.GetOrRegister( LocalizationKey + nameof(categoryManaPotionsText) );
+			categoryBuffPotionsText = Language.GetOrRegister( LocalizationKey + nameof(categoryBuffPotionsText) );
+			categoryExpertText = Language.GetOrRegister( LocalizationKey + nameof(categoryExpertText) );
+			categoryPetsText = Language.GetOrRegister( LocalizationKey + nameof(categoryPetsText) );
+			categoryPetsText = Language.GetOrRegister( LocalizationKey + nameof(categoryPetsText) );
+			categoryLightPetsText = Language.GetOrRegister( LocalizationKey + nameof(categoryLightPetsText) );
+			categoryMountsText = Language.GetOrRegister( LocalizationKey + nameof(categoryMountsText) );
+			categoryCartsText = Language.GetOrRegister( LocalizationKey + nameof(categoryCartsText) );
+			categoryHooksText = Language.GetOrRegister( LocalizationKey + nameof(categoryHooksText) );
+			categoryDyesText = Language.GetOrRegister( LocalizationKey + nameof(categoryDyesText) );
+			categoryDyesText = Language.GetOrRegister( LocalizationKey + nameof(categoryDyesText) );
+			categoryHairDyesText = Language.GetOrRegister( LocalizationKey + nameof(categoryHairDyesText) );
+			categoryBossSummonsText = Language.GetOrRegister( LocalizationKey + nameof(categoryBossSummonsText) );
+			categoryConsumablesText = Language.GetOrRegister( LocalizationKey + nameof(categoryConsumablesText) );
+			categoryCapturedNPCText = Language.GetOrRegister( LocalizationKey + nameof(categoryCapturedNPCText) );
+			categoryFishingText = Language.GetOrRegister( LocalizationKey + nameof(categoryFishingText) );
+			categoryPolesText = Language.GetOrRegister( LocalizationKey + nameof(categoryPolesText) );
+			categoryBaitText = Language.GetOrRegister( LocalizationKey + nameof(categoryBaitText) );
+			categoryQuestFishText = Language.GetOrRegister( LocalizationKey + nameof(categoryQuestFishText) );
+			categoryExtractinatorText = Language.GetOrRegister( LocalizationKey + nameof(categoryExtractinatorText) );
+			categoryOtherText = Language.GetOrRegister( LocalizationKey + nameof(categoryOtherText) );
+			sortItemIdText = Language.GetOrRegister( LocalizationKey + nameof(sortItemIdText) );
+			sortPlaceTileText = Language.GetOrRegister( LocalizationKey + nameof(sortPlaceTileText) );
+			sortAmmoTypeText = Language.GetOrRegister( LocalizationKey + nameof(sortAmmoTypeText) );
+			sortHealLifeText = Language.GetOrRegister( LocalizationKey + nameof(sortHealLifeText) );
+			sortHealManaText = Language.GetOrRegister( LocalizationKey + nameof(sortHealManaText) );
+			sortGrappleRangeText = Language.GetOrRegister( LocalizationKey + nameof(sortGrappleRangeText) );
+			sortProgressionOrderText = Language.GetOrRegister( LocalizationKey + nameof(sortProgressionOrderText) );
+			sortPolePowerText = Language.GetOrRegister( LocalizationKey + nameof(sortPolePowerText) );
+			sortBaitPowerText = Language.GetOrRegister( LocalizationKey + nameof(sortBaitPowerText) );
 		}
 
 		internal void Initialize() {
@@ -292,17 +450,17 @@ namespace ItemChecklist
 			// TODO: Implement Badge text as used in Item Checklist.
 			sorts = new List<Sort>()
 			{
-				new Sort("ItemID", "Images/sortItemID", (x,y)=>x.type.CompareTo(y.type), x=>x.type.ToString()),
-				new Sort("Value", "Images/sortValue", (x,y)=>x.value.CompareTo(y.value), x=>x.value.ToString()),
-				new Sort("Alphabetical", "Images/sortAZ", (x,y)=>x.Name.CompareTo(y.Name), x=>x.Name.ToString()),
-				new Sort("Rarity", rarity, (x,y)=> x.rare==y.rare ? x.value.CompareTo(y.value) : Math.Abs(x.rare).CompareTo(Math.Abs(y.rare)), x=>x.rare.ToString()),
-				new Sort("Terraria Sort", terrariaSort, ByCreativeSortingId, ByCreativeSortingIdBadgeText),
+				new Sort(sortItemIdText.Value, "Images/sortItemID", (x,y)=>x.type.CompareTo(y.type), x=>x.type.ToString()),
+				new Sort(sortValueText.Value, "Images/sortValue", (x,y)=>x.value.CompareTo(y.value), x=>x.value.ToString()),
+				new Sort(sortAlphabeticalText.Value, "Images/sortAZ", (x,y)=>x.Name.CompareTo(y.Name), x=>x.Name.ToString()),
+				new Sort(sortRarityText.Value, rarity, (x,y)=> x.rare==y.rare ? x.value.CompareTo(y.value) : Math.Abs(x.rare).CompareTo(Math.Abs(y.rare)), x=>x.rare.ToString()),
+				new Sort(sortTerrariaSortText.Value, terrariaSort, ByCreativeSortingId, ByCreativeSortingIdBadgeText),
 			};
 
 			Texture2D materialsIcon = Utilities.StackResizeImage(new[] { TextureAssets.Item[ItemID.SpellTome] }, 24, 24);
 			filters = new List<Filter>()
 			{
-				new Filter("Materials", x=>ItemID.Sets.IsAMaterial[x.type], materialsIcon),
+				new Filter(filterMaterialsText.Value, x=>ItemID.Sets.IsAMaterial[x.type], materialsIcon),
 			};
 
 			// TODOS: Vanity armor, grapple, cart, potions buffs
@@ -343,8 +501,8 @@ namespace ItemChecklist
 			var ammoFilters = sortedAmmoTypes.Select(ammoType => new Filter(Lang.GetItemNameValue(ammoType), x => x.ammo == ammoType, ResizeImage(TextureAssets.Item[ammoType], 24, 24))).ToList();
 			var useAmmoFilters = sortedUseAmmoTypes.Select(ammoType => new Filter(Lang.GetItemNameValue(ammoType), x => x.useAmmo == ammoType, ResizeImage(TextureAssets.Item[ammoType], 24, 24))).ToList();
 
-			var ammoFilter = new CycleFilter("Cycle Ammo Types", "Images/sortAmmo", ammoFilters);
-			var useAmmoFilter = new CycleFilter("Cycle Used Ammo Types", "Images/sortAmmo", useAmmoFilters);
+			var ammoFilter = new CycleFilter(cycleAmmoTypesText.Value, "Images/sortAmmo", ammoFilters);
+			var useAmmoFilter = new CycleFilter(cycleUsedAmmoTypesText.Value, "Images/sortAmmo", useAmmoFilters);
 
 			Texture2D smallMelee = ResizeImage(TextureAssets.Item[ItemID.GoldBroadsword], 24, 24);
 			Texture2D smallYoyo = ResizeImage(TextureAssets.Item[Main.rand.Next(yoyos)], 24, 24); //Main.rand.Next(ItemID.Sets.Yoyo) ItemID.Yelets
@@ -403,47 +561,47 @@ namespace ItemChecklist
 			// Potions, other?
 			// should inherit children?
 			// should have other category?
-			if (WorldGen.statueList == null)
+			if (GenVars.statueList == null)
 				WorldGen.SetupStatueList();
 
-			var vanity = new MutuallyExclusiveFilter("Vanity", x => x.vanity, smallVanity);
-			var armor = new MutuallyExclusiveFilter("Armor", x => !x.vanity, smallNonVanity);
+			var vanity = new MutuallyExclusiveFilter(mutuallyExclusiveFilterVanityText.Value, x => x.vanity, smallVanity);
+			var armor = new MutuallyExclusiveFilter(mutuallyExclusiveFilterArmorText.Value, x => !x.vanity, smallNonVanity);
 			vanity.SetExclusions(new List<Filter>() { vanity, armor });
 			armor.SetExclusions(new List<Filter>() { vanity, armor });
 
 			categories = new List<Category>() {
-				new Category("All", x=> true, smallAll),
+				new Category(categoryAllText.Value, x=> true, smallAll),
 				// TODO: Filter out tools from weapons. Separate belongs and doesn't belong predicates? How does inheriting work again? Other?
-				new Category("Weapons"/*, x=>x.damage>0*/, x=> false, smallWeapons) { //"Images/sortDamage"
+				new Category(categoryWeaponsText.Value/*, x=>x.damage>0*/, x=> false, smallWeapons) { //"Images/sortDamage"
 					subCategories = new List<Category>() {
-						new Category("Melee", x=>x.CountsAsClass(DamageClass.Melee) && !(x.pick>0 || x.axe>0 || x.hammer>0), smallMelee),
-						new Category("Yoyo", x=>ItemID.Sets.Yoyo[x.type], smallYoyo),
-						new Category("Magic", x=>x.CountsAsClass(DamageClass.Magic), smallMagic),
-						new Category("Ranged", x=>x.CountsAsClass(DamageClass.Ranged) && x.ammo == 0, smallRanged) // TODO and ammo no
+						new Category(categoryMeleeText.Value, x=>x.CountsAsClass(DamageClass.Melee) && !(x.pick>0 || x.axe>0 || x.hammer>0), smallMelee),
+						new Category(categoryYoyoText.Value, x=>ItemID.Sets.Yoyo[x.type], smallYoyo),
+						new Category(categoryMagicText.Value, x=>x.CountsAsClass(DamageClass.Magic), smallMagic),
+						new Category(categoryRangedText.Value, x=>x.CountsAsClass(DamageClass.Ranged) && x.ammo == 0, smallRanged) // TODO and ammo no
 						{
-							sorts = new List<Sort>() { new Sort("Use Ammo Type", "Images/sortAmmo", (x,y)=>x.useAmmo.CompareTo(y.useAmmo), x => x.useAmmo.ToString()), },
+							sorts = new List<Sort>() { new Sort(sortUseAmmoTypeText.Value, "Images/sortAmmo", (x,y)=>x.useAmmo.CompareTo(y.useAmmo), x => x.useAmmo.ToString()), },
 							filters = new List<Filter> { useAmmoFilter }
 						},
-						new Category("Throwing", x=>x.CountsAsClass(DamageClass.Throwing), smallThrown),
-						new Category("Summon", x=>x.CountsAsClass(DamageClass.Summon) && !x.sentry, smallSummon),
-						new Category("Sentry", x=>x.CountsAsClass(DamageClass.Summon) && x.sentry, smallSentry),
+						new Category(categoryThrowingText.Value, x=>x.CountsAsClass(DamageClass.Throwing), smallThrown),
+						new Category(categorySummonText.Value, x=>x.CountsAsClass(DamageClass.Summon) && !x.sentry, smallSummon),
+						new Category(categorySentryText.Value, x=>x.CountsAsClass(DamageClass.Summon) && x.sentry, smallSentry),
 					},
-					sorts = new List<Sort>() { new Sort("Damage", "Images/sortDamage", (x,y)=>x.damage.CompareTo(y.damage), x => x.damage.ToString()), },
+					sorts = new List<Sort>() { new Sort(sortDamageText.Value, "Images/sortDamage", (x,y)=>x.damage.CompareTo(y.damage), x => x.damage.ToString()), },
 				},
-				new Category("Tools"/*,x=>x.pick>0||x.axe>0||x.hammer>0*/, x=>false, smallTools) {
+				new Category(categoryToolsText.Value/*,x=>x.pick>0||x.axe>0||x.hammer>0*/, x=>false, smallTools) {
 					subCategories = new List<Category>() {
-						new Category("Pickaxes", x=>x.pick>0, "Images/sortPick") { sorts = new List<Sort>() { new Sort("Pick Power", "Images/sortPick", (x,y)=>x.pick.CompareTo(y.pick), x => x.pick.ToString()), } },
-						new Category("Axes", x=>x.axe>0, "Images/sortAxe"){ sorts = new List<Sort>() { new Sort("Axe Power", "Images/sortAxe", (x,y)=>x.axe.CompareTo(y.axe), x => (x.axe*5).ToString()), } },
-						new Category("Hammers", x=>x.hammer>0, "Images/sortHammer"){ sorts = new List<Sort>() { new Sort("Hammer Power", "Images/sortHammer", (x,y)=>x.hammer.CompareTo(y.hammer), x => x.hammer.ToString()), } },
+						new Category(categoryPickaxesText.Value, x=>x.pick>0, "Images/sortPick") { sorts = new List<Sort>() { new Sort(sortPickPower.Value, "Images/sortPick", (x,y)=>x.pick.CompareTo(y.pick), x => x.pick.ToString()), } },
+						new Category(categoryAxesText.Value, x=>x.axe>0, "Images/sortAxe"){ sorts = new List<Sort>() { new Sort(sortAxePower.Value, "Images/sortAxe", (x,y)=>x.axe.CompareTo(y.axe), x => (x.axe*5).ToString()), } },
+						new Category(categoryHammersText.Value, x=>x.hammer>0, "Images/sortHammer"){ sorts = new List<Sort>() { new Sort(sortHammerPower.Value, "Images/sortHammer", (x,y)=>x.hammer.CompareTo(y.hammer), x => x.hammer.ToString()), } },
 					},
 				},
-				new Category("Armor"/*,  x=>x.headSlot!=-1||x.bodySlot!=-1||x.legSlot!=-1*/, x => false, smallArmor) {
+				new Category(categoryArmorText.Value/*,  x=>x.headSlot!=-1||x.bodySlot!=-1||x.legSlot!=-1*/, x => false, smallArmor) {
 					subCategories = new List<Category>() {
-						new Category("Head", x=>x.headSlot!=-1, smallHead),
-						new Category("Body", x=>x.bodySlot!=-1, smallBody),
-						new Category("Legs", x=>x.legSlot!=-1, smallLegs),
+						new Category(categoryHead.Value, x=>x.headSlot!=-1, smallHead),
+						new Category(categoryBody.Value, x=>x.bodySlot!=-1, smallBody),
+						new Category(categoryLegs.Value, x=>x.legSlot!=-1, smallLegs),
 					},
-					sorts = new List<Sort>() { new Sort("Defense", "Images/sortDefense", (x,y)=>x.defense.CompareTo(y.defense), x => x.defense.ToString()), },
+					sorts = new List<Sort>() { new Sort(sortDefense.Value, "Images/sortDefense", (x,y)=>x.defense.CompareTo(y.defense), x => x.defense.ToString()), },
 					filters = new List<Filter> {
 						//new Filter("Vanity", x=>x.vanity, RecipeBrowser.instance.Assets.Request<Texture2D>("Images/sortDefense")),
 						// Prefer MutuallyExclusiveFilter for this, rather than CycleFilter since there are only 2 options.
@@ -455,18 +613,18 @@ namespace ItemChecklist
 						//new DoubleFilter("Vanity", "Armor", smallVanity2, x=>x.vanity),
 					}
 				},
-				new Category("Tiles", x=>x.createTile!=-1, smallTiles)
+				new Category(categoryTiles.Value, x=>x.createTile!=-1, smallTiles)
 				{
 					subCategories = new List<Category>()
 					{
-						new Category("Containers", x=>x.createTile!=-1 && Main.tileContainer[x.createTile], smallContainer),
-						new Category("Wiring", x=>ItemID.Sets.SortingPriorityWiring[x.type] > -1, smallWiring),
-						new Category("Statues", x=>WorldGen.statueList.Any(point => point.X == x.createTile && point.Y == x.placeStyle), smallStatue),
-						new Category("Doors", x=> x.createTile > 0 && TileID.Sets.RoomNeeds.CountsAsDoor.Contains(x.createTile), ResizeImage2424(TextureAssets.Item[ItemID.WoodenDoor])),
-						new Category("Chairs", x=> x.createTile > 0 && TileID.Sets.RoomNeeds.CountsAsChair.Contains(x.createTile), ResizeImage2424(TextureAssets.Item[ItemID.WoodenChair])),
-						new Category("Tables", x=> x.createTile > 0 && TileID.Sets.RoomNeeds.CountsAsTable.Contains(x.createTile), ResizeImage2424(TextureAssets.Item[ItemID.PalmWoodTable])),
-						new Category("Light Sources", x=> x.createTile > 0 && TileID.Sets.RoomNeeds.CountsAsTorch.Contains(x.createTile), ResizeImage2424(TextureAssets.Item[ItemID.ChineseLantern])),
-						new Category("Torches", x=> x.createTile > 0 && TileID.Sets.Torch[x.createTile], ResizeImage2424(TextureAssets.Item[ItemID.RainbowTorch])),
+						new Category(categoryContainersText.Value, x=>x.createTile!=-1 && Main.tileContainer[x.createTile], smallContainer),
+						new Category(categoryWiringText.Value, x=>ItemID.Sets.SortingPriorityWiring[x.type] > -1, smallWiring),
+						new Category(categoryStatuesText.Value, x=>GenVars.statueList.Any(point => point.X == x.createTile && point.Y == x.placeStyle), smallStatue),
+						new Category(categoryDoorsText.Value, x=> x.createTile > 0 && TileID.Sets.RoomNeeds.CountsAsDoor.Contains(x.createTile), ResizeImage2424(TextureAssets.Item[ItemID.WoodenDoor])),
+						new Category(categoryChairsText.Value, x=> x.createTile > 0 && TileID.Sets.RoomNeeds.CountsAsChair.Contains(x.createTile), ResizeImage2424(TextureAssets.Item[ItemID.WoodenChair])),
+						new Category(categoryTablesText.Value, x=> x.createTile > 0 && TileID.Sets.RoomNeeds.CountsAsTable.Contains(x.createTile), ResizeImage2424(TextureAssets.Item[ItemID.PalmWoodTable])),
+						new Category(categoryLightSourcesText.Value, x=> x.createTile > 0 && TileID.Sets.RoomNeeds.CountsAsTorch.Contains(x.createTile), ResizeImage2424(TextureAssets.Item[ItemID.ChineseLantern])),
+						new Category(categoryTorchesText.Value, x=> x.createTile > 0 && TileID.Sets.Torch[x.createTile], ResizeImage2424(TextureAssets.Item[ItemID.RainbowTorch])),
 						// Banners => Banner Bonanza mod integration
 						//TextureAssets.Item[Main.rand.Next(TileID.Sets.RoomNeeds.CountsAsTable)] doesn't work since those are tilesids. yoyo approach?
 						// todo: music box
@@ -481,80 +639,80 @@ namespace ItemChecklist
 						//} , smallContainer),
 					},
 					sorts = new List<Sort>() {
-						new Sort("Place Tile", smallSortTiles, (x,y)=> x.createTile == y.createTile ? x.placeStyle.CompareTo(y.placeStyle) : x.createTile.CompareTo(y.createTile), x=>$"{x.createTile},{x.placeStyle}"),
+						new Sort(sortPlaceTileText.Value, smallSortTiles, (x,y)=> x.createTile == y.createTile ? x.placeStyle.CompareTo(y.placeStyle) : x.createTile.CompareTo(y.createTile), x=>$"{x.createTile},{x.placeStyle}"),
 					}
 				},
-				new Category("Walls", x=>x.createWall!=-1, smallWalls),
-				new Category("Accessories", x=>x.accessory, smallAccessories)
+				new Category(categoryWallsText.Value, x=>x.createWall!=-1, smallWalls),
+				new Category(categoryAccessoriesText.Value, x=>x.accessory, smallAccessories)
 				{
 					subCategories = new List<Category>()
 					{
-						new Category("Wings", x=>x.wingSlot > 0, smallWings)
+						new Category(categoryWingsText.Value, x=>x.wingSlot > 0, smallWings)
 					}
 				},
-				new Category("Ammo", x=>x.ammo!=0, "Images/sortAmmo")
+				new Category(categoryAmmoText.Value, x=>x.ammo!=0, "Images/sortAmmo")
 				{
 					sorts = new List<Sort>() {
-						new Sort("Ammo Type", "Images/sortAmmo", (x,y)=>x.ammo.CompareTo(y.ammo), x => $"{x.ammo}"),
-						new Sort("Damage", "Images/sortDamage", (x,y)=>x.damage.CompareTo(y.damage), x => $"{x.damage}"),
+						new Sort(sortAmmoTypeText.Value, "Images/sortAmmo", (x,y)=>x.ammo.CompareTo(y.ammo), x => $"{x.ammo}"),
+						new Sort(sortDamageText.Value, "Images/sortDamage", (x,y)=>x.damage.CompareTo(y.damage), x => $"{x.damage}"),
 					},
 					filters = new List<Filter> { ammoFilter }
 					// TODO: Filters/Subcategories for all ammo types? // each click cycles?
 				},
-				new Category("Potions", x=> (x.UseSound?.IsTheSameAs(SoundID.Item3) == true), smallPotions)
+				new Category(categoryPotionsText.Value, x=> (x.UseSound?.IsTheSameAs(SoundID.Item3) == true), smallPotions)
 				{
 					subCategories = new List<Category>() {
-						new Category("Health Potions", x=>x.healLife > 0, smallHealth) { sorts = new List<Sort>() { new Sort("Heal Life", smallHealth, (x,y)=>x.healLife.CompareTo(y.healLife), x => $"{x.healLife}"), } },
-						new Category("Mana Potions", x=>x.healMana > 0, smallMana) { sorts = new List<Sort>() { new Sort("Heal Mana", smallMana, (x,y)=>x.healMana.CompareTo(y.healMana), x => $"{x.healMana}"),   }},
-						new Category("Buff Potions", x=>(x.UseSound?.IsTheSameAs(SoundID.Item3) == true) && x.buffType > 0, smallBuff),
+						new Category(categoryHealthPotionsText.Value, x=>x.healLife > 0, smallHealth) { sorts = new List<Sort>() { new Sort(sortHealLifeText.Value, smallHealth, (x,y)=>x.healLife.CompareTo(y.healLife), x => $"{x.healLife}"), } },
+						new Category(categoryManaPotionsText.Value, x=>x.healMana > 0, smallMana) { sorts = new List<Sort>() { new Sort(sortHealManaText.Value, smallMana, (x,y)=>x.healMana.CompareTo(y.healMana), x => $"{x.healMana}"),   }},
+						new Category(categoryBuffPotionsText.Value, x=>(x.UseSound?.IsTheSameAs(SoundID.Item3) == true) && x.buffType > 0, smallBuff),
 						// Todo: Automatic other category?
 					}
 				},
-				new Category("Expert", x=>x.expert, smallExpert),
-				new Category("Pets"/*, x=> x.buffType > 0 && (Main.vanityPet[x.buffType] || Main.lightPet[x.buffType])*/, x=>false, smallPetsLightPets){
+				new Category(categoryExpertText.Value, x=>x.expert, smallExpert),
+				new Category(categoryPetsText.Value/*, x=> x.buffType > 0 && (Main.vanityPet[x.buffType] || Main.lightPet[x.buffType])*/, x=>false, smallPetsLightPets){
 					subCategories = new List<Category>() {
-						new Category("Pets", x=>Main.vanityPet[x.buffType], smallPets),
-						new Category("Light Pets", x=>Main.lightPet[x.buffType], smallLightPets),
+						new Category(categoryPetsText.Value, x=>Main.vanityPet[x.buffType], smallPets),
+						new Category(categoryLightPetsText.Value, x=>Main.lightPet[x.buffType], smallLightPets),
 					}
 				},
-				new Category("Mounts", x=>x.mountType != -1, smallMounts)
+				new Category(categoryMountsText.Value, x=>x.mountType != -1, smallMounts)
 				{
 					subCategories = new List<Category>()
 					{
-						new Category("Carts", x=>x.mountType != -1 && MountID.Sets.Cart[x.mountType], smallCarts) // TODO: need mountType check? inherited parent logic or parent unions children?
+						new Category(categoryCartsText.Value, x=>x.mountType != -1 && MountID.Sets.Cart[x.mountType], smallCarts) // TODO: need mountType check? inherited parent logic or parent unions children?
 					}
 				},
-				new Category("Hooks", x=> Main.projHook[x.shoot], smallHooks){
+				new Category(categoryHooksText.Value, x=> Main.projHook[x.shoot], smallHooks){
 					sorts = new List<Sort>() {
-						new Sort("Grapple Range", smallHooks, (x,y)=> GrappleRange(x.shoot).CompareTo(GrappleRange(y.shoot)), x => $"{GrappleRange(x.shoot)}"),
+						new Sort(sortGrappleRangeText.Value, smallHooks, (x,y)=> GrappleRange(x.shoot).CompareTo(GrappleRange(y.shoot)), x => $"{GrappleRange(x.shoot)}"),
 					},
 				},
-				new Category("Dyes", x=>false, smallBothDyes)
+				new Category(categoryDyesText.Value, x=>false, smallBothDyes)
 				{
 					subCategories = new List<Category>()
 					{
-						new Category("Dyes", x=>x.dye != 0, smallDyes),
-						new Category("Hair Dyes", x=>x.hairDye != -1, smallHairDye),
+						new Category(categoryDyesText.Value, x=>x.dye != 0, smallDyes),
+						new Category(categoryHairDyesText.Value, x=>x.hairDye != -1, smallHairDye),
 					}
 				},
-				new Category("Boss Summons", x=>ItemID.Sets.SortingPriorityBossSpawns[x.type] != -1 && x.type != ItemID.LifeCrystal && x.type != ItemID.ManaCrystal && x.type != ItemID.CellPhone && x.type != ItemID.IceMirror && x.type != ItemID.MagicMirror && x.type != ItemID.LifeFruit && x.netID != ItemID.TreasureMap || x.netID == ItemID.PirateMap, smallBossSummon) { // vanilla bug.
-					sorts = new List<Sort>() { new Sort("Progression Order", "Images/sortDamage", (x,y)=>ItemID.Sets.SortingPriorityBossSpawns[x.type].CompareTo(ItemID.Sets.SortingPriorityBossSpawns[y.type]), x => $"{ItemID.Sets.SortingPriorityBossSpawns[x.type]}"), }
+				new Category(categoryBossSummonsText.Value, x=>ItemID.Sets.SortingPriorityBossSpawns[x.type] != -1 && x.type != ItemID.LifeCrystal && x.type != ItemID.ManaCrystal && x.type != ItemID.CellPhone && x.type != ItemID.IceMirror && x.type != ItemID.MagicMirror && x.type != ItemID.LifeFruit && x.netID != ItemID.TreasureMap || x.netID == ItemID.PirateMap, smallBossSummon) { // vanilla bug.
+					sorts = new List<Sort>() { new Sort(sortProgressionOrderText.Value, "Images/sortDamage", (x,y)=>ItemID.Sets.SortingPriorityBossSpawns[x.type].CompareTo(ItemID.Sets.SortingPriorityBossSpawns[y.type]), x => $"{ItemID.Sets.SortingPriorityBossSpawns[x.type]}"), }
 				},
-				new Category("Consumables", x=> !(x.createWall > 0 || x.createTile > -1) && !(x.ammo > 0 && !x.notAmmo) && x.consumable, smallConsumables){
+				new Category(categoryConsumablesText.Value, x=> !(x.createWall > 0 || x.createTile > -1) && !(x.ammo > 0 && !x.notAmmo) && x.consumable, smallConsumables){
 					subCategories = new List<Category>() {
-						new Category("Captured NPC", x=>x.makeNPC != 0, ResizeImage2424(TextureAssets.Item[ItemID.GoldBunny])),
+						new Category(categoryCapturedNPCText.Value, x=>x.makeNPC != 0, ResizeImage2424(TextureAssets.Item[ItemID.GoldBunny])),
 					}
 				},
-				new Category("Fishing"/*, x=> x.fishingPole > 0 || x.bait>0|| x.questItem*/, x=>false, smallFishing){
+				new Category(categoryFishingText.Value/*, x=> x.fishingPole > 0 || x.bait>0|| x.questItem*/, x=>false, smallFishing){
 					subCategories = new List<Category>() {
-						new Category("Poles", x=>x.fishingPole > 0, "Images/sortFish") {sorts = new List<Sort>() { new Sort("Pole Power", "Images/sortFish", (x,y)=>x.fishingPole.CompareTo(y.fishingPole), x => $"{x.fishingPole}"), } },
-						new Category("Bait", x=>x.bait>0, "Images/sortBait") {sorts = new List<Sort>() { new Sort("Bait Power", "Images/sortBait", (x,y)=>x.bait.CompareTo(y.bait), x => $"{x.bait}"), } },
-						new Category("Quest Fish", x=>x.questItem, smallQuestFish),
+						new Category(categoryPolesText.Value, x=>x.fishingPole > 0, "Images/sortFish") {sorts = new List<Sort>() { new Sort(sortPolePowerText.Value, "Images/sortFish", (x,y)=>x.fishingPole.CompareTo(y.fishingPole), x => $"{x.fishingPole}"), } },
+						new Category(categoryBaitText.Value, x=>x.bait>0, "Images/sortBait") {sorts = new List<Sort>() { new Sort(sortBaitPowerText.Value, "Images/sortBait", (x,y)=>x.bait.CompareTo(y.bait), x => $"{x.bait}"), } },
+						new Category(categoryQuestFishText.Value, x=>x.questItem, smallQuestFish),
 					}
 				},
-				new Category("Extractinator", x=>ItemID.Sets.ExtractinatorMode[x.type] > -1, smallExtractinator),
+				new Category(categoryExtractinatorText.Value, x=>ItemID.Sets.ExtractinatorMode[x.type] > -1, smallExtractinator),
 				//modCategory,
-				new Category("Other", x=>BelongsInOther(x), smallOther),
+				new Category(categoryOtherText.Value, x=>BelongsInOther(x), smallOther),
 			};
 
 			/* Think about this one.
@@ -675,7 +833,7 @@ namespace ItemChecklist
 			this.belongs = belongs;
 
 			this.button = new UISilentImageButton(texture, name);
-			button.OnClick += (a, b) => {
+			button.OnLeftClick += (a, b) => {
 				button.selected = !button.selected;
 				ItemChecklistUI.instance.UpdateNeeded();
 				//Main.NewText("clicked on " + button.hoverText);
@@ -688,7 +846,7 @@ namespace ItemChecklist
 		List<Filter> exclusives;
 
 		public MutuallyExclusiveFilter(string name, Predicate<Item> belongs, Texture2D texture) : base(name, belongs, texture) {
-			button.OnClick += (a, b) => {
+			button.OnLeftClick += (a, b) => {
 				if (button.selected) {
 					foreach (var item in exclusives) {
 						if (item != this)
@@ -714,7 +872,7 @@ namespace ItemChecklist
 				return belongs(item) ^ right;
 			};
 			button = new UIBadgedSilentImageButton(texture, name + " (RMB)");
-			button.OnClick += (a, b) => {
+			button.OnLeftClick += (a, b) => {
 				button.selected = !button.selected;
 				ItemChecklistUI.instance.UpdateNeeded();
 				//Main.NewText("clicked on " + button.hoverText);
@@ -746,14 +904,14 @@ namespace ItemChecklist
 			//CycleFilter needs SharedUI.instance.updateNeeded to update image, since each filter acts independently.
 
 			var firstButton = new UISilentImageButton(texture, name);
-			firstButton.OnClick += (a, b) => ButtonBehavior(true);
+			firstButton.OnLeftClick += (a, b) => ButtonBehavior(true);
 			firstButton.OnRightClick += (a, b) => ButtonBehavior(false);
 
 			buttons.Add(firstButton);
 
 			for (int i = 0; i < filters.Count; i++) {
 				var buttonOption = new UISilentImageButton(filters[i].texture, filters[i].name);
-				buttonOption.OnClick += (a, b) => ButtonBehavior(true);
+				buttonOption.OnLeftClick += (a, b) => ButtonBehavior(true);
 				buttonOption.OnRightClick += (a, b) => ButtonBehavior(false);
 				buttonOption.OnMiddleClick += (a, b) => ButtonBehavior(false, true);
 				buttons.Add(buttonOption);
@@ -784,7 +942,7 @@ namespace ItemChecklist
 			this.sort = sort;
 			this.badge = badge;
 			button = new UISilentImageButton(texture, hoverText);
-			button.OnClick += (a, b) => {
+			button.OnLeftClick += (a, b) => {
 				SharedUI.instance.SelectedSort = this;
 			};
 		}
@@ -832,7 +990,7 @@ namespace ItemChecklist
 			this.belongs = belongs;
 
 			this.button = new UISilentImageButton(texture, name);
-			button.OnClick += (a, b) => {
+			button.OnLeftClick += (a, b) => {
 				//Main.NewText("clicked on " + button.hoverText);
 				SharedUI.instance.SelectedCategory = this;
 			};

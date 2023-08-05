@@ -20,6 +20,9 @@ using Steamworks;
 using System.Runtime.CompilerServices;
 using System.ComponentModel;
 
+using Terraria.Localization;
+
+
 namespace ItemChecklist
 {
 	class ItemChecklistUI : UIState
@@ -59,11 +62,42 @@ namespace ItemChecklist
 		internal List<string> modnames;
 		internal int currentMod = 0;
 
-		public string[] foundFilterStrings = { "All", "Unfound", "Found" };
+		public string[] foundFilterStrings;
+
+		const string LOCALIZATION_KEY = "Mods.ItemChecklist.Ui.";
+		public static LocalizedText ToggleCollectChestItemsText;
+		public static LocalizedText ToggleMessagesText;
+		public static LocalizedText ShowSortValueTextText;
+		public static LocalizedText FilterByNameText;
+		public static LocalizedText FilterByTooltipText;
+		public static LocalizedText CycleModFilterText;
+		public static LocalizedText CycleFoundFilterText;
+		public static LocalizedText ModnamesAllText;
+		public static LocalizedText FoundFilterAllText;
+		public static LocalizedText FoundFilterUnfoundText;
+		public static LocalizedText FoundFilterFoundText;
+		public static LocalizedText ModnamesVanillaText;
 
 		public ItemChecklistUI()
 		{
 			instance = this;
+			
+            
+			FilterByTooltipText = Language.GetOrRegister( LOCALIZATION_KEY + nameof(FilterByTooltipText) );
+			FilterByNameText = Language.GetOrRegister( LOCALIZATION_KEY + nameof(FilterByNameText) );
+			ToggleCollectChestItemsText = Language.GetOrRegister( LOCALIZATION_KEY + nameof(ToggleCollectChestItemsText) );
+			ToggleMessagesText = Language.GetOrRegister( LOCALIZATION_KEY + nameof(ToggleMessagesText) );
+			ShowSortValueTextText = Language.GetOrRegister( LOCALIZATION_KEY + nameof(ShowSortValueTextText) );
+			CycleModFilterText = Language.GetOrRegister( LOCALIZATION_KEY + nameof(CycleModFilterText) );
+			CycleFoundFilterText = Language.GetOrRegister( LOCALIZATION_KEY + nameof(CycleFoundFilterText) );
+			ModnamesAllText = Language.GetOrRegister( LOCALIZATION_KEY + nameof(ModnamesAllText) );
+			FoundFilterAllText = Language.GetOrRegister( LOCALIZATION_KEY + nameof(FoundFilterAllText) );
+			FoundFilterUnfoundText = Language.GetOrRegister( LOCALIZATION_KEY + nameof(FoundFilterUnfoundText) );
+			FoundFilterFoundText = Language.GetOrRegister( LOCALIZATION_KEY + nameof(FoundFilterFoundText) );
+			ModnamesVanillaText = Language.GetOrRegister( LOCALIZATION_KEY + nameof(ModnamesVanillaText) );
+			
+			
+			foundFilterStrings = new [] { FoundFilterAllText.Value , FoundFilterUnfoundText.Value , FoundFilterFoundText.Value };
 		}
 
 		public override void OnInitialize()
@@ -108,8 +142,8 @@ namespace ItemChecklist
 			// Because OnInitialize Happens during load and because we need it to happen for OnEnterWorld, use dummy sprite.
 			buttonsHaveDummyTextures = true;
 
-			foundFilterButton = new UIHoverImageButton(TextureAssets.MagicPixel.Value, "Cycle Found Filter: ??");
-			foundFilterButton.OnClick += (a, b) => ToggleFoundFilterButtonClicked(a, b, true);
+			foundFilterButton = new UIHoverImageButton(TextureAssets.MagicPixel.Value, CycleFoundFilterText.Format("??"));
+			foundFilterButton.OnLeftClick += (a, b) => ToggleFoundFilterButtonClicked(a, b, true);
 			foundFilterButton.OnRightClick += (a, b) => ToggleFoundFilterButtonClicked(a, b, false);
 			foundFilterButton.Top.Pixels = top;
 			checklistPanel.Append(foundFilterButton);
@@ -122,30 +156,30 @@ namespace ItemChecklist
 			//sortButton.Top.Pixels = top;
 			//checklistPanel.Append(sortButton);
 
-			modFilterButton = new UIHoverImageButton(TextureAssets.MagicPixel.Value, "Cycle Mod Filter: ??");
-			modFilterButton.OnClick += (a, b) => ToggleModFilterButtonClicked(a, b, true);
+			modFilterButton = new UIHoverImageButton(TextureAssets.MagicPixel.Value, CycleModFilterText.Format( "??" ));
+			modFilterButton.OnLeftClick += (a, b) => ToggleModFilterButtonClicked(a, b, true);
 			modFilterButton.OnRightClick += (a, b) => ToggleModFilterButtonClicked(a, b, false);
 			modFilterButton.Left.Pixels = left;
 			modFilterButton.Top.Pixels = top;
 			checklistPanel.Append(modFilterButton);
 			left += (int)spacing * 2 + 28;
 
-			muteButton = new UIToggleHoverImageButton(TextureAssets.MagicPixel.Value, ItemChecklist.instance.Assets.Request<Texture2D>("UIElements/closeButton", AssetRequestMode.ImmediateLoad).Value, "Toggle Messages", announce);
-			muteButton.OnClick += ToggleMuteButtonClicked;
+			muteButton = new UIToggleHoverImageButton(TextureAssets.MagicPixel.Value, ItemChecklist.instance.Assets.Request<Texture2D>("UIElements/closeButton", AssetRequestMode.ImmediateLoad).Value, ToggleMessagesText.Value, announce);
+			muteButton.OnLeftClick += ToggleMuteButtonClicked;
 			muteButton.Left.Pixels = left;
 			muteButton.Top.Pixels = top;
 			checklistPanel.Append(muteButton);
 			left += (int)spacing * 2 + 28;
 
-			collectChestItemsButton = new UIToggleHoverImageButton(TextureAssets.MagicPixel.Value, ItemChecklist.instance.Assets.Request<Texture2D>("UIElements/closeButton", AssetRequestMode.ImmediateLoad).Value, "Toggle Collect Chest Items", collectChestItems);
-			collectChestItemsButton.OnClick += ToggleFindChestItemsButtonClicked;
+			collectChestItemsButton = new UIToggleHoverImageButton(TextureAssets.MagicPixel.Value, ItemChecklist.instance.Assets.Request<Texture2D>("UIElements/closeButton", AssetRequestMode.ImmediateLoad).Value, ToggleCollectChestItemsText.Value, collectChestItems);
+			collectChestItemsButton.OnLeftClick += ToggleFindChestItemsButtonClicked;
 			collectChestItemsButton.Left.Pixels = left;
 			collectChestItemsButton.Top.Pixels = top;
 			checklistPanel.Append(collectChestItemsButton);
 			left += (int)spacing * 2 + 28;
 
-			showBadgeButton = new UIToggleHoverImageButton(TextureAssets.MagicPixel.Value, ItemChecklist.instance.Assets.Request<Texture2D>("UIElements/closeButton", AssetRequestMode.ImmediateLoad).Value, "Show Sort Value Text", showBadge);
-			showBadgeButton.OnClick += ToggleShowBadgeButtonClicked;
+			showBadgeButton = new UIToggleHoverImageButton(TextureAssets.MagicPixel.Value, ItemChecklist.instance.Assets.Request<Texture2D>("UIElements/closeButton", AssetRequestMode.ImmediateLoad).Value, ShowSortValueTextText.Value, showBadge);
+			showBadgeButton.OnLeftClick += ToggleShowBadgeButtonClicked;
 			showBadgeButton.Left.Pixels = left;
 			showBadgeButton.Top.Pixels = top;
 			checklistPanel.Append(showBadgeButton);
@@ -153,7 +187,7 @@ namespace ItemChecklist
 
 			top += 34;
 
-			itemNameFilter = new NewUITextBox("Filter by Name");
+			itemNameFilter = new NewUITextBox(FilterByNameText.Value);
 			itemNameFilter.OnTextChanged += () => { ValidateItemFilter(); updateNeeded = true; };
 			itemNameFilter.OnTabPressed += () => { itemDescriptionFilter.Focus(); };
 			itemNameFilter.Top.Pixels = top;
@@ -164,7 +198,7 @@ namespace ItemChecklist
 
 			top += 30;
 
-			itemDescriptionFilter = new NewUITextBox("Filter by tooltip");
+			itemDescriptionFilter = new NewUITextBox(FilterByTooltipText.Value);
 			itemDescriptionFilter.OnTextChanged += () => { ValidateItemDescription(); updateNeeded = true; };
 			itemDescriptionFilter.OnTabPressed += () => { itemNameFilter.Focus(); };
 			itemDescriptionFilter.Top.Pixels = top;
@@ -260,7 +294,7 @@ namespace ItemChecklist
 			}
 
 
-			modnames = new List<string>() { "All", "Vanilla" };
+			modnames = new List<string>() { ModnamesAllText.Value, ModnamesVanillaText.Value };
 			modnames.AddRange(ModLoader.Mods.Where(mod => mod.GetContent<ModItem>().Any()).Select(x => x.Name)/*.Where(x => x != "ModLoader")*/);
 
 			updateNeeded = true;
@@ -279,7 +313,7 @@ namespace ItemChecklist
 		{
 			SoundEngine.PlaySound(SoundID.MenuTick);
 			showCompleted = (3 + showCompleted + (left ? 1 : -1)) % 3;
-			foundFilterButton.hoverText = "Cycle Found Filter: " + foundFilterStrings[showCompleted];
+			foundFilterButton.hoverText = CycleFoundFilterText.Format( foundFilterStrings[showCompleted]);
 			UpdateNeeded();
 		}
 
@@ -302,7 +336,7 @@ namespace ItemChecklist
 		{
 			SoundEngine.PlaySound(SoundID.MenuTick);
 			currentMod = (modnames.Count + currentMod + (left ? 1 : -1)) % modnames.Count;
-			modFilterButton.hoverText = "Cycle Mod Filter: " + modnames[currentMod];
+			modFilterButton.hoverText = CycleModFilterText.Format( modnames[currentMod]);
 			UpdateNeeded();
 		}
 
@@ -322,9 +356,9 @@ namespace ItemChecklist
 
 		internal void RefreshPreferences()
 		{
-			foundFilterButton.hoverText = "Cycle Found Filter: " + foundFilterStrings[showCompleted];
+			foundFilterButton.hoverText = CycleFoundFilterText.Format( foundFilterStrings[showCompleted]);
 			//sortButton.hoverText = "Cycle Sort Method: " + sortMode.ToFriendlyString();
-			modFilterButton.hoverText = "Cycle Mod Filter: " + modnames[currentMod];
+			modFilterButton.hoverText = CycleModFilterText.Format( modnames[currentMod]);
 			muteButton.SetEnabled(announce);
 			collectChestItemsButton.SetEnabled(collectChestItems);
 			UpdateNeeded();
@@ -541,11 +575,11 @@ namespace ItemChecklist
 			UserInterface.ActiveInstance = temp;
 		}
 
-		public override void MouseDown(UIMouseEvent evt)
+		public override void LeftMouseDown(UIMouseEvent evt)
 		{
 			UserInterface temp = UserInterface.ActiveInstance;
 			UserInterface.ActiveInstance = ItemChecklist.ItemChecklistInterface;
-			base.MouseDown(evt);
+			base.LeftMouseDown(evt);
 			UserInterface.ActiveInstance = temp;
 		}
 	}

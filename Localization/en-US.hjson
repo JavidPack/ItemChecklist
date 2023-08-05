@@ -1,0 +1,127 @@
+Mods: {
+	ItemChecklist: {
+		Configs: {
+			ItemChecklistClientConfig: {
+				ShowItemModSource: {
+					Label: Show Item Mod Source
+					Tooltip: Show which mod adds which item in the recipe catalog. Disable for immersion.
+				}
+
+				DisplayName: Item Checklist Client Config
+				Headers.AutomaticSettings: Automatic Settings
+
+				ItemChecklistSize: {
+					Label: Item Checklist Size
+					Tooltip: Size of the Item Checklist UI. This will automatically save, no need to adjust
+				}
+
+				ItemChecklistPosition: {
+					Label: Item Checklist Position
+					Tooltip: Position of the Item Checklist UI. This will automatically save, no need to adjust
+				}
+			}
+		}
+
+		Keybinds.ToggleItemChecklist.DisplayName: Toggle Item Checklist
+		GlobalItem.ItemChecklistAnnounceText: You found your first {0}.     {1}/{2}   {3}%
+
+		UICollectionBar: {
+			collectionTotalText: Total: {0}/{1} ({2}% Collected)
+			collectionTerrariaText: Terraria: {0}/{1} ({2}% Collected)
+			collectionModText: "{0}: {1}/{2} ({3}% Collected)"
+		}
+
+		Ui: {
+			FilterByTooltipText: Filter by tooltip
+			FilterByNameText: Filter by Name
+			ToggleCollectChestItemsText: Toggle Collect Chest Items
+			ToggleMessagesText: Toggle Messages
+			ShowSortValueTextText: Show Sort Value Text
+			CycleModFilterText: Cycle Mod Filter: {0}
+			CycleFoundFilterText: Cycle Found Filter: {0}
+			ModnamesAllText: All
+			FoundFilterAllText: All
+			FoundFilterUnfoundText: Unfound
+			FoundFilterFoundText: Found
+			ModnamesVanillaText: Vanilla
+		}
+
+		SharedUI: {
+			mutuallyExclusiveFilterVanityText: Vanity
+			mutuallyExclusiveFilterArmorText: Armor
+			cycleAmmoTypesText: Cycle Ammo Types
+			cycleUsedAmmoTypesText: Cycle Used Ammo Types
+			categoryAllText: All
+			categoryMeleeText: Melee
+			categoryYoyoText: Yoyo
+			categoryMagicText: Magic
+			categoryRangedText: Ranged
+			sortUseAmmoTypeText: Use Ammo Type
+			categoryThrowingText: Throwing
+			categorySummonText: Summon
+			categorySentryText: Sentry
+			sortDamageText: Damage
+			categoryToolsText: Tools
+			categoryPickaxesText: Pickaxes
+			categoryAxesText: Axes
+			categoryHammersText: Hammers
+			categoryArmorText: Armor
+			categoryWeaponsText: Weapons
+			sortValueText: Value
+			sortAlphabeticalText: Alphabetical
+			sortRarityText: Rarity
+			sortTerrariaSortText: Terraria Sort
+			filterMaterialsText: Materials
+			sortPickPower: Pick Power
+			sortAxePower: Axe Power
+			sortHammerPower: Hammer Power
+			categoryHead: Head
+			categoryBody: Body
+			categoryLegs: Legs
+			sortDefense: Defense
+			categoryTiles: Tiles
+			categoryContainersText: Containers
+			categoryWiringText: Wiring
+			categoryStatuesText: Statues
+			categoryDoorsText: Doors
+			categoryChairsText: Chairs
+			categoryTablesText: Tables
+			categoryLightSourcesText: Light Sources
+			categoryTorchesText: Torches
+			categoryWallsText: Walls
+			categoryAccessoriesText: Accessories
+			categoryWingsText: Wings
+			categoryAmmoText: Ammo
+			categoryPotionsText: Potions
+			categoryHealthPotionsText: Health Potions
+			categoryManaPotionsText: Mana Potions
+			categoryBuffPotionsText: Buff Potions
+			categoryExpertText: Expert
+			categoryPetsText: Pets
+			categoryLightPetsText: Light Pets
+			categoryMountsText: Mounts
+			categoryCartsText: Carts
+			categoryHooksText: Hooks
+			categoryDyesText: Dyes
+			categoryHairDyesText: Hair Dyes
+			categoryBossSummonsText: Boss Summons
+			categoryConsumablesText: Consumables
+			categoryCapturedNPCText: Captured NPC
+			categoryFishingText: Fishing
+			categoryPolesText: Poles
+			categoryBaitText: Bait
+			categoryQuestFishText: Quest Fish
+			categoryExtractinatorText: Extractinator
+			categoryOtherText: Other
+			sortItemIdText: ItemID
+			sortPlaceTileText: Place Tile
+			sortAmmoTypeText: Ammo Type
+			sortHealLifeText: Heal Life
+			sortHealManaText: Heal Mana
+			sortGrappleRangeText: Grapple Range
+			sortProgressionOrderText: Progression Order
+			sortPolePowerText: Pole Power
+			sortBaitPowerText: Bait Power
+		}
+	}
+}

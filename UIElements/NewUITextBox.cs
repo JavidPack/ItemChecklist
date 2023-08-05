@@ -51,7 +51,7 @@ namespace ItemChecklist.UIElements
 
 			Texture2D texture = ItemChecklist.instance.Assets.Request<Texture2D>("UIElements/closeButtonSmallWhite", AssetRequestMode.ImmediateLoad).Value;
 			var closeButton = new UIHoverImageButton(texture, "");
-			closeButton.OnClick += (a, b) => SetText("");
+			closeButton.OnLeftClick += (a, b) => SetText("");
 			closeButton.Left.Set(-20f, 1f);
 			//closeButton.Top.Set(0f, .5f);
 			closeButton.VAlign = 0.5f;
@@ -59,10 +59,10 @@ namespace ItemChecklist.UIElements
 			Append(closeButton);
 		}
 
-		public override void Click(UIMouseEvent evt)
+		public override void LeftClick(UIMouseEvent evt)
 		{
 			Focus();
-			base.Click(evt);
+			base.LeftClick(evt);
 		}
 
 		public override void RightClick(UIMouseEvent evt)

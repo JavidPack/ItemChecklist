@@ -52,7 +52,7 @@ namespace ItemChecklist
 			}
 		}
 
-		public override void OnEnterWorld(Player player)
+		public override void OnEnterWorld()
 		{
 			var itemChecklistPlayer = Main.LocalPlayer.GetModPlayer<ItemChecklistPlayer>();
 			ItemChecklistUI.Visible = false;
