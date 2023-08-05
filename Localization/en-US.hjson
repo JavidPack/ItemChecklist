@@ -25,6 +25,12 @@ Mods: {
 		Keybinds.ToggleItemChecklist.DisplayName: Toggle Item Checklist
 		GlobalItem.ItemChecklistAnnounceText: You found your first {0}.     {1}/{2}   {3}%
 
+		UICollectionBar: {
+			collectionTotalText: Total: {0}/{1} ({2}% Collected)
+			collectionTerrariaText: Terraria: {0}/{1} ({2}% Collected)
+			collectionModText: "{0}: {1}/{2} ({3}% Collected)"
+		}
+
 		Ui: {
 			FilterByTooltipText: Filter by tooltip
 			FilterByNameText: Filter by Name

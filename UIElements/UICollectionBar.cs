@@ -8,6 +8,8 @@ using Terraria.GameContent;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ID;
+using Terraria.Localization;
+
 
 namespace ItemChecklist.UIElements
 {
@@ -31,8 +33,17 @@ namespace ItemChecklist.UIElements
 
 		private List<UICollectionBarItem> collectionBarItems;
 
+		private const string LocalizationKey = "Mods.ItemChecklist.UICollectionBar.";
+		private LocalizedText collectionTotalText;
+		private LocalizedText collectionTerrariaText;
+		private LocalizedText collectionModText;
+
 		public UICollectionBar() {
 			collectionBarItems = new List<UICollectionBarItem>();
+
+			collectionTotalText = Language.GetOrRegister(LocalizationKey + nameof(collectionTotalText));
+			collectionTerrariaText = Language.GetOrRegister(LocalizationKey + nameof(collectionTerrariaText));
+			collectionModText = Language.GetOrRegister(LocalizationKey + nameof(collectionModText));
 
 			RecalculateBars();
 		}
@@ -56,7 +67,7 @@ namespace ItemChecklist.UIElements
 			//Add the bestiary total to the bar
 			int total = ItemChecklistPlayer.totalItemsToFind;
 			int totalCollected = ItemChecklistPlayer.totalItemsFound;
-			collectionBarItems.Add(new UICollectionBarItem($"Total: {totalCollected}/{total} ({(float)totalCollected / total * 100f:N2}% Collected)", total, totalCollected, Main.OurFavoriteColor));
+			collectionBarItems.Add(new UICollectionBarItem(collectionTotalText.Format(totalCollected,total,$"{(float)totalCollected / total * 100f:N2}"), total, totalCollected, Main.OurFavoriteColor));
 
 			var data = ItemChecklistPlayer.foundItem.Zip(ContentSamples.ItemsByType.Values);
 			//.GroupBy(x=>x.Second.ModItem?.Mod.Name ?? "Terraria").ToDictionary(y=>y., x=>x);
@@ -64,7 +75,7 @@ namespace ItemChecklist.UIElements
 
 			//Add Terraria's item entries
 			int collected = items.Count(x => x.First);
-			collectionBarItems.Add(new UICollectionBarItem($"Terraria: {collected}/{items.Count} ({(float)collected / items.Count * 100f:N2}% Collected)", items.Count, collected, _colors[0]));
+			collectionBarItems.Add(new UICollectionBarItem(collectionTerrariaText.Format( collected,items.Count,$"{(float)collected / items.Count * 100f:N2})"), items.Count, collected, _colors[0]));
 
 			//Add the mod's item entries
 			for (int i = 0; i < ModLoader.Mods.Length; i++) {
@@ -72,7 +83,7 @@ namespace ItemChecklist.UIElements
 				if (!items.Any()) // No Items added by mod.
 					continue;
 				collected = items.Count(x => x.First);
-				collectionBarItems.Add(new UICollectionBarItem($"{ModLoader.Mods[i].DisplayName}: {collected}/{items.Count} ({(float)collected / items.Count * 100f:N2}% Collected)", items.Count, collected, _colors[i % _colors.Length]));
+				collectionBarItems.Add(new UICollectionBarItem(collectionModText.Format( ModLoader.Mods[i].DisplayName,collected,items.Count,$"{(float)collected / items.Count * 100f:N2}"), items.Count, collected, _colors[i % _colors.Length]));
 			}
 		}
 
