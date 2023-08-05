@@ -12,6 +12,7 @@ using Terraria.GameContent.UI.States;
 using Terraria.ID;
 using static ItemChecklist.Utilities;
 using Terraria.ModLoader;
+using Terraria.WorldBuilding;
 
 // Copied from my Recipe Browser mod.
 namespace ItemChecklist
@@ -403,7 +404,7 @@ namespace ItemChecklist
 			// Potions, other?
 			// should inherit children?
 			// should have other category?
-			if (WorldGen.statueList == null)
+			if (GenVars.statueList == null)
 				WorldGen.SetupStatueList();
 
 			var vanity = new MutuallyExclusiveFilter("Vanity", x => x.vanity, smallVanity);
@@ -461,7 +462,7 @@ namespace ItemChecklist
 					{
 						new Category("Containers", x=>x.createTile!=-1 && Main.tileContainer[x.createTile], smallContainer),
 						new Category("Wiring", x=>ItemID.Sets.SortingPriorityWiring[x.type] > -1, smallWiring),
-						new Category("Statues", x=>WorldGen.statueList.Any(point => point.X == x.createTile && point.Y == x.placeStyle), smallStatue),
+						new Category("Statues", x=>GenVars.statueList.Any(point => point.X == x.createTile && point.Y == x.placeStyle), smallStatue),
 						new Category("Doors", x=> x.createTile > 0 && TileID.Sets.RoomNeeds.CountsAsDoor.Contains(x.createTile), ResizeImage2424(TextureAssets.Item[ItemID.WoodenDoor])),
 						new Category("Chairs", x=> x.createTile > 0 && TileID.Sets.RoomNeeds.CountsAsChair.Contains(x.createTile), ResizeImage2424(TextureAssets.Item[ItemID.WoodenChair])),
 						new Category("Tables", x=> x.createTile > 0 && TileID.Sets.RoomNeeds.CountsAsTable.Contains(x.createTile), ResizeImage2424(TextureAssets.Item[ItemID.PalmWoodTable])),
@@ -675,7 +676,7 @@ namespace ItemChecklist
 			this.belongs = belongs;
 
 			this.button = new UISilentImageButton(texture, name);
-			button.OnClick += (a, b) => {
+			button.OnLeftClick += (a, b) => {
 				button.selected = !button.selected;
 				ItemChecklistUI.instance.UpdateNeeded();
 				//Main.NewText("clicked on " + button.hoverText);
@@ -688,7 +689,7 @@ namespace ItemChecklist
 		List<Filter> exclusives;
 
 		public MutuallyExclusiveFilter(string name, Predicate<Item> belongs, Texture2D texture) : base(name, belongs, texture) {
-			button.OnClick += (a, b) => {
+			button.OnLeftClick += (a, b) => {
 				if (button.selected) {
 					foreach (var item in exclusives) {
 						if (item != this)
@@ -714,7 +715,7 @@ namespace ItemChecklist
 				return belongs(item) ^ right;
 			};
 			button = new UIBadgedSilentImageButton(texture, name + " (RMB)");
-			button.OnClick += (a, b) => {
+			button.OnLeftClick += (a, b) => {
 				button.selected = !button.selected;
 				ItemChecklistUI.instance.UpdateNeeded();
 				//Main.NewText("clicked on " + button.hoverText);
@@ -746,14 +747,14 @@ namespace ItemChecklist
 			//CycleFilter needs SharedUI.instance.updateNeeded to update image, since each filter acts independently.
 
 			var firstButton = new UISilentImageButton(texture, name);
-			firstButton.OnClick += (a, b) => ButtonBehavior(true);
+			firstButton.OnLeftClick += (a, b) => ButtonBehavior(true);
 			firstButton.OnRightClick += (a, b) => ButtonBehavior(false);
 
 			buttons.Add(firstButton);
 
 			for (int i = 0; i < filters.Count; i++) {
 				var buttonOption = new UISilentImageButton(filters[i].texture, filters[i].name);
-				buttonOption.OnClick += (a, b) => ButtonBehavior(true);
+				buttonOption.OnLeftClick += (a, b) => ButtonBehavior(true);
 				buttonOption.OnRightClick += (a, b) => ButtonBehavior(false);
 				buttonOption.OnMiddleClick += (a, b) => ButtonBehavior(false, true);
 				buttons.Add(buttonOption);
@@ -784,7 +785,7 @@ namespace ItemChecklist
 			this.sort = sort;
 			this.badge = badge;
 			button = new UISilentImageButton(texture, hoverText);
-			button.OnClick += (a, b) => {
+			button.OnLeftClick += (a, b) => {
 				SharedUI.instance.SelectedSort = this;
 			};
 		}
@@ -832,7 +833,7 @@ namespace ItemChecklist
 			this.belongs = belongs;
 
 			this.button = new UISilentImageButton(texture, name);
-			button.OnClick += (a, b) => {
+			button.OnLeftClick += (a, b) => {
 				//Main.NewText("clicked on " + button.hoverText);
 				SharedUI.instance.SelectedCategory = this;
 			};

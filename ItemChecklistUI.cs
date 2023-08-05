@@ -109,7 +109,7 @@ namespace ItemChecklist
 			buttonsHaveDummyTextures = true;
 
 			foundFilterButton = new UIHoverImageButton(TextureAssets.MagicPixel.Value, "Cycle Found Filter: ??");
-			foundFilterButton.OnClick += (a, b) => ToggleFoundFilterButtonClicked(a, b, true);
+			foundFilterButton.OnLeftClick += (a, b) => ToggleFoundFilterButtonClicked(a, b, true);
 			foundFilterButton.OnRightClick += (a, b) => ToggleFoundFilterButtonClicked(a, b, false);
 			foundFilterButton.Top.Pixels = top;
 			checklistPanel.Append(foundFilterButton);
@@ -123,7 +123,7 @@ namespace ItemChecklist
 			//checklistPanel.Append(sortButton);
 
 			modFilterButton = new UIHoverImageButton(TextureAssets.MagicPixel.Value, "Cycle Mod Filter: ??");
-			modFilterButton.OnClick += (a, b) => ToggleModFilterButtonClicked(a, b, true);
+			modFilterButton.OnLeftClick += (a, b) => ToggleModFilterButtonClicked(a, b, true);
 			modFilterButton.OnRightClick += (a, b) => ToggleModFilterButtonClicked(a, b, false);
 			modFilterButton.Left.Pixels = left;
 			modFilterButton.Top.Pixels = top;
@@ -131,21 +131,21 @@ namespace ItemChecklist
 			left += (int)spacing * 2 + 28;
 
 			muteButton = new UIToggleHoverImageButton(TextureAssets.MagicPixel.Value, ItemChecklist.instance.Assets.Request<Texture2D>("UIElements/closeButton", AssetRequestMode.ImmediateLoad).Value, "Toggle Messages", announce);
-			muteButton.OnClick += ToggleMuteButtonClicked;
+			muteButton.OnLeftClick += ToggleMuteButtonClicked;
 			muteButton.Left.Pixels = left;
 			muteButton.Top.Pixels = top;
 			checklistPanel.Append(muteButton);
 			left += (int)spacing * 2 + 28;
 
 			collectChestItemsButton = new UIToggleHoverImageButton(TextureAssets.MagicPixel.Value, ItemChecklist.instance.Assets.Request<Texture2D>("UIElements/closeButton", AssetRequestMode.ImmediateLoad).Value, "Toggle Collect Chest Items", collectChestItems);
-			collectChestItemsButton.OnClick += ToggleFindChestItemsButtonClicked;
+			collectChestItemsButton.OnLeftClick += ToggleFindChestItemsButtonClicked;
 			collectChestItemsButton.Left.Pixels = left;
 			collectChestItemsButton.Top.Pixels = top;
 			checklistPanel.Append(collectChestItemsButton);
 			left += (int)spacing * 2 + 28;
 
 			showBadgeButton = new UIToggleHoverImageButton(TextureAssets.MagicPixel.Value, ItemChecklist.instance.Assets.Request<Texture2D>("UIElements/closeButton", AssetRequestMode.ImmediateLoad).Value, "Show Sort Value Text", showBadge);
-			showBadgeButton.OnClick += ToggleShowBadgeButtonClicked;
+			showBadgeButton.OnLeftClick += ToggleShowBadgeButtonClicked;
 			showBadgeButton.Left.Pixels = left;
 			showBadgeButton.Top.Pixels = top;
 			checklistPanel.Append(showBadgeButton);
@@ -541,11 +541,11 @@ namespace ItemChecklist
 			UserInterface.ActiveInstance = temp;
 		}
 
-		public override void MouseDown(UIMouseEvent evt)
+		public override void LeftMouseDown(UIMouseEvent evt)
 		{
 			UserInterface temp = UserInterface.ActiveInstance;
 			UserInterface.ActiveInstance = ItemChecklist.ItemChecklistInterface;
-			base.MouseDown(evt);
+			base.LeftMouseDown(evt);
 			UserInterface.ActiveInstance = temp;
 		}
 	}

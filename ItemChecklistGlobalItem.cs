@@ -1,4 +1,5 @@
 ﻿using Terraria;
+using Terraria.DataStructures;
 using Terraria.ModLoader;
 
 namespace ItemChecklist
@@ -6,9 +7,9 @@ namespace ItemChecklist
 	class ItemChecklistGlobalItem : GlobalItem
 	{
 		// OnPIckup only called on LocalPlayer: I think
-		public override void OnCreate(Item item, ItemCreationContext context)
+		public override void OnCreated(Item item, ItemCreationContext context)
 		{
-			if (context is RecipeCreationContext rContext) {
+			if (context is RecipeItemCreationContext rContext) {
 				ItemReceived(item);
 			}
 		}
