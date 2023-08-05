@@ -11,23 +11,17 @@ namespace ItemChecklist
 		public override ConfigScope Mode => ConfigScope.ClientSide;
 
 		[DefaultValue(true)]
-		[Label("Show Item Mod Source")]
-		[Tooltip("Show which mod adds which item in the recipe catalog. Disable for immersion.")]
 		public bool ShowItemModSource { get; set; }
 
-		[Header("Automatic Settings")]
+		[Header("AutomaticSettings")]
 		// non-player specific stuff:
 
 		[DefaultValue(typeof(Vector2), "475, 370")]
 		[Range(0f, 1920f)]
-		[Label("Item Checklist Size")]
-		[Tooltip("Size of the Item Checklist UI. This will automatically save, no need to adjust")]
 		public Vector2 ItemChecklistSize { get; set; }
 
 		[DefaultValue(typeof(Vector2), "400, 400")]
 		[Range(0f, 1920f)]
-		[Label("Item Checklist Poisition")]
-		[Tooltip("Position of the Item Checklist UI. This will automatically save, no need to adjust")]
 		public Vector2 ItemChecklistPosition { get; set; }
 
 		internal static void SaveConfig() {

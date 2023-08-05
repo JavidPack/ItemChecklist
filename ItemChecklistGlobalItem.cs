@@ -1,11 +1,21 @@
 ﻿using Terraria;
 using Terraria.DataStructures;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace ItemChecklist
 {
 	class ItemChecklistGlobalItem : GlobalItem
 	{
+		
+		const string LOCALIZATION_KEY = "Mods.ItemChecklist.GlobalItem.";
+		private static LocalizedText ItemChecklistAnnounceText;
+
+		public override void SetStaticDefaults()
+		{
+			ItemChecklistAnnounceText = Language.GetOrRegister( LOCALIZATION_KEY + nameof(ItemChecklistAnnounceText) ); 
+		}
+
 		// OnPIckup only called on LocalPlayer: I think
 		public override void OnCreated(Item item, ItemCreationContext context)
 		{
@@ -35,7 +45,10 @@ namespace ItemChecklist
 				ItemChecklist.instance.ItemChecklistUI.UpdateNeeded(item.type);
 				if (ItemChecklistUI.announce)
 				{
-					Main.NewText($"You found your first {item.Name}.     {itemChecklistPlayer.totalItemsFound}/{itemChecklistPlayer.totalItemsToFind}   {(100f*itemChecklistPlayer.totalItemsFound/itemChecklistPlayer.totalItemsToFind).ToString("0.00")}%");
+					Main.NewText( ItemChecklistAnnounceText.Format( item.Name, 
+					                                                itemChecklistPlayer.totalItemsFound, 
+					                                                itemChecklistPlayer.totalItemsToFind, 
+					                                                (100f * itemChecklistPlayer.totalItemsFound / itemChecklistPlayer.totalItemsToFind).ToString( "0.00" ) ) );
 				}
 				ItemChecklist.instance.NewItem(item.type);
 			}

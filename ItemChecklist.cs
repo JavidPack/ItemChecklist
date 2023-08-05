@@ -26,7 +26,7 @@ namespace ItemChecklist
 		{
 			// Latest uses ItemID.Sets.IsAMaterial, added 0.10.1.5
 			instance = this;
-			ToggleChecklistHotKey = KeybindLoader.RegisterKeybind(this, "Toggle Item Checklist", "I");
+			ToggleChecklistHotKey = KeybindLoader.RegisterKeybind(this, "ToggleItemChecklist", "I");
 			MagicStorageIntegration.Load();
 
 			if (!Main.dedServ)
