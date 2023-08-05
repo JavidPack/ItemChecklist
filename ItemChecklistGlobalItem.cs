@@ -45,10 +45,10 @@ namespace ItemChecklist
 				ItemChecklist.instance.ItemChecklistUI.UpdateNeeded(item.type);
 				if (ItemChecklistUI.announce)
 				{
-					Main.NewText( ItemChecklistAnnounceText.Format( item.Name, 
-					                                                itemChecklistPlayer.totalItemsFound, 
-					                                                itemChecklistPlayer.totalItemsToFind, 
-					                                                (100f * itemChecklistPlayer.totalItemsFound / itemChecklistPlayer.totalItemsToFind).ToString( "0.00" ) ) );
+					Main.NewText(ItemChecklistAnnounceText.Format(item.Name, 
+					                                              itemChecklistPlayer.totalItemsFound, 
+					                                              itemChecklistPlayer.totalItemsToFind, 
+					                                              (100f*itemChecklistPlayer.totalItemsFound/itemChecklistPlayer.totalItemsToFind).ToString("0.00")));
 				}
 				ItemChecklist.instance.NewItem(item.type);
 			}
