@@ -52,5 +52,9 @@ namespace ItemChecklist
 				ItemChecklist.instance.NewItem(item.type);
 			}
 		}
+
+		public override void OnResearched(Item item, bool fullyResearched) {
+			ItemChecklistUI.instance.UpdateNeeded();
+		}
 	}
 }

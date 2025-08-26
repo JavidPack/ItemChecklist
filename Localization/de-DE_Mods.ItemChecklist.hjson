@@ -120,4 +120,8 @@ SharedUI: {
 	// sortProgressionOrderText: Progression Order
 	// sortPolePowerText: Pole Power
 	// sortBaitPowerText: Bait Power
+	// filterResearchText: Research Status
+	// filterResearchCompleteText: Researched
+	// filterResearchIncompleteText: Unresearched
+	// filterResearchPartialText: Partially Researched
 }

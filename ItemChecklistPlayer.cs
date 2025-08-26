@@ -62,6 +62,7 @@ namespace ItemChecklist
 			ItemChecklistUI.showCompleted = showCompletedPreference;
 			ItemChecklist.instance.ItemChecklistUI.RefreshPreferences();
 			ItemChecklist.instance.ItemChecklistUI.UpdateNeeded();
+			SharedUI.instance.updateNeeded = true; // Added for creative mode filter hiding.
 		}
 
 		// Do I need to use Initialize? I think so because of cloning.

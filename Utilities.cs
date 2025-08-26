@@ -212,5 +212,29 @@ namespace ItemChecklist
 			if (TextureAssets.Npc[type].State == AssetState.NotLoaded)
 				Main.Assets.Request<Texture2D>(TextureAssets.Npc[type].Name, AssetRequestMode.AsyncLoad);
 		}
+
+		internal static bool ItemFullyResearched(int itemID) {
+			// Call if (Main.GameModeInfo.IsJourneyMode) before calling. Not sure the behavior if called in normal modes
+			if (Main.LocalPlayerCreativeTracker.ItemSacrifices.TryGetSacrificeNumbers(itemID, out var amountWeHave, out var amountNeededTotal) && amountWeHave >= amountNeededTotal) {
+				return true;
+			}
+			return false;
+
+			// GetSacrificeCount doesn't work, it doesn't check alternate itemids
+			// Terraria.GameContent.Creative.CreativeUI.GetSacrificeCount(validItemID, out bool fullyResearched);
+		}
+
+		internal static bool ItemPartiallyResearched(int itemID) {
+			// Call if (Main.GameModeInfo.IsJourneyMode) before calling. Not sure the behavior if called in normal modes
+			if (Main.LocalPlayerCreativeTracker.ItemSacrifices.TryGetSacrificeNumbers(itemID, out var amountWeHave, out var amountNeededTotal) && amountWeHave > 0 && amountWeHave < amountNeededTotal) {
+				return true;
+			}
+			return false;
+
+			// GetSacrificeCount doesn't work, it doesn't check alternate itemids
+			// Terraria.GameContent.Creative.CreativeUI.GetSacrificeCount(validItemID, out bool fullyResearched);
+		}
+
+		internal static bool ItemResearchable(int itemID) => Terraria.GameContent.Creative.CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId.ContainsKey(itemID);
 	}
 }

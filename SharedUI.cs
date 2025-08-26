@@ -58,6 +58,8 @@ namespace ItemChecklist
 			}
 		}
 
+		private Filter UnresearchedFilter;
+
 		private const string LocalizationKey = "Mods.ItemChecklist.SharedUI.";
 		private static LocalizedText cycleAmmoTypesText;
 		private static LocalizedText cycleUsedAmmoTypesText;
@@ -85,6 +87,10 @@ namespace ItemChecklist
 		private static LocalizedText sortRarityText;
 		private static LocalizedText sortTerrariaSortText;
 		private static LocalizedText filterMaterialsText;
+		private static LocalizedText filterResearchText;
+		private static LocalizedText filterResearchCompleteText;
+		private static LocalizedText filterResearchIncompleteText;
+		private static LocalizedText filterResearchPartialText;
 		private static LocalizedText sortPickPower;
 		private static LocalizedText sortAxePower;
 		private static LocalizedText sortHammerPower;
@@ -163,6 +169,10 @@ namespace ItemChecklist
 			sortRarityText = Language.GetOrRegister( LocalizationKey + nameof(sortRarityText) );
 			sortTerrariaSortText = Language.GetOrRegister( LocalizationKey + nameof(sortTerrariaSortText) );
 			filterMaterialsText = Language.GetOrRegister( LocalizationKey + nameof(filterMaterialsText) );
+			filterResearchText = Language.GetOrRegister( LocalizationKey + nameof(filterResearchText) );
+			filterResearchCompleteText = Language.GetOrRegister( LocalizationKey + nameof(filterResearchCompleteText) );
+			filterResearchIncompleteText = Language.GetOrRegister( LocalizationKey + nameof(filterResearchIncompleteText) );
+			filterResearchPartialText = Language.GetOrRegister( LocalizationKey + nameof(filterResearchPartialText) );
 			sortPickPower = Language.GetOrRegister( LocalizationKey + nameof(sortPickPower) );
 			sortAxePower = Language.GetOrRegister( LocalizationKey + nameof(sortAxePower) );
 			sortHammerPower = Language.GetOrRegister( LocalizationKey + nameof(sortHammerPower) );
@@ -257,6 +267,9 @@ namespace ItemChecklist
 		private void PopulateSortsAndFiltersPanel() {
 			var availableSorts = new List<Sort>(sorts);
 			availableFilters = new List<Filter>(filters);
+
+			if (!Main.GameModeInfo.IsJourneyMode)
+				availableFilters.Remove(SharedUI.instance.UnresearchedFilter);
 
 			//sortsAndFiltersPanel.RemoveAllChildren();
 			if (subCategorySortsFiltersGrid != null) {
@@ -458,9 +471,18 @@ namespace ItemChecklist
 			};
 
 			Texture2D materialsIcon = Utilities.StackResizeImage(new[] { TextureAssets.Item[ItemID.SpellTome] }, 24, 24);
+			Texture2D researchIcon = Utilities.StackResizeImage([Main.Assets.Request<Texture2D>("Images/UI/WorldCreation/IconDifficultyCreative")], 24, 24);
+			Texture2D researchedIcon = Utilities.StackResizeImage([Main.Assets.Request<Texture2D>("Images/UI/WorldCreation/IconDifficultyNormal")], 24, 24);
+			Texture2D unresearchedIcon = Utilities.StackResizeImage([Main.Assets.Request<Texture2D>("Images/UI/WorldCreation/IconDifficultyMaster")], 24, 24);
+			Texture2D researchPartialIcon = Utilities.StackResizeImage([Main.Assets.Request<Texture2D>("Images/UI/WorldCreation/IconDifficultyExpert")], 24, 24);
 			filters = new List<Filter>()
 			{
 				new Filter(filterMaterialsText.Value, x=>ItemID.Sets.IsAMaterial[x.type], materialsIcon),
+				(UnresearchedFilter = new CycleFilter(filterResearchText.Value, researchIcon, [
+					new Filter(filterResearchCompleteText.Value, x=> Utilities.ItemResearchable(x.type) && Utilities.ItemFullyResearched(x.type), researchedIcon),
+					new Filter(filterResearchIncompleteText.Value, x=> Utilities.ItemResearchable(x.type) && !Utilities.ItemFullyResearched(x.type), unresearchedIcon),
+					new Filter(filterResearchPartialText.Value, x=> Utilities.ItemResearchable(x.type) && Utilities.ItemPartiallyResearched(x.type), researchPartialIcon),
+				]))
 			};
 
 			// TODOS: Vanity armor, grapple, cart, potions buffs
