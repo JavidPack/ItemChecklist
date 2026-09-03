@@ -3,7 +3,7 @@ Configs: {
 		ShowItemModSource: {
 			Label: Mostrar a que mod pertenece el objeto
 			Tooltip:
-			    '''
+				'''
 				Al estar activado, se mostrará a cuál mod pertenece el objeto que
 				aparece en el catálogo.
 				Desactivar para más inmersión.
@@ -16,7 +16,7 @@ Configs: {
 		ItemChecklistSize: {
 			Label: Tamaño de la checklist
 			Tooltip:
-			    '''
+				'''
 				Tamaño de la IU del catálogo de objetos.
 				Se guardará automáticamente; no es necesario ajustarlo.
 				'''
@@ -25,7 +25,7 @@ Configs: {
 		ItemChecklistPosition: {
 			Label: Posición de la checklist
 			Tooltip:
-			    '''
+				'''
 				Posición de la IU del catálogo de objetos.
 				Se guardará automáticamente; no es necesario ajustarlo.
 				'''
