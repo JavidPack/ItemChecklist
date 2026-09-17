@@ -1,127 +1,127 @@
 Configs: {
 	ItemChecklistClientConfig: {
 		ShowItemModSource: {
-			// Label: Show Item Mod Source
-			// Tooltip: Show which mod adds which item in the recipe catalog. Disable for immersion.
+			Label: 显示物品来源模组
+			Tooltip: 显示哪个模组在配方目录中添加了哪个物品. 禁用以获得沉浸式体验
 		}
 
-		// DisplayName: Item Checklist Client Config
-		// Headers.AutomaticSettings: Automatic Settings
+		DisplayName: Item Checklist客户端配置
+		Headers.AutomaticSettings: 自动化设置
 
 		ItemChecklistSize: {
-			// Label: Item Checklist Size
-			// Tooltip: Size of the Item Checklist UI. This will automatically save, no need to adjust
+			Label: Item Checklist大小
+			Tooltip: Item Checklist UI的大小. 该项会自动保存所以不需要调整
 		}
 
 		ItemChecklistPosition: {
-			// Label: Item Checklist Position
-			// Tooltip: Position of the Item Checklist UI. This will automatically save, no need to adjust
+			Label: Item Checklist位置
+			Tooltip: Item Checklist UI的位置. 该项会自动保存所以不需要调整
 		}
 	}
 }
 
-// Keybinds.ToggleItemChecklist.DisplayName: Toggle Item Checklist
-// GlobalItem.ItemChecklistAnnounceText: You found your first {0}.     {1}/{2}   {3}%
+Keybinds.ToggleItemChecklist.DisplayName: 开关Item Checklist
+GlobalItem.ItemChecklistAnnounceText: 你第一次发现了{0}.     {1}/{2}   {3}%
 
 UICollectionBar: {
-	// collectionTotalText: Total: {0}/{1} ({2}% Collected)
-	// collectionTerrariaText: Terraria: {0}/{1} ({2}% Collected)
-	// collectionModText: "{0}: {1}/{2} ({3}% Collected)"
+	collectionTotalText: 总共: {0}/{1} ({2}% 已收集)
+	collectionTerrariaText: 原版: {0}/{1} ({2}% 已收集)
+	collectionModText: "{0}: {1}/{2} ({3}% 已收集)"
 }
 
 Ui: {
-	// FilterByTooltipText: Filter by tooltip
-	// FilterByNameText: Filter by Name
-	// ToggleCollectChestItemsText: Toggle Collect Chest Items
-	// ToggleMessagesText: Toggle Messages
-	// ShowSortValueTextText: Show Sort Value Text
-	// CycleModFilterText: Cycle Mod Filter: {0}
-	// CycleFoundFilterText: Cycle Found Filter: {0}
-	// ModnamesAllText: All
-	// FoundFilterAllText: All
-	// FoundFilterUnfoundText: Unfound
-	// FoundFilterFoundText: Found
-	// ModnamesVanillaText: Vanilla
+	FilterByTooltipText: 按物品描述过滤
+	FilterByNameText: 按名称过滤
+	ToggleCollectChestItemsText: 开关收集箱内物品
+	ToggleMessagesText: 开关消息提示
+	ShowSortValueTextText: 开关物品排序值
+	CycleModFilterText: 切换筛选的Mod: {0}
+	CycleFoundFilterText: 切换发现状态筛选: {0}
+	ModnamesAllText: 全部
+	FoundFilterAllText: 全部
+	FoundFilterUnfoundText: 未发现
+	FoundFilterFoundText: 已发现
+	ModnamesVanillaText: 原版
 }
 
 SharedUI: {
-	// mutuallyExclusiveFilterVanityText: Vanity
-	// mutuallyExclusiveFilterArmorText: Armor
-	// cycleAmmoTypesText: Cycle Ammo Types
-	// cycleUsedAmmoTypesText: Cycle Used Ammo Types
-	// categoryAllText: All
-	// categoryMeleeText: Melee
-	// categoryYoyoText: Yoyo
-	// categoryMagicText: Magic
-	// categoryRangedText: Ranged
-	// sortUseAmmoTypeText: Use Ammo Type
-	// categoryThrowingText: Throwing
-	// categorySummonText: Summon
-	// categorySentryText: Sentry
-	// sortDamageText: Damage
-	// categoryToolsText: Tools
-	// categoryPickaxesText: Pickaxes
-	// categoryAxesText: Axes
-	// categoryHammersText: Hammers
-	// categoryArmorText: Armor
-	// categoryWeaponsText: Weapons
-	// sortValueText: Value
-	// sortAlphabeticalText: Alphabetical
-	// sortRarityText: Rarity
-	// sortTerrariaSortText: Terraria Sort
-	// filterMaterialsText: Materials
-	// sortPickPower: Pick Power
-	// sortAxePower: Axe Power
-	// sortHammerPower: Hammer Power
-	// categoryHead: Head
-	// categoryBody: Body
-	// categoryLegs: Legs
-	// sortDefense: Defense
-	// categoryTiles: Tiles
-	// categoryContainersText: Containers
-	// categoryWiringText: Wiring
-	// categoryStatuesText: Statues
-	// categoryDoorsText: Doors
-	// categoryChairsText: Chairs
-	// categoryTablesText: Tables
-	// categoryLightSourcesText: Light Sources
-	// categoryTorchesText: Torches
-	// categoryWallsText: Walls
-	// categoryAccessoriesText: Accessories
-	// categoryWingsText: Wings
-	// categoryAmmoText: Ammo
-	// categoryPotionsText: Potions
-	// categoryHealthPotionsText: Health Potions
-	// categoryManaPotionsText: Mana Potions
-	// categoryBuffPotionsText: Buff Potions
-	// categoryExpertText: Expert
-	// categoryPetsText: Pets
-	// categoryLightPetsText: Light Pets
-	// categoryMountsText: Mounts
-	// categoryCartsText: Carts
-	// categoryHooksText: Hooks
-	// categoryDyesText: Dyes
-	// categoryHairDyesText: Hair Dyes
-	// categoryBossSummonsText: Boss Summons
-	// categoryConsumablesText: Consumables
-	// categoryCapturedNPCText: Captured NPC
-	// categoryFishingText: Fishing
-	// categoryPolesText: Poles
-	// categoryBaitText: Bait
-	// categoryQuestFishText: Quest Fish
-	// categoryExtractinatorText: Extractinator
-	// categoryOtherText: Other
-	// sortItemIdText: ItemID
-	// sortPlaceTileText: Place Tile
-	// sortAmmoTypeText: Ammo Type
-	// sortHealLifeText: Heal Life
-	// sortHealManaText: Heal Mana
-	// sortGrappleRangeText: Grapple Range
-	// sortProgressionOrderText: Progression Order
-	// sortPolePowerText: Pole Power
-	// sortBaitPowerText: Bait Power
-	// filterResearchText: Research Status
-	// filterResearchCompleteText: Researched
-	// filterResearchIncompleteText: Unresearched
-	// filterResearchPartialText: Partially Researched
+	mutuallyExclusiveFilterVanityText: 时装
+	mutuallyExclusiveFilterArmorText: 盔甲
+	cycleAmmoTypesText: 切换弹药类型
+	cycleUsedAmmoTypesText: 切换使用的弹药类型
+	categoryAllText: 所有
+	categoryMeleeText: 近战
+	categoryYoyoText: 悠悠球
+	categoryMagicText: 魔法
+	categoryRangedText: 远程
+	sortUseAmmoTypeText: 使用弹药类型
+	categoryThrowingText: 透支
+	categorySummonText: 仆从
+	categorySentryText: 哨兵
+	sortDamageText: 伤害
+	categoryToolsText: 工具
+	categoryPickaxesText: 镐
+	categoryAxesText: 斧
+	categoryHammersText: 锤
+	categoryArmorText: 盔甲
+	categoryWeaponsText: 武器
+	sortValueText: 价值
+	sortAlphabeticalText: 字母顺序
+	sortRarityText: 稀有度
+	sortTerrariaSortText: 原版排序
+	filterMaterialsText: 材料
+	sortPickPower: 镐力
+	sortAxePower: 斧力
+	sortHammerPower: 锤力
+	categoryHead: 头部
+	categoryBody: 身体
+	categoryLegs: 腿部
+	sortDefense: 防御
+	categoryTiles: 五块
+	categoryContainersText: 容器
+	categoryWiringText: 电路
+	categoryStatuesText: 雕像
+	categoryDoorsText: 门
+	categoryChairsText: 椅子
+	categoryTablesText: 桌子
+	categoryLightSourcesText: 光源
+	categoryTorchesText: 火把
+	categoryWallsText: 墙
+	categoryAccessoriesText: 饰品
+	categoryWingsText: 翅膀
+	categoryAmmoText: 弹药
+	categoryPotionsText: 药水
+	categoryHealthPotionsText: 治疗药水
+	categoryManaPotionsText: 魔力药水
+	categoryBuffPotionsText: Buff药水
+	categoryExpertText: 专家
+	categoryPetsText: 宠物
+	categoryLightPetsText: 照明宠物
+	categoryMountsText: 坐骑
+	categoryCartsText: 矿车
+	categoryHooksText: 钩爪
+	categoryDyesText: 染料
+	categoryHairDyesText: 染发剂
+	categoryBossSummonsText: Boss召唤物
+	categoryConsumablesText: 消耗品
+	categoryCapturedNPCText: 捕获的生物
+	categoryFishingText: 渔具
+	categoryPolesText: 鱼竿
+	categoryBaitText: 鱼饵
+	categoryQuestFishText: 任务鱼
+	categoryExtractinatorText: 提取机
+	categoryOtherText: 其他
+	sortItemIdText: 物品ID
+	sortPlaceTileText: 防止物块
+	sortAmmoTypeText: 弹药类型
+	sortHealLifeText: 生命值回复量
+	sortHealManaText: 魔力回复量
+	sortGrappleRangeText: 钩爪范围
+	sortProgressionOrderText: 进程顺序
+	sortPolePowerText: 渔力
+	sortBaitPowerText: 饵力
+	filterResearchText: 研究状态
+	filterResearchCompleteText: 已研究
+	filterResearchIncompleteText: 未研究
+	filterResearchPartialText: 部分研究
 }
